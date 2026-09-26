@@ -1,3 +1,4 @@
+<!--
 ## Before you're done
 
 This repo has been created for your Microsoft Ignite 2026 session. Here's how to get it ready.
@@ -23,6 +24,7 @@ Fill in the sections below yourself, then:
 - You can add a `.devcontainer/` folder if needed.
 
 ---
+-->
 
 <a name="start-building"></a>
 
@@ -35,7 +37,9 @@ Fill in the sections below yourself, then:
 ## 🔥LAB663: Hill climbing in the orchestration layer - Pulling the right levers
 ### Session description
 
-Add your session description here. Keep it concise — 2-3 sentences about what attendees will learn and why it matters.
+Building reliable and cost-effective AI agents requires smarter model selection and continuous system optimization in production. In this session, we look at how we can build and optimize AI agents in Microsoft Foundry by automating model selection (with model router) and turning production evidence into continuous system optimization (with agent optimizer).
+
+<br/>
 
 ### 🚀 Getting started
 
@@ -45,8 +49,7 @@ If you're following along during a live session:
 
 1. Step 1
 2. Step 2
-3. Open [`instructions/`](instructions/README.md) when this session includes
-   attendee step-by-step guidance
+3. Follow the [attendee guidance](docs/README.md)
 
 #### On your own
 
@@ -54,22 +57,24 @@ If you're learning at your own pace:
 
 1. Clone this repository
 2. Set up your environment
-3. Follow the session guidance in [`instructions/`](instructions/README.md), or
-   use the linked docs-site entry point when this repository uses that pattern
+3. Follow the [attendee guidance](docs/README.md)
 
+<br/>
 ### 🎯 Learning outcomes
 
 By the end of this session, you will be able to:
 
-- Outcome 1
-- Outcome 2
-- Outcome 3
+- Use model router in Foundry to automate model selection for reliable, cost-effective AI agents
+- Use Rubric evaluator and insights in Foundry to assess agent behavior and identify optimization opportunities from production evidence
+- Use agent optimizer in Foundry Agent Service to turn production evidence into continuous improvements in agent reliability and cost-effectiveness
 
 ### 💻 Technologies used
 
-- Technology 1
-- Technology 2
-- Technology 3
+- Microsoft Foundry platform
+- Rubric evaluator
+- model router in Foundry
+- insights in Foundry
+- agent optimizer in Foundry Agent Service
 
 ### 📚 Continue your learning
 
@@ -108,10 +113,15 @@ For more information, visit the [Learn MCP Server repo](https://aka.ms/learnmcp)
 
 <table>
 <tr>
-    <td align="center"><a href="http://github.com/yourGitHubHandle">
-        <img src="https://github.com/yourGitHubHandle.png" width="100px;" alt="INSERT NAME HERE"/><br />
-        <sub><b>INSERT NAME HERE</b></sub></a><br />
-            <a href="https://github.com/yourGitHubHandle" title="talk">📢</a>
+    <td align="center"><a href="http://github.com/nitya">
+        <img src="https://github.com/nitya.png" width="100px;" alt="Nitya Narasimhan"/><br />
+        <sub><b>Nitya Narasimhan</b></sub></a><br />
+            <a href="https://github.com/nitya" title="talk">📢</a>
+    </td>
+    <td align="center"><a href="http://github.com/leestott">
+        <img src="https://github.com/leestott.png" width="100px;" alt="Lee Stott"/><br />
+        <sub><b>Lee Stott</b></sub></a><br />
+            <a href="https://github.com/leestott" title="talk">📢</a>
     </td>
 </tr></table>
 
