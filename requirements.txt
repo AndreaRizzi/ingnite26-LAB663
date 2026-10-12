@@ -1,0 +1,3 @@
+# Python packages for the LAB663 labs. The dev container installs these on create.
+-r src/agent/requirements.txt
+ipykernel>=6.29.0

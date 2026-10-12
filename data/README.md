@@ -1,5 +1,11 @@
 # Data
 
-<!-- IGNITE TEMPLATE PLACEHOLDER: remove this folder when the session needs no data files. -->
+Everything TrailMate needs to answer questions and be measured.
 
-Use this folder for sample data or inputs required by the session.
+| Path | What it is |
+|------|------------|
+| [`manuals/`](manuals/) | The 10 Contoso Outdoors product manuals TrailMate searches |
+| [`images/`](images/) | Product images that match the manuals |
+| [`evaluation-cases.jsonl`](evaluation-cases.jsonl) | The frozen test set we score every version against |
+| [`evaluators/trailmate-quality.yaml`](evaluators/trailmate-quality.yaml) | The frozen rubric evaluator |
+| [`PROVENANCE.md`](PROVENANCE.md) | Where the data comes from and its license |
