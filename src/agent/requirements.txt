@@ -1,9 +1,9 @@
 # TrailMate agent dependencies.
 #
-# A prompt agent with a file-search tool is created, managed, and evaluated with
-# the new Foundry projects SDK. Version 2.6.x is verified (stable, no --pre) and
-# includes the evaluators generation-job API used in labs/core/02.
-azure-ai-projects>=2.6.0
+# A prompt agent with a file-search tool is created, managed, evaluated and
+# optimized with the Foundry projects SDK. Version 2.8.0 is the first we found
+# with the agent optimization job API.
+azure-ai-projects>=2.8.0
 azure-identity>=1.25.0
 python-dotenv>=1.1.0
 openai>=1.40.0
