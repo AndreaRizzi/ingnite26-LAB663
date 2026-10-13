@@ -14,3 +14,9 @@ Everything TrailMate needs to answer questions and be measured.
 | [`PROVENANCE.md`](PROVENANCE.md) | Where the data comes from and its license |
 
 Each case belongs to one of six ways an agent can lose a customer's trust (`way`), has a difficulty, and cites verbatim manual quotes as `facts`. Check everything with `python3 src/02_validate_data.py`.
+
+Keep the three case files and manuals frozen during a measurement campaign. A verbatim quote check is not a semantic review of the answer key; see the [rain-cover ambiguity in the narrative](../docs/narrative.md#keep-the-beginner-journey-focused).
+
+The hand-written reference rubric describes a 1-to-5 scale. The generated Foundry rubric emits a normalized 0-to-1 aggregate; compare definitions, not raw scores across these two formats. Uploading `expected_behavior` and `facts` does not automatically map them into a judge. The core evaluation supplies the agent's structured retrieval evidence and pins the generated evaluator version.
+
+For model cost estimates, `pricing.json` needs the deployment region, a source URL, price date, and input/output/cached-input rates for every serving model. The blank values are intentional. Missing attribution or prices mean **unknown cost**, not zero cost or proof of savings.

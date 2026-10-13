@@ -8,6 +8,8 @@ bash infra/deploy.sh
 
 The script asks for a subscription, region and chat models. It names a fresh resource group `rg-lab663-NNNN` every run, deploys with Bicep, writes `.env` and creates the v0 TrailMate agent.
 
+For a pre-provisioned Windows Skillable VM, use the [Skillable lifecycle scripts](../skillable_lifecycles/README.md) instead. They call the same Bicep, take explicit tenant/subscription/learner IDs, and track resource ownership for safe teardown. Learners must not mix the two deployment paths.
+
 ## What we get
 
 | Piece | What it is |
@@ -34,4 +36,7 @@ The script asks for a subscription, region and chat models. It names a fresh res
 - To skip the questions, set `AZURE_SUBSCRIPTION_ID`, `AZURE_LOCATION` or `LAB663_CHAT_MODELS` first, or pass `--yes` to accept the defaults.
 - To remove everything, run `bash infra/cleanup.sh`. It deletes only the resource group named in `.env`, after we type its name to confirm. Add `--purge` to also purge the deleted Foundry resource. Local files are left alone.
 - To deploy the infrastructure without the agent, pass `--skip-agent`.
+- `--skip-agent` still creates a **new** group. If only agent setup failed, rerun `python3 src/agent/01_build_agent.py`, not the infrastructure deployment.
 - `.env` holds our project details. It stays on our machine and is never committed.
+- The bootstrap pins the actual v0 version and index in `.lab-state.json`. It reuses a matching baseline and refuses to replace an incomplete index that might already be attached to an agent.
+- All six deployments default to the same capacity. Check subscription/region quota for the total number of concurrent learner instances, not just one VM. Global Standard does not promise in-region processing.

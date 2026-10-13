@@ -14,12 +14,13 @@ Run it:  python3 src/agent/01_build_agent.py
 """
 
 import os
+import sys
 import time
 from pathlib import Path
 
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import FileSearchTool, PromptAgentDefinition
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 from openai import NotFoundError
@@ -29,6 +30,8 @@ REPO_ROOT = HERE.parents[1]
 MANUALS_DIR = REPO_ROOT / "data" / "manuals"
 INSTRUCTIONS_FILE = HERE / "instructions-v0.md"
 VECTOR_STORE_NAME = "trailmate-manuals"
+sys.path.insert(0, str(REPO_ROOT / "src"))
+import lab
 
 
 def wait_for_project(client, timeout_seconds=600):
@@ -38,14 +41,17 @@ def wait_for_project(client, timeout_seconds=600):
         try:
             next(iter(client.agents.list()), None)
             return
-        except ResourceNotFoundError:
+        except HttpResponseError as error:
+            if error.status_code not in (403, 404):
+                raise
             waited = int(time.time() - started)
             if waited >= timeout_seconds:
                 raise TimeoutError(
                     f"The project still isn't reachable after {waited // 60} minutes. "
-                    "Check that it exists in the Foundry portal, then run this script again."
-                )
-            print(f"The project isn't reachable yet ({waited}s). New projects can take a few minutes. Checking again in 30 seconds...")
+                    "Check the deployment and this identity's Foundry role, then run this script again."
+                ) from error
+            print(f"Project access returned HTTP {error.status_code} ({waited}s). "
+                  "New projects and role assignments can take a few minutes. Checking again in 30 seconds...")
             time.sleep(30)
 
 
@@ -55,31 +61,41 @@ def wait_until_indexed(openai_client, store_id, expected, timeout_seconds=300):
     while time.time() < deadline:
         try:
             counts = openai_client.vector_stores.retrieve(store_id).file_counts
-            if counts.failed:
-                raise RuntimeError(f"{counts.failed} manual(s) failed to index.")
-            if counts.completed >= expected:
+            if counts.failed or counts.cancelled:
+                raise RuntimeError(f"Manual indexing failed={counts.failed}, cancelled={counts.cancelled}.")
+            if counts.completed > expected:
+                raise RuntimeError("The index contains more than the expected frozen manuals. It was not changed.")
+            if counts.completed == expected and counts.total == expected and counts.in_progress == 0:
                 return
         except NotFoundError:
-            pass
+            print("The new vector store is not visible yet; checking again in 5 seconds...")
         time.sleep(5)
     raise TimeoutError("The manuals were not fully indexed in time.")
 
 
 def get_or_create_vector_store(openai_client):
     manuals = sorted(MANUALS_DIR.glob("*.md"))
+    if len(manuals) != 10:
+        raise RuntimeError(f"Expected the 10 frozen product manuals; found {len(manuals)}.")
+    state = lab.load_state()
 
     for store in openai_client.vector_stores.list():
         if store.name != VECTOR_STORE_NAME:
             continue
-        if store.file_counts.completed >= len(manuals):
+        if state.get("vector_store_id") != store.id:
+            raise RuntimeError("A manuals index already exists without a matching local record. "
+                               "Verify its files and recover the matching state before reusing it; it was not changed.")
+        if store.file_counts.completed == len(manuals) and store.file_counts.total == len(manuals):
             print(f"Reusing the vector store '{VECTOR_STORE_NAME}' ({store.id}).")
             return store
-        # An earlier run stopped halfway, so we start clean.
-        print("Found a half-finished vector store from an earlier run. Replacing it.")
-        openai_client.vector_stores.delete(store.id)
+        raise RuntimeError(
+            f"Vector store '{store.id}' exists but is incomplete. Inspect its indexing errors "
+            "before retrying; it may already be attached to an agent, so it was not deleted."
+        )
 
     print("Creating the vector store and uploading the manuals...")
     store = openai_client.vector_stores.create(name=VECTOR_STORE_NAME)
+    lab.save_state(vector_store_id=store.id)
     file_ids = []
     for path in manuals:
         with path.open("rb") as handle:
@@ -91,11 +107,12 @@ def get_or_create_vector_store(openai_client):
 
 
 def main() -> None:
-    # .env is written by infra/deploy.sh. We sign in with our own Azure identity, so there are no keys.
+    # Delivery setup writes .env; Azure identity supplies access without model API keys.
     load_dotenv(REPO_ROOT / ".env")
     endpoint = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
     model = os.environ["TRAILMATE_MODEL_DEPLOYMENT"]
     agent_name = os.environ.get("TRAILMATE_AGENT_NAME", "trailmate")
+    lab.load_state()
 
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
     openai_client = client.get_openai_client()
@@ -109,7 +126,18 @@ def main() -> None:
         existing = []
 
     if existing:
-        print(f"The agent '{agent_name}' already exists, so we're keeping it as is.")
+        expected = INSTRUCTIONS_FILE.read_text(encoding="utf-8").strip()
+        baselines = [
+            version for version in existing
+            if isinstance(version.definition, PromptAgentDefinition)
+            and version.definition.model == model and (version.definition.instructions or "").strip() == expected
+            and any(vector_store.id in (getattr(tool, "vector_store_ids", None) or []) for tool in (version.definition.tools or []))
+        ]
+        if not baselines:
+            raise RuntimeError("The agent exists, but no version matches v0 and this vector store. It was not overwritten.")
+        baseline = min(baselines, key=lambda version: int(version.version))
+        lab.save_state(v0_version=str(baseline.version), vector_store_id=vector_store.id)
+        print(f"TrailMate v0 is ready. Reusing the pinned Foundry version {baseline.version}; other versions are unchanged.")
         return
 
     definition = PromptAgentDefinition(
@@ -119,6 +147,7 @@ def main() -> None:
     )
     print(f"Creating the agent '{agent_name}' on '{model}'...")
     version = client.agents.create_version(agent_name, definition=definition)
+    lab.save_state(v0_version=str(version.version), vector_store_id=vector_store.id)
 
     print("\nTrailMate v0 is ready.")
     print(f"  Agent        : {agent_name} (version {version.version})")

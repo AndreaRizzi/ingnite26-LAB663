@@ -100,9 +100,13 @@ for part in os.environ["CHAT_MODELS"].split(","):
     if not name or not version:
         sys.exit(f"'{part}' should look like name@version")
     items.append({"name": name, "version": version})
+if len(items) != 2 or len({item["name"] for item in items}) != 2:
+    sys.exit("This lab needs exactly two distinct chat models: frontier first, smaller model second.")
 print(json.dumps(items))
 PY
 )"
+read -r FRONTIER_MODEL SMALL_MODEL < <(CHAT_MODELS_JSON="$CHAT_MODELS_JSON" python3 -c \
+  'import json, os; print(*(m["name"] for m in json.loads(os.environ["CHAT_MODELS_JSON"])))')
 
 # --- 4. Check the models exist in this region ---
 step "Checking the models are available in $LOCATION"
@@ -186,13 +190,15 @@ cat > "$ENV_FILE" <<EOF
 # Written by infra/deploy.sh. It stays on our machine and is never committed.
 FOUNDRY_PROJECT_ENDPOINT=$PROJECT_ENDPOINT
 TRAILMATE_AGENT_NAME=trailmate
-TRAILMATE_MODEL_DEPLOYMENT=gpt-5.4
+TRAILMATE_MODEL_DEPLOYMENT=$FRONTIER_MODEL
+TRAILMATE_SMALL_MODEL_DEPLOYMENT=$SMALL_MODEL
 APPLICATIONINSIGHTS_CONNECTION_STRING=$APPI_CONNECTION_STRING
 AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
 AZURE_RESOURCE_GROUP=$RESOURCE_GROUP
 AZURE_AI_ACCOUNT_NAME=$ACCOUNT_NAME
 AZURE_AI_PROJECT_NAME=$PROJECT_NAME
 AZURE_LOCATION=$LOCATION
+LAB663_DELIVERY_MODE=self-guided
 EOF
 echo "Done. Project endpoint: $PROJECT_ENDPOINT"
 

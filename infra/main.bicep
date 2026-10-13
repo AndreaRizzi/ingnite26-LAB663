@@ -22,10 +22,17 @@ param principalId string
 @description('Type of the principal in principalId')
 param principalType string = 'User'
 
+@description('Optional service principal that bootstraps the agent for a Skillable learner')
+param bootstrapPrincipalId string = ''
+
+@description('Ownership tags used by the lifecycle scripts')
+param resourceTags object = {}
+
 @description('Deployment SKU')
 param skuName string = 'GlobalStandard'
 
 @description('Capacity for each deployment, in thousands of tokens per minute')
+@minValue(1)
 param capacity int = 250
 
 @description('Chat models to deploy, named after the model')
@@ -78,6 +85,7 @@ module monitoring 'modules/monitoring.bicep' = {
     location: location
     logAnalyticsName: 'log-${namePrefix}-${token}'
     applicationInsightsName: 'appi-${namePrefix}-${token}'
+    resourceTags: resourceTags
   }
 }
 
@@ -102,6 +110,7 @@ module foundry 'modules/foundry.bicep' = {
     routerEditions: routerEditions
     applicationInsightsId: monitoring.outputs.applicationInsightsId
     applicationInsightsConnectionString: appInsights.properties.ConnectionString
+    resourceTags: resourceTags
   }
 }
 
@@ -114,6 +123,7 @@ module roles 'modules/roles.bicep' = {
     principalId: principalId
     principalType: principalType
     projectPrincipalId: foundry.outputs.projectPrincipalId
+    bootstrapPrincipalId: bootstrapPrincipalId
   }
 }
 
@@ -121,3 +131,8 @@ output accountName string = foundry.outputs.accountName
 output projectName string = foundry.outputs.projectName
 output projectEndpoint string = foundry.outputs.projectEndpoint
 output applicationInsightsName string = monitoring.outputs.applicationInsightsName
+output managedResourceIds array = [
+  foundry.outputs.accountId
+  monitoring.outputs.applicationInsightsId
+  monitoring.outputs.workspaceId
+]

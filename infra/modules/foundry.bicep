@@ -32,6 +32,8 @@ param applicationInsightsId string
 @description('Application Insights connection string')
 param applicationInsightsConnectionString string
 
+param resourceTags object = {}
+
 type chatModel = {
   name: string
   version: string
@@ -46,6 +48,7 @@ type routerEdition = {
 resource account 'Microsoft.CognitiveServices/accounts@2026-09-01' = {
   name: accountName
   location: location
+  tags: resourceTags
   kind: 'AIServices'
   sku: {
     name: 'S0'
@@ -64,6 +67,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2026-09-01' = {
   parent: account
   name: projectName
   location: location
+  tags: resourceTags
   identity: {
     type: 'SystemAssigned'
   }

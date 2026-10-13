@@ -1,12 +1,14 @@
 {
-  "_note": "Price in USD per 1 million tokens. Left empty on purpose: fill each value from the Azure pricing page for our region before we quote any cost. We never guess prices.",
+  "_note": "USD per 1 million tokens. Record the region, source URL, date and input/output/cached-input prices for every serving model before quoting estimated model cost. Unknown prices are not zero. Agent tools, storage and evaluation charges are separate.",
   "currency": "USD",
   "region": "eastus2",
+  "source_url": null,
+  "as_of": null,
   "models": {
-    "gpt-5.4": { "input_per_million": null, "output_per_million": null },
-    "gpt-5.4-mini": { "input_per_million": null, "output_per_million": null },
-    "gpt-5.4-nano": { "input_per_million": null, "output_per_million": null },
-    "gpt-5.6-sol": { "input_per_million": null, "output_per_million": null },
-    "gpt-5.6-luna": { "input_per_million": null, "output_per_million": null }
+    "gpt-5.4": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.4-mini": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.4-nano": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.6-sol": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.6-luna": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null }
   }
 }
