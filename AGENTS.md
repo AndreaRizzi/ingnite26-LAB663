@@ -20,7 +20,14 @@ We climb the hill together: build it, measure it, improve it.
 
 ## How we write
 
-- Use "we" and "let's". Friendly, direct, no jargon without a definition.
+Full guide: [workshop-content.instructions.md](.github/instructions/workshop-content.instructions.md). The short version:
+
+- Write like a colleague at a whiteboard: friendly, concise, practical, curious. Use "we" and "let's".
+- No marketing language ("unlock", "seamlessly", "leverage"). Plain words, no jargon without a definition.
+- Teach in this order: problem, idea, see it, try it, what happened, why it matters, go further.
+- For each concept, give a business lens (why use it?) and an engineering lens (how does it work?).
+- Be honest about limits and rough edges. Never invent numbers.
+- Use visuals sparingly: a diagram, table or chart where it explains faster than words, never as decoration.
 - Keep the climbing metaphor light: versions, altitude, the hill.
 - Sentence-case headings. Every step ends with a visible expected result.
 
