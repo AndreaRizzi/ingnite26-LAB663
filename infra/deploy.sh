@@ -6,7 +6,7 @@
 #   - A Foundry resource and project, with tracing wired up
 #   - Chat models and four model router editions
 #   - The access (RBAC) we need, assigned to us
-#   - A local .env file and the v1 TrailMate agent
+#   - A local .env file and the v0 TrailMate agent
 #
 # Run it from anywhere:  bash infra/deploy.sh
 #
@@ -17,7 +17,7 @@
 #
 # Flags:
 #   --yes          accept every default without asking
-#   --skip-agent   deploy the infrastructure only, skip the v1 agent
+#   --skip-agent   deploy the infrastructure only, skip the v0 agent
 
 set -euo pipefail
 
@@ -184,17 +184,17 @@ AZURE_LOCATION=$LOCATION
 EOF
 echo "Done. Project endpoint: $PROJECT_ENDPOINT"
 
-# --- 8. Create the v1 agent ---
+# --- 8. Create the v0 agent ---
 if $SKIP_AGENT; then
   echo
-  echo "Skipped the agent. When we're ready:  python3 src/agent/build_agent.py"
+  echo "Skipped the agent. When we're ready:  python3 src/agent/01_build_agent.py"
   exit 0
 fi
 
-step "Creating the v1 TrailMate agent"
+step "Creating the v0 TrailMate agent"
 # New role assignments can take a few minutes to reach the data plane, so we retry.
 for attempt in 1 2 3 4 5; do
-  if python3 "$REPO_ROOT/src/agent/build_agent.py"; then
+  if python3 "$REPO_ROOT/src/agent/01_build_agent.py"; then
     echo
     echo "All set. Next, open labs/core/ and start with the first notebook."
     exit 0
@@ -204,5 +204,5 @@ for attempt in 1 2 3 4 5; do
 done
 
 echo "The agent step didn't finish. Our infrastructure is fine. Run this when ready:"
-echo "  python3 src/agent/build_agent.py"
+echo "  python3 src/agent/01_build_agent.py"
 exit 1

@@ -34,10 +34,12 @@ Fill in the sections below yourself, then:
 
 # [Microsoft Ignite 2026](https://ignite.microsoft.com)
 
-## 🔥LAB663: Hill climbing in the orchestration layer - Pulling the right levers
+## 🔥 [LAB663: Build smarter AI systems with model router and agent optimizer](https://ignite.microsoft.com/sessions/LAB663)
+
 ### Session description
 
-Building reliable and cost-effective AI agents requires smarter model selection and continuous system optimization in production. In this session, we look at how we can build and optimize AI agents in Microsoft Foundry by automating model selection (with model router) and turning production evidence into continuous system optimization (with agent optimizer).
+As organizations scale AI, choosing a single model for every workload can lead to unnecessary costs and missed opportunities. In this lab, explore how model router in Foundry Models and agent optimizer can helps organizations balance quality, performance, and cost across diverse use cases. We will break down popular design patterns that developers can use to optimize and scale agentic applications.
+
 
 <br/>
 
@@ -45,19 +47,17 @@ Building reliable and cost-effective AI agents requires smarter model selection 
 
 #### In a guided session
 
-If you're following along during a live session:
-
-1. Step 1
-2. Step 2
-3. Follow the [attendee guidance](docs/README.md)
+We're finishing the guided (Skillable) version next. Until then, the self-guided path below works end to end.
 
 #### On your own
 
 If you're learning at your own pace:
 
-1. Clone this repository
-2. Set up your environment
-3. Follow the [attendee guidance](docs/README.md)
+1. Open this repository in the dev container or a Codespace. It brings Python, the Azure CLI and Bicep.
+2. Run `bash infra/deploy.sh` from the repo root. It builds everything we need in our own Azure subscription and creates our first agent.
+3. Follow the [self-guided walkthrough](instructions/self-guided/README.md). It takes us through the notebooks in [`labs/core/`](labs/core/), starting at `00-set-the-stage.ipynb`.
+
+The core lab runs in about 60 minutes: 20 to set the stage and 40 for the climb. Deploying happens before the clock starts.
 
 <br/>
 ### 🎯 Learning outcomes

@@ -27,14 +27,19 @@ Products used (Contoso Outdoors catalog):
 The catalog is fictional. Brands, contact details and email addresses in the
 manuals are sample data, and we use them only for grounding examples.
 
-## Evaluation cases and rubric
+## Test data and rubric (authored for LAB663)
 
-[`evaluation-cases.jsonl`](evaluation-cases.jsonl) and
-[`evaluators/trailmate-quality.yaml`](evaluators/trailmate-quality.yaml) come
-from the same agent-builder workshop. We keep them frozen so scores stay
-comparable across versions.
+[`practice.jsonl`](practice.jsonl), [`dev.jsonl`](dev.jsonl) and
+[`test.jsonl`](test.jsonl), and the reference rubric in
+[`evaluators/trailmate-quality.yaml`](evaluators/trailmate-quality.yaml), were
+written for this lab. They were inspired by the evaluation cases and rubric in
+the agent-builder workshop above, and a few ideas (like the shoe-weight and
+EcoFire-tent questions) started there. Every expected answer cites a verbatim
+quote from the manuals, and `src/02_validate_data.py` checks that each quote exists.
 
-## Status
+The original manuals and images are untouched. We don't edit them.
 
-These files are carried over as a starting point and are due for a review
-and update pass.
+## Pricing
+
+[`pricing.json`](pricing.json) is empty on purpose. Prices come from the Azure
+pricing page, and we fill them in before the lab quotes any cost.

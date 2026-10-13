@@ -6,7 +6,7 @@ Everything we need in Azure, in one command:
 bash infra/deploy.sh
 ```
 
-The script asks for a subscription, region, resource group and chat models. It then deploys with Bicep, writes `.env` and creates the v1 TrailMate agent.
+The script asks for a subscription, region, resource group and chat models. It then deploys with Bicep, writes `.env` and creates the v0 TrailMate agent.
 
 ## What we get
 

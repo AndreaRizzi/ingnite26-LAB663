@@ -1,14 +1,16 @@
-"""Build the v1 TrailMate agent.
+"""Build the v0 TrailMate agent, our starting camp.
 
 This script:
   1. Connects to our Foundry project.
   2. Uploads the product manuals into a vector store, so the agent can search them.
-  3. Creates the TrailMate prompt agent (v1): a frontier model, simple instructions,
-     and a file search tool over the manuals.
+  3. Creates the TrailMate prompt agent (v0): a frontier model, a file search tool over
+     the manuals, and deliberately generic instructions ("You are a helpful agent.").
+
+In Module 4 we use the SDK to give it better instructions. That is v1.
 
 It is safe to run again. It reuses the vector store and the agent if they exist.
 
-Run it:  python3 src/agent/build_agent.py
+Run it:  python3 src/agent/01_build_agent.py
 """
 
 import os
@@ -23,7 +25,7 @@ from dotenv import load_dotenv
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
 MANUALS_DIR = REPO_ROOT / "data" / "manuals"
-INSTRUCTIONS_FILE = HERE / "instructions.md"
+INSTRUCTIONS_FILE = HERE / "instructions-v0.md"
 VECTOR_STORE_NAME = "trailmate-manuals"
 
 
@@ -77,7 +79,7 @@ def main() -> None:
     print(f"Creating the agent '{agent_name}' on '{model}'...")
     version = client.agents.create_version(agent_name, definition=definition)
 
-    print("\nTrailMate v1 is ready.")
+    print("\nTrailMate v0 is ready.")
     print(f"  Agent        : {agent_name} (version {version.version})")
     print(f"  Model        : {model}")
     print(f"  Vector store : {vector_store.id}")
