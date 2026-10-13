@@ -12,6 +12,8 @@ The image must already contain Azure CLI, Bicep, VS Code with Python/Jupyter sup
 
 The scripts deliberately do not install packages or update tools during a timed lab. Repair the image when a prerequisite check fails. Run the actions as the learner's Windows VM user so the notebook kernel and `.env` are available to that user.
 
+Prepare the root `.venv` from `requirements.txt` while building the image, before learners arrive. `setup.ps1` and `deployment.ps1` default to `.venv\Scripts\python.exe`; `-Python` still supports an explicitly prepared image interpreter. The shared check verifies all declared packages, the SDK operations used by the lab and heatmap rendering without contacting Azure.
+
 | Action | When | Result |
 |---|---|---|
 | `setup.ps1` | VM startup, before learners arrive | Checks the repository's package requirements and Bicep; registers `Python (LAB663)` |
@@ -50,6 +52,8 @@ First run the VM prerequisite action with the interpreter prepared in the image:
 ```
 
 **Expected:** all package checks pass and `Python (LAB663)` is registered. `-CheckOnly` performs the checks without registering a kernel.
+
+An existing VS Code interpreter selection can override a new workspace default. Select the prepared `.venv` and **Python (LAB663)** explicitly when updating an existing image; notebook 01 prints the interpreter it actually uses.
 
 Then invoke deployment. In the following action wrapper, `$learnerObjectId` and `$bootstrapObjectId` must already have been supplied by the lab's identity provisioning. Do not replace them with invented Skillable macros.
 

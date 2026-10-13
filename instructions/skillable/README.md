@@ -21,6 +21,8 @@ Open [01 · Set up and validate](../../labs/core/01-setup-and-validate.ipynb), s
 
 **Expected:** every check passes under our learner identity, including the SDK version, model calls and indexed manuals. If a check fails, keep its exact message and ask the facilitator; do not install packages or change the deployment during the session.
 
+Notebook 01 prints its Python interpreter before connecting. It should be the prepared `.venv` used by **Python (LAB663)**, not a system interpreter left selected in VS Code.
+
 ## Step 2: Follow the climb
 
 Read [00 · What are we building?](../../labs/core/00-set-the-stage.ipynb) before the timed session. It explains our six failure categories, separate practice/dev/test sets, and the rule that a candidate must earn promotion.

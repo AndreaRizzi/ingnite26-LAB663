@@ -15,6 +15,20 @@ We need:
 
 Basic Python is helpful; previous agent or evaluation experience is not required. The required workflow stays in code. Portal views are optional.
 
+### Use the repository Python environment
+
+The dev-container preparation action creates the root `.venv`, installs `requirements.txt` there, checks SDK capabilities and table rendering, and registers **Python (LAB663)**. Deployment uses that interpreter instead of whichever `python` happens to be on the terminal path.
+
+For a prepared Windows checkout, create or update the environment before deploying:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe .\src\check_environment.py --register-kernel
+```
+
+**Expected:** the environment check passes and **Python (LAB663)** is registered. A failed check stops kernel registration; no Azure resources are created. If VS Code already selected a system interpreter, use **Python: Select Interpreter** to choose `.venv` and select **Python (LAB663)** in the notebook; changing the workspace default does not replace an existing selection.
+
 ## Step 1: Deploy (this happens before the clock starts)
 
 ```bash
@@ -27,11 +41,11 @@ It asks for a subscription, region and chat models, then builds our Foundry proj
 
 **If it fails:** send us the last few lines. A model missing from the region, or access that hasn't arrived yet, are the usual suspects.
 
-**Before rerunning:** `deploy.sh` creates a fresh resource group every time, even with `--skip-agent`. If infrastructure succeeded but agent setup failed, rerun only `python3 src/agent/01_build_agent.py`. Preserve the existing `.env` and `.lab-state.json`; do not accidentally create another environment to repair a missing setting.
+**Before rerunning:** `deploy.sh` creates a fresh resource group every time, even with `--skip-agent`. If infrastructure succeeded but agent setup failed, rerun only `.venv/bin/python src/agent/01_build_agent.py` in the dev container, or `.\.venv\Scripts\python.exe .\src\agent\01_build_agent.py` on Windows. Preserve the existing `.env` and `.lab-state.json`; do not accidentally create another environment to repair a missing setting.
 
 ## Step 2: Work through the notebooks
 
-Open each notebook in [`labs/core/`](../../labs/core/), pick the **Python 3** kernel, and run one cell at a time with **Shift+Enter**. Keep the **Outline** view open: the numbered sections tell the story.
+Open each notebook in [`labs/core/`](../../labs/core/), pick the **Python (LAB663)** kernel, and run one cell at a time with **Shift+Enter**. Keep the **Outline** view open: the numbered sections tell the story.
 
 | Notebook | The question it starts with | Time | The aha |
 |---|---|---|---|

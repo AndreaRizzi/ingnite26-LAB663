@@ -17,9 +17,13 @@ fail() { printf '    \033[0;31mFAIL\033[0m %s\n' "$*"; FAILURES+=("$1"); }
 log "Python"
 if command -v python3 >/dev/null 2>&1; then
     ok "python $(python3 -c 'import platform; print(platform.python_version())')"
+    if [[ ! -x .venv/bin/python ]]; then
+        python3 -m venv .venv || fail "could not create the repository .venv"
+    fi
 else
     fail "python3 not found"
 fi
+PYTHON="$PWD/.venv/bin/python"
 
 # ------------------------------------------------------------- azure cli ----
 log "Azure CLI"
@@ -45,12 +49,22 @@ fi
 
 # --------------------------------------------------------- dependencies ----
 log "Python dependencies"
-if [[ -f requirements.txt ]]; then
-    python3 -m pip install --quiet --disable-pip-version-check -r requirements.txt \
+if [[ ! -x "$PYTHON" ]]; then
+    fail "the repository .venv is unavailable"
+elif [[ -f requirements.txt ]]; then
+    "$PYTHON" -m pip install --quiet --disable-pip-version-check -r requirements.txt \
         && ok "installed requirements.txt" \
         || fail "could not install requirements.txt"
+    "$PYTHON" src/check_environment.py \
+        && ok "Python requirements and Foundry SDK capabilities" \
+        || fail "Python environment check failed"
+    if [[ ${#FAILURES[@]} -eq 0 ]]; then
+        "$PYTHON" -m ipykernel install --user --name lab663 --display-name "Python (LAB663)" \
+            && ok "registered Python (LAB663)" \
+            || fail "could not register the notebook kernel"
+    fi
 else
-    warn "no requirements.txt found, skipping"
+    fail "requirements.txt is missing"
 fi
 
 # -------------------------------------------------------------- summary -----

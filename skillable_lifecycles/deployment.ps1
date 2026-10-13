@@ -9,7 +9,7 @@ param(
     [guid]$BootstrapObjectId = [guid]::Empty,
     [ValidateRange(1, 1000000)][int]$Capacity = 250,
     [string]$RepoRoot = (Split-Path $PSScriptRoot -Parent),
-    [string]$Python = 'python',
+    [string]$Python = (Join-Path $RepoRoot '.venv\Scripts\python.exe'),
     [switch]$UseCurrentAzureLogin,
     [switch]$CreateResourceGroup,
     [switch]$InfrastructureOnly
