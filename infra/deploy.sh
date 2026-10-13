@@ -10,8 +10,11 @@
 #
 # Run it from anywhere:  bash infra/deploy.sh
 #
+# The resource group is always new, named rg-lab663-NNNN with a number that isn't in use.
+# To remove everything later:  bash infra/cleanup.sh
+#
 # We ask a few questions. To skip a question, set its variable first:
-#   AZURE_SUBSCRIPTION_ID, AZURE_LOCATION, AZURE_RESOURCE_GROUP,
+#   AZURE_SUBSCRIPTION_ID, AZURE_LOCATION,
 #   LAB663_CHAT_MODELS (for example "gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"),
 #   LAB663_CAPACITY
 #
@@ -36,9 +39,8 @@ for arg in "$@"; do
 done
 
 DEFAULT_LOCATION="eastus2"
-DEFAULT_RESOURCE_GROUP="rg-lab663"
 DEFAULT_CHAT_MODELS="gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"
-DEFAULT_CAPACITY="50"
+DEFAULT_CAPACITY="250"
 
 step() { printf '\n==> %s\n' "$*"; }
 
@@ -80,7 +82,12 @@ if ! az account list-locations --query "[].name" -o tsv | grep -qxF "$LOCATION";
   exit 1
 fi
 
-RESOURCE_GROUP="${AZURE_RESOURCE_GROUP:-$(ask "Resource group name" "$DEFAULT_RESOURCE_GROUP")}"
+# A new group every run keeps old attempts from clashing with new ones (deleted Foundry resources linger for a while).
+RESOURCE_GROUP=""
+while [[ -z "$RESOURCE_GROUP" ]]; do
+  candidate="rg-lab663-$((RANDOM % 9000 + 1000))"
+  [[ "$(az group exists --name "$candidate")" == "false" ]] && RESOURCE_GROUP="$candidate"
+done
 CHAT_MODELS="${LAB663_CHAT_MODELS:-$(ask "Chat models to deploy (name@version, comma separated)" "$DEFAULT_CHAT_MODELS")}"
 CAPACITY="${LAB663_CAPACITY:-$DEFAULT_CAPACITY}"
 
@@ -99,10 +106,15 @@ PY
 
 # --- 4. Check the models exist in this region ---
 step "Checking the models are available in $LOCATION"
-CATALOG="$(az cognitiveservices model list --location "$LOCATION" -o json)"
-MISSING="$(CATALOG="$CATALOG" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" python3 - <<'PY'
+# The full catalog is big, so we keep only names and versions and hand them over in a file.
+CATALOG_FILE="$(mktemp)"
+trap 'rm -f "$CATALOG_FILE"' EXIT
+az cognitiveservices model list --location "$LOCATION" \
+  --query "[].{name:model.name, version:model.version}" -o json > "$CATALOG_FILE"
+MISSING="$(CATALOG_FILE="$CATALOG_FILE" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" python3 - <<'PY'
 import json, os
-catalog = {(m["model"]["name"], m["model"]["version"]) for m in json.loads(os.environ["CATALOG"])}
+with open(os.environ["CATALOG_FILE"], encoding="utf-8") as f:
+    catalog = {(m["name"], m["version"]) for m in json.load(f)}
 wanted = [(m["name"], m["version"]) for m in json.loads(os.environ["CHAT_MODELS_JSON"])]
 wanted.append(("model-router", "2025-11-18"))
 print("\n".join(f"{n}@{v}" for n, v in wanted if (n, v) not in catalog))
@@ -192,15 +204,17 @@ if $SKIP_AGENT; then
 fi
 
 step "Creating the v0 TrailMate agent"
-# New role assignments can take a few minutes to reach the data plane, so we retry.
-for attempt in 1 2 3 4 5; do
+# The agent script waits for a new project to become reachable. We retry once in case something else hiccups.
+for attempt in 1 2; do
   if python3 "$REPO_ROOT/src/agent/01_build_agent.py"; then
     echo
     echo "All set. Next, open labs/core/ and start with the first notebook."
     exit 0
   fi
-  echo "Not ready yet (attempt $attempt of 5). Access can take a few minutes. Retrying in 60 seconds..."
-  sleep 60
+  if [[ $attempt -lt 2 ]]; then
+    echo "The agent step didn't finish (attempt $attempt of 2). Trying once more in 30 seconds..."
+    sleep 30
+  fi
 done
 
 echo "The agent step didn't finish. Our infrastructure is fine. Run this when ready:"

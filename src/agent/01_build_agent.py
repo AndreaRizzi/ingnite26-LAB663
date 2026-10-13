@@ -14,6 +14,7 @@ Run it:  python3 src/agent/01_build_agent.py
 """
 
 import os
+import time
 from pathlib import Path
 
 from azure.ai.projects import AIProjectClient
@@ -21,6 +22,7 @@ from azure.ai.projects.models import FileSearchTool, PromptAgentDefinition
 from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
+from openai import NotFoundError
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
@@ -29,24 +31,62 @@ INSTRUCTIONS_FILE = HERE / "instructions-v0.md"
 VECTOR_STORE_NAME = "trailmate-manuals"
 
 
+def wait_for_project(client, timeout_seconds=600):
+    """A new project can take several minutes before its endpoint answers, so we wait and say so."""
+    started = time.time()
+    while True:
+        try:
+            next(iter(client.agents.list()), None)
+            return
+        except ResourceNotFoundError:
+            waited = int(time.time() - started)
+            if waited >= timeout_seconds:
+                raise TimeoutError(
+                    f"The project still isn't reachable after {waited // 60} minutes. "
+                    "Check that it exists in the Foundry portal, then run this script again."
+                )
+            print(f"The project isn't reachable yet ({waited}s). New projects can take a few minutes. Checking again in 30 seconds...")
+            time.sleep(30)
+
+
+def wait_until_indexed(openai_client, store_id, expected, timeout_seconds=300):
+    """Wait until every manual is indexed. Right after an upload the status call can briefly 404, so we retry."""
+    deadline = time.time() + timeout_seconds
+    while time.time() < deadline:
+        try:
+            counts = openai_client.vector_stores.retrieve(store_id).file_counts
+            if counts.failed:
+                raise RuntimeError(f"{counts.failed} manual(s) failed to index.")
+            if counts.completed >= expected:
+                return
+        except NotFoundError:
+            pass
+        time.sleep(5)
+    raise TimeoutError("The manuals were not fully indexed in time.")
+
+
 def get_or_create_vector_store(openai_client):
+    manuals = sorted(MANUALS_DIR.glob("*.md"))
+
     for store in openai_client.vector_stores.list():
-        if store.name == VECTOR_STORE_NAME:
+        if store.name != VECTOR_STORE_NAME:
+            continue
+        if store.file_counts.completed >= len(manuals):
             print(f"Reusing the vector store '{VECTOR_STORE_NAME}' ({store.id}).")
             return store
+        # An earlier run stopped halfway, so we start clean.
+        print("Found a half-finished vector store from an earlier run. Replacing it.")
+        openai_client.vector_stores.delete(store.id)
 
     print("Creating the vector store and uploading the manuals...")
     store = openai_client.vector_stores.create(name=VECTOR_STORE_NAME)
-    manuals = sorted(MANUALS_DIR.glob("*.md"))
-    streams = [path.open("rb") for path in manuals]
-    try:
-        openai_client.vector_stores.file_batches.upload_and_poll(
-            vector_store_id=store.id, files=streams
-        )
-    finally:
-        for stream in streams:
-            stream.close()
-    print(f"Uploaded {len(manuals)} manuals.")
+    file_ids = []
+    for path in manuals:
+        with path.open("rb") as handle:
+            file_ids.append(openai_client.files.create(file=handle, purpose="assistants").id)
+    openai_client.vector_stores.file_batches.create(vector_store_id=store.id, file_ids=file_ids)
+    wait_until_indexed(openai_client, store.id, len(manuals))
+    print(f"Uploaded and indexed {len(manuals)} manuals.")
     return store
 
 
@@ -60,6 +100,7 @@ def main() -> None:
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
     openai_client = client.get_openai_client()
 
+    wait_for_project(client)
     vector_store = get_or_create_vector_store(openai_client)
 
     try:

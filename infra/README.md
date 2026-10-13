@@ -6,7 +6,7 @@ Everything we need in Azure, in one command:
 bash infra/deploy.sh
 ```
 
-The script asks for a subscription, region, resource group and chat models. It then deploys with Bicep, writes `.env` and creates the v0 TrailMate agent.
+The script asks for a subscription, region and chat models. It names a fresh resource group `rg-lab663-NNNN` every run, deploys with Bicep, writes `.env` and creates the v0 TrailMate agent.
 
 ## What we get
 
@@ -31,6 +31,7 @@ The script asks for a subscription, region, resource group and chat models. It t
 ## Good to know
 
 - We need permission to create role assignments (Owner or User Access Administrator) on the resource group.
-- To skip the questions, set `AZURE_SUBSCRIPTION_ID`, `AZURE_LOCATION`, `AZURE_RESOURCE_GROUP` or `LAB663_CHAT_MODELS` first, or pass `--yes` to accept the defaults.
+- To skip the questions, set `AZURE_SUBSCRIPTION_ID`, `AZURE_LOCATION` or `LAB663_CHAT_MODELS` first, or pass `--yes` to accept the defaults.
+- To remove everything, run `bash infra/cleanup.sh`. It deletes only the resource group named in `.env`, after we type its name to confirm. Add `--purge` to also purge the deleted Foundry resource. Local files are left alone.
 - To deploy the infrastructure without the agent, pass `--skip-agent`.
 - `.env` holds our project details. It stays on our machine and is never committed.

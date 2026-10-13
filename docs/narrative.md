@@ -4,9 +4,13 @@ The story we tell, in one place. We use it to keep the lab, the slides and the t
 
 > This is a living file. We add to it whenever we find a better way to explain something.
 
+<br/>
+
 ## The one-line story
 
 We climb the hill together: build an agent, measure it, then improve it one lever at a time, and keep a step only when the evidence says it helped.
+
+<br/>
 
 ## The loop
 
@@ -29,6 +33,8 @@ flowchart LR
 | **Agent optimizer** | How do we climb on quality? | We hand-tune prompts and hope |
 | **Model router** | How do we climb on cost? | We overpay for one big model, or under-deliver on a small one |
 
+<br/>
+
 ## Six ways to lose a customer's trust
 
 The spine of the data. Each one is a failure we can see, name and fix.
@@ -42,11 +48,15 @@ The spine of the data. Each one is a failure we can see, name and fix.
 | 5 | **Out of lane**: answers off-topic requests | A hot chocolate recipe | Optimizer (v2) |
 | 6 | **Not useful**: weak comparisons and recommendations | Which tent for six people? | Model choice (router, v3) |
 
+<br/>
+
 ## The picture that tells the story
 
 A **heatmap**: rows are the six ways, columns are v0 to v3. Cells start dark and light up as we climb. One slide, the whole talk.
 
 Every case is also tagged easy, medium or hard. The router story needs it: easy lookups can go to small models, hard comparisons to strong ones.
+
+<br/>
 
 ## The versions
 
@@ -58,6 +68,8 @@ Every case is also tagged easy, medium or hard. The router story needs it: easy 
 | **v3** | Same instructions, a right-sized model from the router | Cost |
 
 One lever at a time, so we always know what moved the score.
+
+<br/>
 
 ## The modules: a question and an aha each
 
@@ -73,6 +85,8 @@ Every notebook starts with a question a developer would ask, and ends with the m
 | **5 · Make it better** | How do I know it got better, not just different? | The gain we can trust is the one on questions the optimizer never saw |
 | **6 · Make it optimal** | Can I cut my model bill without losing quality? | Savings and risk live in different places: easy and hard questions |
 
+<br/>
+
 ## Teaching beats
 
 Each module ends with something we built, broke, fixed and can explain.
@@ -83,6 +97,8 @@ Each module ends with something we built, broke, fixed and can explain.
 | 5 · Make it better | A rubric from the traces | An optimizer can win by being timid | Guard cases catch the over-cautious candidate |
 | 6 · Make it optimal | A router-backed agent | The cheap edition slips on hard questions | The same rubric tells us which edition to keep |
 
+<br/>
+
 ## Rules we keep, so the climb is believable
 
 - **One scoreboard.** The rubric is fixed once we build it, and every version is scored with it.
@@ -90,6 +106,8 @@ Each module ends with something we built, broke, fixed and can explain.
 - **Never shrink the tests to recover a score.** A drop on a harder set means coverage improved.
 - **Evidence before opinion.** We look at the trace, the eval or the insight first.
 - **Every claim gets a number.** Never an invented one. If we haven't measured it, we say so.
+
+<br/>
 
 ## Talk track ideas
 
@@ -99,6 +117,8 @@ Lines we like. Add more as we find them.
 - "Insights show us the slope. The rubric tells us how high we are. The optimizer and the router are our two ways to climb."
 - "A step only counts if the same ruler says it does."
 - "Which model is best?" is the wrong question. Ask which of your questions need the big one.
+
+<br/>
 
 ## Open questions for the story
 

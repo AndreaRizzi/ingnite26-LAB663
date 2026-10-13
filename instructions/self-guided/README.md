@@ -18,7 +18,7 @@ We need:
 bash infra/deploy.sh
 ```
 
-It asks for a subscription, region, resource group and chat models, then builds our Foundry project, six model deployments (two chat models and four router editions), tracing, access, a `.env` file and our first agent, **v0**. Details are in [infra/README.md](../../infra/README.md).
+It asks for a subscription, region and chat models, then builds our Foundry project in a fresh `rg-lab663-NNNN` resource group, six model deployments (two chat models and four router editions), tracing, access, a `.env` file and our first agent, **v0**. Details are in [infra/README.md](../../infra/README.md).
 
 **Expected:** it ends with `TrailMate v0 is ready.`
 
@@ -55,10 +55,10 @@ So we know where to look first:
 ## Step 3: Clean up
 
 ```bash
-az group delete --name rg-lab663
+bash infra/cleanup.sh
 ```
 
-Use the resource group name we chose in step 1. Our local `.env` and `.lab-state.json` stay behind. It's safe to delete them.
+It finds our resource group in `.env`, lists what's inside, and asks us to type the group's name to confirm. Then it deletes that one resource group and nothing else. Our local `.env` and `.lab-state.json` stay, and it's safe to delete them. Add `--purge` if we want the deleted Foundry resource purged too.
 
 ## What to tell us
 

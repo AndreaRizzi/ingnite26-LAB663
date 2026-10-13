@@ -69,13 +69,13 @@ def manual_text(number: int) -> str:
     return (DATA / "manuals" / f"product_info_{number}.md").read_text(encoding="utf-8")
 
 
-def ask_agent(openai_client, question: str, agent_name: str = AGENT_NAME, agent_version=None):
+def ask_agent(openai_client, question: str, agent_name: str = AGENT_NAME, agent_version=None, model: str = FRONTIER_MODEL):
     """Ask a registered agent a question. Every call leaves a trace we can look at later."""
     reference = {"name": agent_name, "type": "agent_reference"}
     if agent_version is not None:
         reference["version"] = str(agent_version)
     return openai_client.responses.create(
-        model=FRONTIER_MODEL,
+        model=model,  # must match the agent's own model, for example a router edition
         input=question,
         extra_body={"agent_reference": reference},
     )
@@ -123,15 +123,32 @@ def wait_for_runs(openai_client, eval_id, runs, poll_seconds: int = 5):
 
 
 def item_scores(openai_client, eval_id, run) -> dict[str, float]:
-    """Map each question to its rubric score (1 to 5) for one run."""
+    """Map each question to its rubric score (0 to 1) for one run."""
     scores = {}
     for item in openai_client.evals.runs.output_items.list(run_id=run.id, eval_id=eval_id):
         query = _get(_get(item, "datasource_item", {}) or {}, "query")
         for result in _get(item, "results", []) or []:
-            # Custom evaluators report the number in one entry and the reason in another.
-            if _get(result, "metric") == "custom_score" and _get(result, "score") is not None:
+            # The rubric reports one weighted score per answer, plus per-dimension detail in `properties`.
+            if _get(result, "type") == "azure_ai_evaluator" and _get(result, "score") is not None:
                 scores[query] = float(_get(result, "score"))
     return scores
+
+
+def agent_usage(runs) -> tuple[int, list[str]]:
+    """Tokens the agent itself used per run, and the models that served it (not the judge)."""
+    tokens, models = [], set()
+    for run in runs:
+        rows = {}
+        for u in run.per_model_usage or []:
+            rows.setdefault(_get(u, "model_name") or _get(u, "run_model_name", "?"), u)
+        # Two rows are totals, not models: the agent's side and the judge's side.
+        agent, judge = rows.pop("azure_ai_agent_target", None), rows.pop("azure_ai_evaluation", None)
+        tokens.append(_get(agent, "total_tokens", 0) or 0)
+        judge_key = (_get(judge, "invocation_count"), _get(judge, "total_tokens")) if judge else None
+        for name, u in rows.items():
+            if (_get(u, "invocation_count"), _get(u, "total_tokens")) != judge_key:  # skip the judge's own row
+                models.add(name)
+    return sum(tokens) // max(len(tokens), 1), sorted(models) or ["?"]
 
 
 def run_repeated_eval(openai_client, eval_id, dataset_id, agent_name, agent_version, label, repeats: int = 2):
@@ -152,15 +169,15 @@ def run_repeated_eval(openai_client, eval_id, dataset_id, agent_name, agent_vers
             per_item.setdefault(query, []).append(score)
     per_item = {query: sum(v) / len(v) for query, v in per_item.items()}
 
-    usage = [u for run in runs for u in (run.per_model_usage or [])]
+    tokens, models = agent_usage(runs)
     return {
         "label": label,
         "agent_version": agent_version,
         "repeat_means": repeat_means,
         "score": round(sum(repeat_means) / len(repeat_means), 2) if repeat_means else None,
         "spread": round(max(repeat_means) - min(repeat_means), 2) if len(repeat_means) > 1 else None,
-        "tokens": sum(_get(u, "total_tokens", 0) or 0 for u in usage) // max(len(runs), 1),
-        "models": sorted({_get(u, "run_model_name", "?") for u in usage}) or ["?"],
+        "tokens": tokens,
+        "models": models,
         "seconds": seconds,
         "errored": sum((_get(run.result_counts, "errored", 0) or 0) for run in runs),
         "per_item": per_item,

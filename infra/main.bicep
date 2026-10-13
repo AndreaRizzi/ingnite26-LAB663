@@ -26,7 +26,7 @@ param principalType string = 'User'
 param skuName string = 'GlobalStandard'
 
 @description('Capacity for each deployment, in thousands of tokens per minute')
-param capacity int = 50
+param capacity int = 250
 
 @description('Chat models to deploy, named after the model')
 param chatModels chatModel[] = [

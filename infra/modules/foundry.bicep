@@ -72,7 +72,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2026-09-01' = {
   }
 }
 
-// Deployments on one account must be created one at a time.
+// The account accepts one change at a time: project first, then chat models, then routers, then the connection.
 @batchSize(1)
 resource chatDeployments 'Microsoft.CognitiveServices/accounts/deployments@2026-09-01' = [
   for m in chatModels: {
@@ -89,6 +89,9 @@ resource chatDeployments 'Microsoft.CognitiveServices/accounts/deployments@2026-
         version: m.version
       }
     }
+    dependsOn: [
+      project
+    ]
   }
 ]
 
@@ -144,6 +147,9 @@ resource appInsightsConnection 'Microsoft.CognitiveServices/accounts/projects/co
       ResourceId: applicationInsightsId
     }
   }
+  dependsOn: [
+    routerDeployments
+  ]
 }
 
 output accountName string = account.name
