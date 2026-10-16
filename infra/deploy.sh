@@ -53,7 +53,17 @@ ask() {
 }
 
 command -v az >/dev/null || { echo "We need the Azure CLI (az). The dev container has it."; exit 1; }
-command -v python3 >/dev/null || { echo "We need python3. The dev container has it."; exit 1; }
+PYTHON="$REPO_ROOT/.venv/bin/python"
+if [[ ! -x "$PYTHON" && -x "$REPO_ROOT/.venv/Scripts/python.exe" ]]; then
+  PYTHON="$REPO_ROOT/.venv/Scripts/python.exe"
+fi
+[[ -x "$PYTHON" ]] || { echo "The repository .venv is missing. Prepare it from requirements.txt before deploying."; exit 1; }
+
+if $SKIP_AGENT; then
+  echo "Infrastructure-only rehearsal: Python package and agent checks are skipped; this is not learner-ready."
+else
+  "$PYTHON" "$REPO_ROOT/src/check_environment.py"
+fi
 
 # --- 1. Sign in ---
 step "Checking our Azure sign-in"
@@ -92,7 +102,7 @@ CHAT_MODELS="${LAB663_CHAT_MODELS:-$(ask "Chat models to deploy (name@version, c
 CAPACITY="${LAB663_CAPACITY:-$DEFAULT_CAPACITY}"
 
 # Turn "name@version,name@version" into the JSON array the template wants.
-CHAT_MODELS_JSON="$(CHAT_MODELS="$CHAT_MODELS" python3 - <<'PY'
+CHAT_MODELS_JSON="$(CHAT_MODELS="$CHAT_MODELS" "$PYTHON" - <<'PY'
 import json, os, sys
 items = []
 for part in os.environ["CHAT_MODELS"].split(","):
@@ -100,9 +110,13 @@ for part in os.environ["CHAT_MODELS"].split(","):
     if not name or not version:
         sys.exit(f"'{part}' should look like name@version")
     items.append({"name": name, "version": version})
+if len(items) != 2 or len({item["name"] for item in items}) != 2:
+    sys.exit("This lab needs exactly two distinct chat models: frontier first, smaller model second.")
 print(json.dumps(items))
 PY
 )"
+read -r FRONTIER_MODEL SMALL_MODEL < <(CHAT_MODELS_JSON="$CHAT_MODELS_JSON" "$PYTHON" -c \
+  'import json, os; print(*(m["name"] for m in json.loads(os.environ["CHAT_MODELS_JSON"])))')
 
 # --- 4. Check the models exist in this region ---
 step "Checking the models are available in $LOCATION"
@@ -111,7 +125,7 @@ CATALOG_FILE="$(mktemp)"
 trap 'rm -f "$CATALOG_FILE"' EXIT
 az cognitiveservices model list --location "$LOCATION" \
   --query "[].{name:model.name, version:model.version}" -o json > "$CATALOG_FILE"
-MISSING="$(CATALOG_FILE="$CATALOG_FILE" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" python3 - <<'PY'
+MISSING="$(CATALOG_FILE="$CATALOG_FILE" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" "$PYTHON" - <<'PY'
 import json, os
 with open(os.environ["CATALOG_FILE"], encoding="utf-8") as f:
     catalog = {(m["name"], m["version"]) for m in json.load(f)}
@@ -186,27 +200,29 @@ cat > "$ENV_FILE" <<EOF
 # Written by infra/deploy.sh. It stays on our machine and is never committed.
 FOUNDRY_PROJECT_ENDPOINT=$PROJECT_ENDPOINT
 TRAILMATE_AGENT_NAME=trailmate
-TRAILMATE_MODEL_DEPLOYMENT=gpt-5.4
+TRAILMATE_MODEL_DEPLOYMENT=$FRONTIER_MODEL
+TRAILMATE_SMALL_MODEL_DEPLOYMENT=$SMALL_MODEL
 APPLICATIONINSIGHTS_CONNECTION_STRING=$APPI_CONNECTION_STRING
 AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
 AZURE_RESOURCE_GROUP=$RESOURCE_GROUP
 AZURE_AI_ACCOUNT_NAME=$ACCOUNT_NAME
 AZURE_AI_PROJECT_NAME=$PROJECT_NAME
 AZURE_LOCATION=$LOCATION
+LAB663_DELIVERY_MODE=self-guided
 EOF
 echo "Done. Project endpoint: $PROJECT_ENDPOINT"
 
 # --- 8. Create the v0 agent ---
 if $SKIP_AGENT; then
   echo
-  echo "Skipped the agent. When we're ready:  python3 src/agent/01_build_agent.py"
+  echo "Skipped the agent. When we're ready:  \"$PYTHON\" \"$REPO_ROOT/src/agent/01_build_agent.py\""
   exit 0
 fi
 
 step "Creating the v0 TrailMate agent"
 # The agent script waits for a new project to become reachable. We retry once in case something else hiccups.
 for attempt in 1 2; do
-  if python3 "$REPO_ROOT/src/agent/01_build_agent.py"; then
+  if "$PYTHON" "$REPO_ROOT/src/agent/01_build_agent.py"; then
     echo
     echo "All set. Next, open labs/core/ and start with the first notebook."
     exit 0
@@ -218,5 +234,5 @@ for attempt in 1 2; do
 done
 
 echo "The agent step didn't finish. Our infrastructure is fine. Run this when ready:"
-echo "  python3 src/agent/01_build_agent.py"
+echo "  \"$PYTHON\" \"$REPO_ROOT/src/agent/01_build_agent.py\""
 exit 1

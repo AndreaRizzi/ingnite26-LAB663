@@ -38,7 +38,7 @@ Fill in the sections below yourself, then:
 
 ### Session description
 
-As organizations scale AI, choosing a single model for every workload can lead to unnecessary costs and missed opportunities. In this lab, explore how model router in Foundry Models and agent optimizer can helps organizations balance quality, performance, and cost across diverse use cases. We will break down popular design patterns that developers can use to optimize and scale agentic applications.
+As organizations scale AI, choosing a single model for every workload can lead to unnecessary costs and missed opportunities. In this lab, explore how model router in Foundry Models and agent optimizer can help organizations balance quality, performance, and cost across diverse use cases. We will break down popular design patterns that developers can use to optimize and scale agentic applications.
 
 
 <br/>
@@ -47,7 +47,7 @@ As organizations scale AI, choosing a single model for every workload can lead t
 
 #### In a guided session
 
-We're finishing the guided (Skillable) version next. Until then, the self-guided path below works end to end.
+Follow the [guided Skillable walkthrough](instructions/skillable/README.md). The environment is pre-provisioned; learners do not deploy or delete Azure resources. Lab operators use the [Skillable lifecycle instructions](skillable_lifecycles/README.md) and must rehearse on the actual Skillable image and subscription before delivery.
 
 #### On your own
 
@@ -57,7 +57,9 @@ If you're learning at your own pace:
 2. Run `bash infra/deploy.sh` from the repo root. It builds everything we need in our own Azure subscription and creates our first agent.
 3. Follow the [self-guided walkthrough](instructions/self-guided/README.md). It takes us through the notebooks in [`labs/core/`](labs/core/), starting at `00-set-the-stage.ipynb`.
 
-The core lab runs in about 60 minutes: 20 to set the stage and 40 for the climb. Deploying happens before the clock starts.
+The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deployment, VM preparation and the introductory reading happen before the clock starts. Service waits still need a timed rehearsal; additional model experiments and router editions are optional. While jobs run, try the [local wait-time challenges](labs/bonus/wait-time-challenges.ipynb) without spending more model quota.
+
+This is a code-first lab for beginner and intermediate participants. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
 
 <br/>
 ### 🎯 Learning outcomes

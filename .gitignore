@@ -433,3 +433,8 @@ FodyWeavers.xsd
 
 # Lab state saved between notebooks
 .lab-state.json
+.lab-state.json.tmp
+.lab-results/
+.lab-lifecycle/
+.venv/
+.ipynb_checkpoints/

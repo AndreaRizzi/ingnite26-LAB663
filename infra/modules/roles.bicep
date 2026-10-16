@@ -20,6 +20,8 @@ param principalType string = 'User'
 @description('Object ID of the project managed identity')
 param projectPrincipalId string
 
+param bootstrapPrincipalId string = ''
+
 // Built-in role definition IDs. We use IDs so the roles survive renames.
 var foundryUserRoleId = '53ca6127-db72-4b80-b1b0-d745d6d5456d'
 var monitoringMetricsPublisherRoleId = '3913510d-42f4-4e42-8a64-420c390055eb'
@@ -41,6 +43,16 @@ resource learnerFoundryUser 'Microsoft.Authorization/roleAssignments@2022-04-01'
   properties: {
     principalId: principalId
     principalType: principalType
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', foundryUserRoleId)
+  }
+}
+
+resource bootstrapFoundryUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(bootstrapPrincipalId) && bootstrapPrincipalId != principalId) {
+  name: guid(account.id, bootstrapPrincipalId, foundryUserRoleId)
+  scope: account
+  properties: {
+    principalId: bootstrapPrincipalId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', foundryUserRoleId)
   }
 }
