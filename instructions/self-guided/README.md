@@ -27,7 +27,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe .\src\check_environment.py --register-kernel
 ```
 
-**Expected:** the environment check passes and **Python (LAB663)** is registered. A failed check stops kernel registration; no Azure resources are created. If VS Code already selected a system interpreter, use **Python: Select Interpreter** to choose `.venv` and select **Python (LAB663)** in the notebook; changing the workspace default does not replace an existing selection.
+**Expected:** the environment check passes and **Python (LAB663)** is registered. A failed check stops kernel registration; no Azure resources are created. If VS Code already selected a system interpreter, use **Python: Select Interpreter** to choose `.venv`, and pick `.venv` in the notebook's kernel picker too; changing the workspace default does not replace an existing selection.
 
 ## Step 1: Deploy (this happens before the clock starts)
 
@@ -45,7 +45,15 @@ It asks for a subscription, region and chat models, then builds our Foundry proj
 
 ## Step 2: Work through the notebooks
 
-Open each notebook in [`labs/core/`](../../labs/core/), pick the **Python (LAB663)** kernel, and run one cell at a time with **Shift+Enter**. Keep the **Outline** view open: the numbered sections tell the story.
+Open each notebook in [`labs/core/`](../../labs/core/). Choose **Select Kernel** in the top-right corner and pick the starred **.venv** entry marked **Recommended**. This is the lab's prepared environment.
+
+![Select a Python Environment list with .venv marked Recommended](../screenshots/01-sg-select-kernel.png)
+
+**Expected:** the top-right corner shows **.venv (Python 3.13.x)**.
+
+![Notebook toolbar showing .venv (Python 3.13.16) as the kernel](../screenshots/02-sg-notebook-ready.png)
+
+Run one cell at a time with **Shift+Enter**. Keep the **Outline** view open: the numbered sections tell the story.
 
 | Notebook | The question it starts with | Time | The aha |
 |---|---|---|---|
