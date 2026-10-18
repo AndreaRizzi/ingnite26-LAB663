@@ -15,6 +15,12 @@ We need:
 
 Basic Python is helpful; previous agent or evaluation experience is not required. The required workflow stays in code. Portal views are optional.
 
+### If container setup reports missing Bicep
+
+The container configuration enables Bicep installation alongside Azure CLI. If setup stops with `az bicep is not available`, rebuild the container using **Codespaces: Rebuild Container** in a Codespace or **Dev Containers: Rebuild Container** locally.
+
+**Expected:** container setup reports a Bicep version and finishes successfully.
+
 ### Use the repository Python environment
 
 The dev-container preparation action creates the root `.venv`, installs `requirements.txt` there, checks SDK capabilities and table rendering, and registers **Python (LAB663)**. Deployment uses that interpreter instead of whichever `python` happens to be on the terminal path.
