@@ -53,11 +53,11 @@ It asks for a subscription, region and chat models, then builds our Foundry proj
 
 Open each notebook in [`labs/core/`](../../labs/core/). Choose **Select Kernel** in the top-right corner and pick the starred **.venv** entry marked **Recommended**. This is the lab's prepared environment.
 
-![Select a Python Environment list with .venv marked Recommended](../screenshots/01-sg-select-kernel.png)
+![Select a Python Environment list with .venv marked Recommended](screenshots/01-sg-select-kernel.png)
 
 **Expected:** the top-right corner shows **.venv (Python 3.13.x)**.
 
-![Notebook toolbar showing .venv (Python 3.13.16) as the kernel](../screenshots/02-sg-notebook-ready.png)
+![Notebook toolbar showing .venv (Python 3.13.16) as the kernel](screenshots/02-sg-notebook-ready.png)
 
 Run one cell at a time with **Shift+Enter**. Keep the **Outline** view open: the numbered sections tell the story.
 
