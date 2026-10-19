@@ -17,6 +17,7 @@ $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 if ($manifest.labInstanceId -cne $LabInstanceId -or $manifest.schemaVersion -ne 1) { throw 'The lifecycle manifest does not match this request.' }
 $scope = "/subscriptions/$($manifest.subscriptionId)/resourceGroups/$($manifest.resourceGroup)"
 $ownedIds = @()
+$deletionDeclined = $false
 $managedIdPattern = '^' + [regex]::Escape($scope) +
     '/providers/(Microsoft\.CognitiveServices/accounts|Microsoft\.Insights/components|Microsoft\.OperationalInsights/workspaces)/[^/]+$'
 foreach ($id in $manifest.managedResourceIds) {
@@ -26,8 +27,8 @@ foreach ($id in $manifest.managedResourceIds) {
 }
 
 function Get-DeletedLabAccount {
-    $deleted = @(Invoke-LabAz @('cognitiveservices', 'account', 'list-deleted',
-        '--subscription', $manifest.subscriptionId, '--output', 'json') | ConvertFrom-Json)
+    $deleted = @((Invoke-LabAz @('cognitiveservices', 'account', 'list-deleted',
+        '--subscription', $manifest.subscriptionId, '--output', 'json') | ConvertFrom-Json))
     $groupSegment = '/resourceGroups/' + [regex]::Escape($manifest.resourceGroup) + '/'
     return @($deleted | Where-Object {
         $_.name -eq $manifest.accountName -and $_.location -eq $manifest.location -and $_.id -match $groupSegment
@@ -40,8 +41,8 @@ try {
     $exists = (Invoke-LabAz @('group', 'exists', '--name', $manifest.resourceGroup,
         '--subscription', $manifest.subscriptionId, '--output', 'tsv')) -eq 'true'
     if ($exists) {
-        $resources = @(Invoke-LabAz @('resource', 'list', '--resource-group', $manifest.resourceGroup,
-            '--subscription', $manifest.subscriptionId, '--output', 'json') | ConvertFrom-Json)
+        $resources = @((Invoke-LabAz @('resource', 'list', '--resource-group', $manifest.resourceGroup,
+            '--subscription', $manifest.subscriptionId, '--output', 'json') | ConvertFrom-Json))
         $owned = @($resources | Where-Object {
             $_.PSObject.Properties['tags'] -and $_.tags -and
             $_.tags.PSObject.Properties['lab663Instance'] -and $_.tags.lab663Instance -eq $LabInstanceId
@@ -89,22 +90,31 @@ try {
             $unexpected = @($resources | Where-Object { $_.id -notin $ownedIds -and $_.id -notin $generatedAlertIds })
             if ($unexpected.Count) { throw 'The group now contains resources outside this lab. Refusing group deletion.' }
             if ($PSCmdlet.ShouldProcess($scope, 'Delete the lifecycle-owned lab resource group')) {
+                $manifest.phase = 'deleting'
+                Write-LabJson $manifestPath $manifest
                 Invoke-LabAz @('group', 'delete', '--name', $manifest.resourceGroup,
                     '--subscription', $manifest.subscriptionId, '--yes') | Out-Null
             }
+            else { $deletionDeclined = $true }
         }
         else {
             foreach ($id in $generatedAlertIds) {
                 if ($PSCmdlet.ShouldProcess($id, 'Delete the generated alert for this lab Application Insights resource')) {
+                    $manifest.phase = 'deleting'
+                    Write-LabJson $manifestPath $manifest
                     Invoke-LabAz @('resource', 'delete', '--ids', $id, '--subscription', $manifest.subscriptionId) | Out-Null
                 }
+                else { $deletionDeclined = $true }
             }
             foreach ($type in @('Microsoft.CognitiveServices/accounts/projects', 'Microsoft.CognitiveServices/accounts',
                 'Microsoft.Insights/components', 'Microsoft.OperationalInsights/workspaces')) {
                 foreach ($resource in $owned | Where-Object { $_.type -eq $type }) {
                     if ($PSCmdlet.ShouldProcess($resource.id, 'Delete this tagged lab resource')) {
+                        $manifest.phase = 'deleting'
+                        Write-LabJson $manifestPath $manifest
                         Invoke-LabAz @('resource', 'delete', '--ids', $resource.id, '--subscription', $manifest.subscriptionId) | Out-Null
                     }
+                    else { $deletionDeclined = $true }
                 }
             }
         }
@@ -116,11 +126,12 @@ try {
         }
         return
     }
+    if ($deletionDeclined) { throw 'At least one deletion was not confirmed. Teardown is incomplete; retain the manifest and retry.' }
     $stillExists = (Invoke-LabAz @('group', 'exists', '--name', $manifest.resourceGroup,
         '--subscription', $manifest.subscriptionId, '--output', 'tsv')) -eq 'true'
     if ($stillExists) {
-        $remaining = @(Invoke-LabAz @('resource', 'list', '--resource-group', $manifest.resourceGroup,
-            '--subscription', $manifest.subscriptionId, '--output', 'json') | ConvertFrom-Json)
+        $remaining = @((Invoke-LabAz @('resource', 'list', '--resource-group', $manifest.resourceGroup,
+            '--subscription', $manifest.subscriptionId, '--output', 'json') | ConvertFrom-Json))
         if ($remaining | Where-Object { $_.id -in $manifest.managedResourceIds -or $_.id -in $ownedIds }) {
             throw 'Some lab resources still exist. Teardown is not complete.'
         }

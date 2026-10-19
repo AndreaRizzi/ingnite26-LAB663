@@ -8,12 +8,17 @@ This is the full pass through the lab. We deploy once, then work through seven n
 
 We need:
 
+- A GitHub account with active Copilot access, signed into the Copilot experience in our editor.
 - An Azure subscription where we can create resources and role assignments (Owner, or Contributor plus User Access Administrator).
 - Quota for `gpt-5.4`, `gpt-5.4-mini` and the model router in the region we pick.
 - This repo open in the dev container or a Codespace. It brings Python, the Azure CLI and Bicep.
 - The repository's Python requirements, including `azure-ai-projects>=2.8.0`, and access to the preview rubric, insights and optimizer APIs. Notebook 01 stops if the SDK is too old.
 
 Basic Python is helpful; previous agent or evaluation experience is not required. The required workflow stays in code. Portal views are optional.
+
+Open Copilot Chat and ask it to explain a Python list comprehension before starting the timed lab.
+
+**Expected:** Copilot answers without a missing-license or access-denied message. Our GitHub/Copilot sign-in and Azure sign-in are separate; a working Azure deployment does not verify Copilot access.
 
 ### If container setup reports missing Bicep
 

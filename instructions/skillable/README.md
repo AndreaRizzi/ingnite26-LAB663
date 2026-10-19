@@ -1,12 +1,16 @@
 # Guided Skillable walkthrough
 
-Our environment is prepared before the session: a Foundry project, two chat models, four router editions, tracing and the starting TrailMate agent. We use the same code-first notebooks as the self-guided lab, but **we do not deploy or delete infrastructure ourselves**.
+Our environment is prepared before the session: GitHub Copilot access, a Foundry project, two chat models, four router editions, tracing and the starting TrailMate agent. We use the same code-first notebooks as the self-guided lab, but **we do not deploy or delete infrastructure ourselves**.
 
 Basic Python is helpful; previous agent or evaluation experience is not required. Run one cell at a time, read the expected result, and keep the notebook outline open. Business decision makers can concentrate on the customer failure, the evidence and the promotion decision; developers and AI engineers can inspect the SDK calls and saved results.
 
 ## Step 1: Sign in and check our environment
 
-Open the prepared LAB663 folder in VS Code. In the VM terminal, sign in with the **assigned Skillable learner account**, not a personal account or the lifecycle service principal:
+Open the prepared LAB663 folder in VS Code and sign into GitHub using the **assigned enterprise learner identity**, not a personal account. Open Copilot Chat and ask it to explain a Python list comprehension.
+
+**Expected:** Copilot answers under the assigned GitHub account without a missing-license or access-denied message. If it does not, ask the facilitator to check the GitHub/Copilot lifecycle; do not switch to a personal subscription. Azure sign-in below is a separate check.
+
+In the VM terminal, sign in to Azure with the **assigned Skillable learner account**, not a personal account or the lifecycle service principal:
 
 ```powershell
 az login --tenant '<tenant ID supplied by the lab>' --use-device-code
