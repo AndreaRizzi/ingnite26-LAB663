@@ -6,6 +6,10 @@ Basic Python is helpful; previous agent or evaluation experience is not required
 
 ## Step 1: Sign in and check our environment
 
+Let's start with `LAB663-03-environment-status.txt` on the VM desktop. Skillable writes it while it prepares our environment, so it tells us whether everything finished.
+
+**Expected:** the file says `Result: SUCCEEDED` and names our Foundry account and project. If it says `RUNNING`, preparation is still going: wait a few minutes and reopen it. If it says `FAILED`, don't start the lab. Tell the facilitator and share the `Stage` and `Error` lines.
+
 Open the prepared LAB663 folder in VS Code and sign into GitHub using the **assigned enterprise learner identity**, not a personal account. Open Copilot Chat and ask it to explain a Python list comprehension.
 
 **Expected:** Copilot answers under the assigned GitHub account without a missing-license or access-denied message. If it does not, ask the facilitator to check the GitHub/Copilot lifecycle; do not switch to a personal subscription. Azure sign-in below is a separate check.
@@ -20,6 +24,10 @@ az account show --query "{subscription:name, tenant:tenantId, user:user.name}"
 Select the subscription supplied by the lab if the displayed one differs. Never paste a password, client secret or access token into a notebook.
 
 **Expected:** the assigned learner identity and subscription are shown, and a local `.env` already exists in the repository root. If not, ask the facilitator to repair the lifecycle. Do not run `infra/deploy.sh`.
+
+If we open the [Foundry portal](https://ai.azure.com) during the lab, let's use the `trailmate` project named in the status file. Creating a new project doesn't help: it has none of our models, router editions or starting agent.
+
+**Expected:** the `trailmate` project opens without a permission message. If it says we don't have permission to build agents, wait a few minutes and refresh, because new role assignments can take up to 10 minutes. If the message stays, tell the facilitator.
 
 Open [01 · Set up and validate](../../labs/core/01-setup-and-validate.ipynb), select **Python (LAB663)**, and run its checks.
 

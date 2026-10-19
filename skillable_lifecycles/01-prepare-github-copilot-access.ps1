@@ -1,6 +1,7 @@
 # Post-Build: Execute Script in Cloud Platform; PowerShell; blocking.
 # Paste this complete file into the matching Skillable cloud-platform action.
 $ErrorActionPreference = 'Stop'
+$statusResult = 'FAILED'
 try {
     & {
         [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
@@ -122,7 +123,15 @@ try {
         -JobId '@lab.Variable(Lab663GitHubSyncJobId)' `
         -RuleId '@lab.Variable(Lab663GitHubSyncRuleId)' `
         -Confirm:$false
+    $statusResult = 'SUCCEEDED'
 }
 finally {
     Remove-Item Env:\LAB663_DIRECTORY_CLIENT_ID, Env:\LAB663_DIRECTORY_CLIENT_SECRET -ErrorAction SilentlyContinue
+    # Action 3 shows this result on the VM. Recording it never replaces this action's own error.
+    try {
+        Set-LabVariable -Name 'Lab663CopilotAccessStatus' -Value ('{0} at {1}' -f $statusResult, [DateTime]::UtcNow.ToString('u'))
+    }
+    catch {
+        Write-Warning 'Lab663CopilotAccessStatus was not recorded. Check action 1 on the lab instance details page.'
+    }
 }

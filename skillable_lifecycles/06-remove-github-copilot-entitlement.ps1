@@ -1,4 +1,4 @@
-# Tearing Down: Execute Script in Cloud Platform; PowerShell; blocking.
+# Tearing Down: Execute Script in Cloud Platform; PowerShell; blocking. Add it after action 5.
 # Paste this complete file into the matching Skillable cloud-platform action.
 $ErrorActionPreference = 'Stop'
 try {
