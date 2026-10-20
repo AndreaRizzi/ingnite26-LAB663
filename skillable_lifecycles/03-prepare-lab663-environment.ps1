@@ -90,7 +90,22 @@ try {
     if (-not $env:LAB663_CLIENT_ID -or $env:LAB663_CLIENT_ID.StartsWith($tokenPrefix)) { $missing += 'AppId' }
     if (-not $clientSecret -or $clientSecret.StartsWith($tokenPrefix)) { $missing += 'AppSecret' }
     if ($missing.Count) {
-        throw "Skillable did not supply these values: $(($missing | Sort-Object) -join ', '). Check the profile's credential and resource group aliases and custom variables."
+        $message = "Skillable did not supply these values: $(($missing | Sort-Object) -join ', ')."
+        if ($missing -contains 'LearnerObjectId') { $message += ' Action 1 must publish Lab663LearnerObjectId.' }
+        if ($missing -contains 'BootstrapObjectId') { $message += ' Action 2 must publish Lab663BootstrapObjectId.' }
+        throw "$message Check the earlier action results, profile aliases and copied script versions."
+    }
+    foreach ($name in @('TenantId', 'SubscriptionId', 'LearnerObjectId', 'BootstrapObjectId', 'AppId')) {
+        $value = if ($name -eq 'AppId') { $env:LAB663_CLIENT_ID } else { $deploymentArguments[$name] }
+        $id = [guid]::Empty
+        if (-not [guid]::TryParse([string]$value, [ref]$id) -or $id -eq [guid]::Empty) {
+            throw "$name must be a non-empty GUID. Check the profile and the identity values published by actions 1 and 2."
+        }
+    }
+    foreach ($name in $earlierResults.Keys) {
+        if (-not ([string]$earlierResults[$name]).StartsWith('SUCCEEDED at ', [StringComparison]::Ordinal)) {
+            throw "$name did not report success. Review and rerun the blocking startup actions in order before action 3; setup and deployment have not run."
+        }
     }
     $setup = Join-Path $repoRoot 'skillable_lifecycles\setup.ps1'
     $deployment = Join-Path $repoRoot 'skillable_lifecycles\deployment.ps1'

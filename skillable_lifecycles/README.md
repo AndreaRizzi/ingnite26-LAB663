@@ -50,38 +50,49 @@ The original actions ran with **Blocking = No** and **Error Action = Log**, so a
 
 Use the actual credential alias `User1`, resource group alias `ResourceGroup1` and VM name from your profile. The table uses the names in the supplied lifecycle; change every corresponding wrapper reference if your profile differs. Check available built-in tokens with the instructions editor's **@lab** picker.
 
-Create the following **non-secret** custom variables through the profile's [Variables panel](https://docs.skillable.com/docs/variables). These are names defined for this lab, not additional built-in Skillable tokens.
+Create the following **non-secret tenant settings** through the profile's [Variables panel](https://docs.skillable.com/docs/variables). These are names defined for this lab, not additional built-in Skillable tokens.
 
 | Custom variable | Value and timing |
 |---|---|
-| `Lab663LearnerObjectId` | This instance's Entra user object ID for `@lab.CloudPortalCredential(User1).Username`; supplied by identity provisioning before Post-Build, never a static ID shared across learners |
-| `Lab663BootstrapObjectId` | Service principal object ID corresponding to `@lab.CloudSubscription.AppId`; supplied for the allocated subscription before VM startup |
 | `Lab663LicenseGroupObjectId` | Object ID of the static GitHub/Copilot entitlement group configured by the tenant administrator; the supplied group name was `_Skillable Events GHE w/ Copilot` |
 | `Lab663GitHubServicePrincipalObjectId` | Object ID of the GitHub enterprise application's service principal, not its client/application ID |
 | `Lab663GitHubSyncJobId` | Existing synchronization job in that enterprise application |
 | `Lab663GitHubSyncRuleId` | Existing user-provisioning rule for that job |
 
-The identity provisioning integration must set the first two variables for the allocated identities. If it sets them using `Set-LabVariable`, do so in an earlier action/event; replacement tokens cannot consume a variable created inside the same action. A UPN is not an object ID. Do not invent a `.ObjectId` property on `CloudPortalCredential` or reuse IDs from the example tenant.
+The startup actions resolve the two instance-specific identities themselves. Do **not** enter static learner or deployment-principal IDs in the Variables panel.
 
-Actions 1 and 2 also set `Lab663CopilotAccessStatus` and `Lab663AzureRolesStatus` with `Set-LabVariable`, so action 3 can show their results on the VM. Don't supply values for these two; the actions set them.
+| Generated variable | Written by | Used by |
+|---|---|---|
+| `Lab663LearnerObjectId` | Action 1 looks up the exact `@lab.CloudPortalCredential(User1).Username` in Entra and records its user object ID before changing group membership | Actions 2, 3, 4 and 6 |
+| `Lab663BootstrapObjectId` | Action 2 authenticates as `@lab.CloudSubscription.AppId`, reads that application's own service principal and records its object ID before assigning roles | Action 3 |
+| `Lab663CopilotAccessStatus` | Action 1 records `SUCCEEDED` or `FAILED` and a UTC timestamp | Action 3 |
+| `Lab663AzureRolesStatus` | Action 2 records `SUCCEEDED` or `FAILED` and a UTC timestamp | Action 3 |
+
+Keep actions 1 and 2 **blocking and in that order**. [Skillable variables](https://docs.skillable.com/docs/variables-1) set with `Set-LabVariable` become available to later actions, not replacement tokens inside the action that sets them. Action 1 therefore uses its resolved ID directly, then publishes it for the other actions. A user principal name (UPN, the learner's sign-in name) is not an object ID. Do not invent a `.ObjectId` property on `CloudPortalCredential` or use the application/client ID as the bootstrap object ID.
 
 Supply `LAB663_DIRECTORY_CLIENT_ID` and `LAB663_DIRECTORY_CLIENT_SECRET` as process environment variables in **actions 1 and 6**, using the operator's approved protected secret-injection mechanism. Skillable does not create these variables automatically. Actions 2 and 4 use the subscription credentials instead. Keep the dedicated Entra provisioning application from the supplied lifecycle separate from the subscription deployment application. Do not put its secret in Git, `.env`, ordinary lab variables or learner credential pools. Confirm this secret binding with the Skillable administrator before testing; actions 1 and 6 fail if it is missing.
 
-The directory app needs admin-consented `GroupMember.ReadWrite.All`. For on-demand synchronization, the [Graph API reference](https://learn.microsoft.com/en-us/graph/api/synchronization-synchronizationjob-provisionondemand?view=graph-rest-1.0) lists `Application.ReadWrite.OwnedBy` for an application it owns, or `Synchronization.ReadWrite.All`. Configure the intended enterprise application's group assignment, provisioning scope and Copilot seat policy beforehand. A group name alone does not configure those services.
+The directory app needs admin-consented Microsoft Graph **application permissions**: `User.Read.All` for action 1's [learner lookup](https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0) and `GroupMember.ReadWrite.All` for membership changes. **Updating the scripts does not grant that consent**; a tenant administrator must configure it before launch. For on-demand synchronization, the [Graph API reference](https://learn.microsoft.com/en-us/graph/api/synchronization-synchronizationjob-provisionondemand?view=graph-rest-1.0) lists `Application.ReadWrite.OwnedBy` for an application it owns, or `Synchronization.ReadWrite.All`. Configure the intended enterprise application's group assignment, provisioning scope and Copilot seat policy beforehand. A group name alone does not configure those services.
 
-**Expected:** every custom variable resolves to the correct instance or tenant setting, and privileged directory credentials are available only to actions 1 and 6.
+Action 2 uses the subscription application's own credentials for its [service principal lookup](https://learn.microsoft.com/en-us/graph/api/serviceprincipal-get?view=graph-rest-1.0#permissions-for-specific-scenarios). An application can read its own service principal without application permissions. This does not require `Application.Read.All` or `Directory.Read.All` on the subscription application.
+
+**Expected:** the four tenant settings resolve correctly, actions 1 and 2 publish the allocated identity IDs, and privileged directory credentials are available only to actions 1 and 6.
 
 ## Action 1: Prepare GitHub Copilot access
 
 Paste the complete [`01-prepare-github-copilot-access.ps1`](01-prepare-github-copilot-access.ps1) file into the **Post-Build** cloud action. It is self-contained: it needs no repository checkout, helper file, Az module or Graph PowerShell SDK on the cloud host. The file already selects `Prepare`, supplies the profile replacement tokens and clears directory credentials on exit. Do not replace it with a path to a file on the VM.
 
-This single action adds and verifies direct group membership, then runs the configured Entra synchronization job. Rerunning it does not add duplicate membership. An HTTP 200 with failed or out-of-scope provisioning still throws; only `Success` or unchanged `RedundantExport` with a target identity passes. It then records `SUCCEEDED` or `FAILED` in `Lab663CopilotAccessStatus` for action 3's status file. If that can't be recorded, the action logs a warning; its own result doesn't change.
+This action first resolves the allocated learner's UPN and publishes `Lab663LearnerObjectId`. It checks that the returned UPN matches and that the object ID is valid, retries a not-yet-visible user for up to eight attempts, and explains a missing `User.Read.All` permission. Publishing the ID must succeed before any membership change, so cleanup still has the exact identity if synchronization later fails.
+
+It then adds and verifies direct group membership and runs the configured Entra synchronization job. Rerunning it does not add duplicate membership. An HTTP 200 with failed or out-of-scope provisioning still throws; only `Success` or unchanged `RedundantExport` with a target identity passes. It records `SUCCEEDED` or `FAILED` in `Lab663CopilotAccessStatus` for action 3's status file. If that status can't be recorded, the action logs a warning; its own result doesn't change.
 
 **Expected:** the learner belongs to the configured entitlement group and Entra reports a provisioned GitHub identity. Actual GitHub sign-in and a usable Copilot response remain required handover checks; there is no fixed delay that proves a seat is ready.
 
 ## Action 2: Assign the learner's Azure roles
 
 Paste the complete [`02-assign-learner-azure-roles.ps1`](02-assign-learner-azure-roles.ps1) file into a second **Post-Build** cloud action, after action 1. It replaces the profile's original Role Assignment action and uses the subscription credentials Skillable already supplies, `@lab.CloudSubscription.AppId` and `.AppSecret`. It needs no directory app, Az module or VM checkout.
+
+The action requires the learner ID published by action 1. Before changing roles, it reads its own service principal through Microsoft Graph, checks the returned client ID against the supplied application ID and publishes `Lab663BootstrapObjectId` for action 3. A lookup or variable-publication failure stops the action without assigning roles.
 
 It assigns two built-in roles to the learner at subscription scope:
 
@@ -125,7 +136,7 @@ The Skillable lifecycle service principal needs resource deployment and role-ass
 
 Preflight also needs subscription-level read access to provider registration and regional model/quota metadata. Authorize the soft-deleted-account purge operation used by teardown separately; resource-group deployment rights alone must not be assumed to include purge. Verify both against the actual lifecycle principal without broadening the learner's permissions.
 
-Supply the learner's Entra **object ID** and the lifecycle service principal's **object ID** from the lab's identity provisioning step. An application/client ID is not a service principal object ID. The scripts accept these explicitly and do not require broad directory permissions just to look them up.
+The platform must allocate the learner account before action 1. Action 1 resolves its Entra **object ID**, and action 2 resolves the lifecycle service principal's **object ID**. An application/client ID identifies the application, not its tenant-specific service principal. The VM deployment still accepts both object IDs explicitly; it never needs directory-app credentials or directory read permissions.
 
 | Input | Source |
 |---|---|
@@ -133,8 +144,8 @@ Supply the learner's Entra **object ID** and the lifecycle service principal's *
 | Resource group and region | `@lab.CloudResourceGroup(ResourceGroup1).Name`, `.Location` |
 | Lab instance ID | `@lab.LabInstance.Id` |
 | Client ID and secret | `@lab.CloudSubscription.AppId`, `.AppSecret`, injected into **process-only** variables |
-| Learner object ID | Identity provisioning for `@lab.CloudPortalCredential(User1).Username` |
-| Bootstrap object ID | Identity provisioning for the lifecycle service principal |
+| Learner object ID | `@lab.Variable(Lab663LearnerObjectId)`, published by action 1 from `@lab.CloudPortalCredential(User1).Username` |
+| Bootstrap object ID | `@lab.Variable(Lab663BootstrapObjectId)`, published by action 2 from the subscription application's own service principal |
 
 The macro names must match the resource group and credential aliases configured in the Skillable lab profile. Validate substitution in a real Skillable rehearsal; a successful local PowerShell run does not prove that mapping.
 
@@ -165,7 +176,7 @@ The allocated resource group's region must be allowed. Policies must also allow 
 
 Paste the complete [`03-prepare-lab663-environment.ps1`](03-prepare-lab663-environment.ps1) file into the **First Displayable** VM action. Change `$repoRoot` to the pinned checkout path in your image; the example is `C:\Users\LabUser\Desktop\LAB663`. The file injects the subscription credentials, runs setup followed by deployment and clears the credentials on exit.
 
-Before it starts, the action checks that Skillable replaced every value it needs and that the checkout exists. If anything is missing, it fails straight away and names the missing values. It writes `LAB663-03-environment-status.txt` to the desktop as it goes; see [Check each action's result](#check-each-actions-result).
+Before it starts, the action checks that Skillable replaced every value it needs, that the identity IDs are valid and that actions 1 and 2 reported success. Missing learner or bootstrap IDs name the action that must publish them. A failed or unreported earlier action stops setup and deployment even if the profile accidentally allows action 3 to run. The action also checks that the checkout exists and writes `LAB663-03-environment-status.txt` to the desktop as it goes; see [Check each action's result](#check-each-actions-result).
 
 Setup and deployment are deliberately in one blocking action: a failed prerequisite check stops deployment, and no ordering between separate script processes is assumed.
 
@@ -202,7 +213,7 @@ If the portal says **You don't have permission to build agents in this project**
 
 Paste the complete [`04-remove-learner-azure-roles.ps1`](04-remove-learner-azure-roles.ps1) file into the first **Tearing Down** action, a cloud-platform action that runs before action 5. It replaces the profile's original Tear Down Roles action and embeds the same role implementation as action 2.
 
-It removes this learner's Foundry User, Cognitive Services Contributor and Log Analytics Reader assignments anywhere in their subscription. That covers the subscription-scope roles from action 2 and the resource-scoped roles from `roles.bicep`. It only touches the learner whose ID it confirms, and never deletes a user, group or role definition.
+It removes this learner's Foundry User, Cognitive Services Contributor and Log Analytics Reader assignments anywhere in their subscription. That covers the subscription-scope roles from action 2 and the resource-scoped roles from `roles.bicep`. It only touches the learner whose saved ID it confirms, and never deletes a user, group or role definition. If action 1 did not publish a valid ID, cleanup fails explicitly; it never searches for a substitute learner.
 
 An assignment that's already gone counts as removed, and with nothing to remove the action succeeds without changes. It then checks that Azure no longer lists any of the three roles for the learner. It needs no VM, so it still runs if the VM is unavailable. Use it only with dedicated lab accounts, as with action 6.
 
@@ -228,7 +239,7 @@ For a separate operator rehearsal, `deployment.ps1 -UseCurrentAzureLogin -Create
 
 Add a **separate cloud-platform action** at **Tearing Down**, after action 5. It must not depend on reading the VM or on successful Azure cleanup. Configure cleanup errors to notify and log, and rehearse that Skillable still attempts this cloud action when action 4 or 5 fails or the VM is unavailable.
 
-Paste the complete [`06-remove-github-copilot-entitlement.ps1`](06-remove-github-copilot-entitlement.ps1) file into this cloud action. It embeds the implementation, selects `Cleanup`, confirms the same learner object ID and clears directory credentials on exit.
+Paste the complete [`06-remove-github-copilot-entitlement.ps1`](06-remove-github-copilot-entitlement.ps1) file into this cloud action. It embeds the implementation, selects `Cleanup`, confirms the learner object ID saved by action 1 and clears directory credentials on exit. It does not resolve the UPN again or substitute another account if the saved ID is missing.
 
 Inject the dedicated directory app credentials again; environment variables and PowerShell variables from startup do not carry over.
 
@@ -248,7 +259,7 @@ Actions 3 and 5 write a plain-text status file on the VM. Actions 1, 2, 4 and 6 
 - The file goes to the desktop of the account that runs the action. If Skillable runs the action as SYSTEM, it goes to the Public Desktop, which every user sees. To use another folder, set `$statusDirectory` at the top of the file.
 - `Result: RUNNING` is rewritten at each stage. If it still says RUNNING after the action's timeout, Skillable stopped the action before it could record a result.
 - `Result: FAILED` includes the error message with the subscription secret redacted. The full output is still on the lab instance details page.
-- "not reported" for action 1 or 2 means action 3 couldn't read that action's result variable. Check that action on the lab instance details page.
+- "not reported" for action 1 or 2 means action 3 couldn't read that action's result variable. Check that action on the lab instance details page. A PowerShell parser error happens before the script runs, so even its status-recording code cannot run.
 - Writing the file never changes an action's result. If the file can't be written, the action logs a warning and carries on.
 - Action 5's file is only visible if the VM is kept after teardown.
 - During a rehearsal, you can temporarily set actions 1 to 3 to **Notify User** instead of ending the lab, so you can read the file after a forced failure. Set them back before opening the lab.
@@ -257,11 +268,28 @@ Actions 3 and 5 write a plain-text status file on the VM. Actions 1, 2, 4 and 6 
 
 **Expected:** a facilitator can tell from the desktop whether the environment is ready, which stage failed and why, without opening the Skillable logs.
 
+### Repair an older profile with missing identity variables
+
+The earlier scripts expected another integration to populate `Lab663LearnerObjectId` and `Lab663BootstrapObjectId`, but none of the six actions did so. The current scripts resolve those IDs in actions 1 and 2; no seventh action is needed.
+
+| Error in the lab instance details | Meaning and correction |
+|---|---|
+| Action 1: `Unexpected token '.id'` beside `$details.targetIdentity .id` | The saved action has a space or line break inside the property expression. It must be `$details.targetIdentity.id`. Replace the complete saved action with the raw `.ps1` file, rather than copying formatted output. A parser failure explains why action 1's status is "not reported". |
+| Action 2: cannot convert `@lab.Variable(Lab663LearnerObjectId)` to `System.Guid` | Skillable passed an unresolved variable, not an Entra ID. The updated action 1 publishes it before action 2 starts. |
+| Action 3: missing `BootstrapObjectId, LearnerObjectId` | The earlier actions have not supplied their IDs. Repair and rerun actions 1 and 2 before retrying action 3; changing VM paths cannot fix this. |
+
+Replace the complete contents of actions **1, 2, 3, 4 and 6** with the corresponding files in this folder, and check the `User1` and `ResourceGroup1` aliases. Action 5 is unchanged. Have the administrator consent `User.Read.All` on the dedicated directory app, keep its protected credentials bound to actions 1 and 6, and retain the four tenant settings above. Keep all startup actions blocking and configured to end the lab on failure.
+
+Launch a fresh instance, or rerun the repaired startup actions in order on the same allocated identities. Check that action 1 reports the learner ID was recorded and action 2 reports the bootstrap ID was recorded before action 3 starts. Do not enter a previous learner's ID or the application/client ID to get past the error.
+
+**Expected:** both cloud startup actions succeed before VM preparation. Only `LAB663-03-environment-status.txt` is created on the desktop during startup; `.env` and state files appear inside the LAB663 checkout after deployment progresses. The cleanup status file is written only during teardown.
+
 ## Rehearse before opening the lab
 
 Run the following checks on the actual Skillable image and subscription. A development-subscription pass is useful evidence, but it does not replace them.
 
 - Confirm the pinned commit, package versions, macro substitution, directory application permissions, subscription role-assignment rights and preview feature access.
+- Confirm action 1 resolves this instance's learner, action 2 resolves its own service principal, and their published IDs reach action 3. Check missing consent, an unknown learner and variable-publication failure: the failing action must not change access, and action 3 must not deploy.
 - Confirm the profile's nine original actions are removed or disabled.
 - Exercise directory preparation and cleanup twice, a wrong learner confirmation, a synchronization failure and actual GitHub/Copilot access. Do not use a personal account.
 - Run actions 2 and 4 twice each with the subscription's policies applied. The second run must change nothing.
