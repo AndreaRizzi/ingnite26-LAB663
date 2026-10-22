@@ -270,7 +270,10 @@ def agent_usage(run, items) -> dict:
         "tokens": tokens,
         "dollars": dollars,
         "models": rows,
-        "reason": None if dollars is not None else "Verified prices for this region and every serving model are required.",
+        "reason": None if dollars is not None else (
+            "Note: dollar cost not shown, because data/pricing.json has no verified prices "
+            "for this region and model. Token counts are still recorded."
+        ),
     }
 
 
@@ -307,7 +310,7 @@ def run_repeated_eval(
         "deployment_snapshot": load_state().get("deployment_snapshot"),
         "sdk_versions": {name: version(name) for name in ("azure-ai-projects", "openai", "azure-identity")},
         "dataset_id": dataset_id, "agent_name": agent_name, "agent_version": str(agent_version),
-        "runs": [{"run": run.model_dump(mode="json"), "items": [item.model_dump(mode="json") for item in items]}
+        "runs": [{"run": run.model_dump(mode="json", warnings=False), "items": [item.model_dump(mode="json") for item in items]}
                  for run, items in zip(runs, outputs)],
     }, indent=2), encoding="utf-8")
 

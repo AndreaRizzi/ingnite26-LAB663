@@ -34,12 +34,14 @@ if ($CreateResourceGroup -and $ResourceGroup -notmatch '^rg-lab663-[a-zA-Z0-9-]+
 }
 if (Test-Path -LiteralPath $manifestPath) {
     $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
-    if ($manifest.subscriptionId -ne "$SubscriptionId" -or $manifest.tenantId -ne "$TenantId" -or
+    if ($manifest.schemaVersion -ne 1 -or $manifest.labInstanceId -cne $LabInstanceId -or
+        $manifest.subscriptionId -ne "$SubscriptionId" -or $manifest.tenantId -ne "$TenantId" -or
         $manifest.resourceGroup -ne $ResourceGroup -or $manifest.location -ne $Location -or
-        $manifest.learnerObjectId -ne "$LearnerObjectId" -or $manifest.capacity -ne $Capacity) {
+        $manifest.learnerObjectId -ne "$LearnerObjectId" -or $manifest.capacity -ne $Capacity -or
+        $manifest.ownsResourceGroup -ne [bool]$CreateResourceGroup) {
         throw 'The saved lifecycle belongs to different deployment settings. Use a new lab instance ID.'
     }
-    if ($manifest.phase -in @('deleted', 'purge-pending')) { throw 'This lab instance has entered teardown. Use a new lab instance ID.' }
+    if ($manifest.phase -in @('deleting', 'deleted', 'purge-pending')) { throw 'This lab instance has entered teardown. Use a new lab instance ID.' }
     if (Test-Path -LiteralPath $envPath) {
         $savedSettings = Get-Content -LiteralPath $envPath
         if ("AZURE_RESOURCE_GROUP=$ResourceGroup" -notin $savedSettings -or
@@ -60,6 +62,21 @@ else {
 }
 Invoke-LabAz @('bicep', 'version') | Out-Null
 Invoke-LabAz @('bicep', 'build', '--file', (Join-Path $RepoRoot 'infra\main.bicep'), '--outfile', $compiledTemplate) | Out-Null
+$template = Get-Content -Raw -LiteralPath $compiledTemplate | ConvertFrom-Json
+$defaults = $template.parameters
+$wanted = @(
+    foreach ($model in $defaults.chatModels.defaultValue) {
+        [pscustomobject]@{ name = $model.name; version = $model.version; deploymentName = $model.name }
+    }
+    foreach ($edition in $defaults.routerEditions.defaultValue) {
+        [pscustomobject]@{
+            name = $defaults.routerModelName.defaultValue
+            version = $defaults.routerModelVersion.defaultValue
+            deploymentName = $edition.name
+        }
+    }
+)
+$skuName = $defaults.skuName.defaultValue
 
 try {
     Start-LabAuthentication -TenantId "$TenantId" -SubscriptionId "$SubscriptionId" `
@@ -77,8 +94,8 @@ try {
     if ($exists) {
         $group = Invoke-LabAz @('group', 'show', '--name', $ResourceGroup, '--subscription', "$SubscriptionId", '--output', 'json') | ConvertFrom-Json
         if ($CreateResourceGroup) { Assert-LabResourceOwnership $group $LabInstanceId }
-        $resources = @(Invoke-LabAz @('resource', 'list', '--resource-group', $ResourceGroup, '--subscription', "$SubscriptionId",
-            '--output', 'json') | ConvertFrom-Json)
+        $resources = @((Invoke-LabAz @('resource', 'list', '--resource-group', $ResourceGroup, '--subscription', "$SubscriptionId",
+            '--output', 'json') | ConvertFrom-Json))
         foreach ($resource in $resources | Where-Object { $_.name -match '^(aif|appi|log)-lab663-' }) {
             Assert-LabResourceOwnership $resource $LabInstanceId
         }
@@ -87,35 +104,42 @@ try {
         throw 'The allocated Skillable resource group does not exist. The lifecycle does not create groups unless explicitly requested.'
     }
 
-    $catalog = @(Invoke-LabAz @('cognitiveservices', 'model', 'list', '--location', $Location,
-        '--subscription', "$SubscriptionId", '--output', 'json') | ConvertFrom-Json)
-    $usage = @(Invoke-LabAz @('cognitiveservices', 'usage', 'list', '--location', $Location,
-        '--subscription', "$SubscriptionId", '--output', 'json') | ConvertFrom-Json)
-    $wanted = @(
-        @{ name = 'gpt-5.4'; version = '2026-03-05'; count = 1 },
-        @{ name = 'gpt-5.4-mini'; version = '2026-03-17'; count = 1 },
-        @{ name = 'model-router'; version = '2025-11-18'; count = 4 }
-    )
+    $catalog = @((Invoke-LabAz @('cognitiveservices', 'model', 'list', '--location', $Location,
+        '--subscription', "$SubscriptionId", '--output', 'json') | ConvertFrom-Json))
+    $usage = @((Invoke-LabAz @('cognitiveservices', 'usage', 'list', '--location', $Location,
+        '--subscription', "$SubscriptionId", '--output', 'json') | ConvertFrom-Json))
     $existingDeployments = @()
     if ($exists) {
         foreach ($account in $resources | Where-Object { $_.type -eq 'Microsoft.CognitiveServices/accounts' -and $_.name -match '^aif-lab663-' }) {
-            $existingDeployments += @(Invoke-LabAz @('cognitiveservices', 'account', 'deployment', 'list',
-                '--resource-group', $ResourceGroup, '--name', $account.name, '--subscription', "$SubscriptionId", '--output', 'json') | ConvertFrom-Json)
+            $existingDeployments += @((Invoke-LabAz @('cognitiveservices', 'account', 'deployment', 'list',
+                '--resource-group', $ResourceGroup, '--name', $account.name, '--subscription', "$SubscriptionId", '--output', 'json') | ConvertFrom-Json))
         }
     }
+    $quotaRequirements = @{}
     foreach ($model in $wanted) {
         $available = @($catalog | Where-Object { $_.model.name -eq $model.name -and $_.model.version -eq $model.version })
-        $sku = @($available | ForEach-Object { $_.model.skus } | Where-Object { $_.name -eq 'GlobalStandard' }) | Select-Object -First 1
-        if (-not $sku) { throw "$($model.name)@$($model.version) is unavailable as GlobalStandard in $Location." }
-        $quota = $usage | Where-Object { $_.name.value -eq $sku.usageName } | Select-Object -First 1
-        if (-not $quota) { throw "No quota record was returned for $($sku.usageName)." }
-        $allocated = ($existingDeployments | Where-Object { $_.properties.model.name -eq $model.name } |
-            ForEach-Object { $_.sku.capacity } | Measure-Object -Sum).Sum
-        $additional = [Math]::Max(0, $Capacity * $model.count - $allocated)
+        $sku = @($available | ForEach-Object { $_.model.skus } | Where-Object { $_.name -eq $skuName }) | Select-Object -First 1
+        if (-not $sku) { throw "$($model.name)@$($model.version) is unavailable as $skuName in $Location." }
+        if (-not $sku.usageName) { throw "No quota usage name was returned for $($model.name)." }
+        $existing = @($existingDeployments | Where-Object {
+            $_.name -eq $model.deploymentName -and $_.properties.model.name -eq $model.name -and
+            $_.properties.model.version -eq $model.version -and $_.sku.name -eq $skuName
+        })
+        if ($existing.Count -gt 1) { throw "More than one existing deployment matches $($model.deploymentName)." }
+        $allocated = 0
+        if ($existing.Count) { $allocated = [Math]::Min($Capacity, $existing[0].sku.capacity) }
+        if (-not $quotaRequirements.ContainsKey($sku.usageName)) { $quotaRequirements[$sku.usageName] = 0 }
+        $quotaRequirements[$sku.usageName] += $Capacity - $allocated
+        Write-Host "PASS catalog: $($model.deploymentName)"
+    }
+    foreach ($usageName in $quotaRequirements.Keys) {
+        $additional = $quotaRequirements[$usageName]
+        $quota = $usage | Where-Object { $_.name.value -eq $usageName } | Select-Object -First 1
+        if (-not $quota) { throw "No quota record was returned for $usageName." }
         if ($quota.currentValue + $additional -gt $quota.limit) {
-            throw "Insufficient quota for $($model.name): need $additional more capacity units; $($quota.limit - $quota.currentValue) available."
+            throw "Insufficient quota for ${usageName}: need $additional more capacity units; $($quota.limit - $quota.currentValue) available."
         }
-        Write-Host "PASS catalog and quota: $($model.name)"
+        Write-Host "PASS quota: $usageName"
     }
 
     if (-not $manifest) {

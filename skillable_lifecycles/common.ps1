@@ -4,8 +4,14 @@ Set-StrictMode -Version Latest
 function Invoke-LabAz {
     param([Parameter(Mandatory)][string[]]$Arguments)
 
+    Get-Command az -ErrorAction Stop | Out-Null
+    # Windows PowerShell can turn native stderr into a terminating error before we check the exit code.
+    $ErrorActionPreference = 'Continue'
     $output = & az @Arguments --only-show-errors 2>&1
     if ($LASTEXITCODE -ne 0) {
+        if ($Arguments[0] -eq 'login') {
+            throw "Azure CLI authentication failed (exit $LASTEXITCODE). Check the lifecycle identity and tenant; login output was withheld to protect credentials."
+        }
         throw "Azure CLI failed (exit $LASTEXITCODE): $($output -join [Environment]::NewLine)"
     }
     return ($output -join [Environment]::NewLine)
@@ -15,7 +21,9 @@ function Write-LabJson {
     param([string]$Path, [object]$Value)
 
     $json = $Value | ConvertTo-Json -Depth 30
-    [IO.File]::WriteAllText($Path, $json, [Text.UTF8Encoding]::new($false))
+    $temporaryPath = "$Path.tmp"
+    [IO.File]::WriteAllText($temporaryPath, $json, [Text.UTF8Encoding]::new($false))
+    Move-Item -LiteralPath $temporaryPath -Destination $Path -Force -WhatIf:$false -Confirm:$false
 }
 
 function Start-LabAuthentication {
@@ -27,7 +35,7 @@ function Start-LabAuthentication {
     )
 
     $script:OriginalEnvironment = @{}
-    foreach ($name in @('AZURE_CONFIG_DIR', 'AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET', 'AZURE_TENANT_ID', 'AZURE_TOKEN_CREDENTIALS')) {
+    foreach ($name in @('AZURE_CONFIG_DIR', 'AZURE_CORE_COLLECT_TELEMETRY', 'AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET', 'AZURE_TENANT_ID', 'AZURE_TOKEN_CREDENTIALS')) {
         $script:OriginalEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
     }
     $script:AuthenticationDirectory = $null
@@ -41,6 +49,7 @@ function Start-LabAuthentication {
         $script:AuthenticationDirectory = Join-Path $StateDirectory ("azure-auth-" + [guid]::NewGuid().ToString('N'))
         New-Item -ItemType Directory -Path $script:AuthenticationDirectory -WhatIf:$false -Confirm:$false | Out-Null
         $env:AZURE_CONFIG_DIR = $script:AuthenticationDirectory
+        $env:AZURE_CORE_COLLECT_TELEMETRY = 'no'
         $env:AZURE_CLIENT_ID = $env:LAB663_CLIENT_ID
         $env:AZURE_CLIENT_SECRET = $env:LAB663_CLIENT_SECRET
         $env:AZURE_TENANT_ID = $TenantId

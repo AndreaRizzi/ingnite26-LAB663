@@ -8,12 +8,23 @@ This is the full pass through the lab. We deploy once, then work through seven n
 
 We need:
 
+- A GitHub account with active Copilot access, signed into the Copilot experience in our editor.
 - An Azure subscription where we can create resources and role assignments (Owner, or Contributor plus User Access Administrator).
 - Quota for `gpt-5.4`, `gpt-5.4-mini` and the model router in the region we pick.
 - This repo open in the dev container or a Codespace. It brings Python, the Azure CLI and Bicep.
 - The repository's Python requirements, including `azure-ai-projects>=2.8.0`, and access to the preview rubric, insights and optimizer APIs. Notebook 01 stops if the SDK is too old.
 
 Basic Python is helpful; previous agent or evaluation experience is not required. The required workflow stays in code. Portal views are optional.
+
+Open Copilot Chat and ask it to explain a Python list comprehension before starting the timed lab.
+
+**Expected:** Copilot answers without a missing-license or access-denied message. Our GitHub/Copilot sign-in and Azure sign-in are separate; a working Azure deployment does not verify Copilot access.
+
+### If container setup reports missing Bicep
+
+The container configuration enables Bicep installation alongside Azure CLI. If setup stops with `az bicep is not available`, rebuild the container using **Codespaces: Rebuild Container** in a Codespace or **Dev Containers: Rebuild Container** locally.
+
+**Expected:** container setup reports a Bicep version and finishes successfully.
 
 ### Use the repository Python environment
 
@@ -27,7 +38,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe .\src\check_environment.py --register-kernel
 ```
 
-**Expected:** the environment check passes and **Python (LAB663)** is registered. A failed check stops kernel registration; no Azure resources are created. If VS Code already selected a system interpreter, use **Python: Select Interpreter** to choose `.venv` and select **Python (LAB663)** in the notebook; changing the workspace default does not replace an existing selection.
+**Expected:** the environment check passes and **Python (LAB663)** is registered. A failed check stops kernel registration; no Azure resources are created. If VS Code already selected a system interpreter, use **Python: Select Interpreter** to choose `.venv`, and pick `.venv` in the notebook's kernel picker too; changing the workspace default does not replace an existing selection.
 
 ## Step 1: Deploy (this happens before the clock starts)
 
@@ -45,7 +56,15 @@ It asks for a subscription, region and chat models, then builds our Foundry proj
 
 ## Step 2: Work through the notebooks
 
-Open each notebook in [`labs/core/`](../../labs/core/), pick the **Python (LAB663)** kernel, and run one cell at a time with **Shift+Enter**. Keep the **Outline** view open: the numbered sections tell the story.
+Open each notebook in [`labs/core/`](../../labs/core/). Choose **Select Kernel** in the top-right corner and pick the starred **.venv** entry marked **Recommended**. This is the lab's prepared environment.
+
+![Select a Python Environment list with .venv marked Recommended](screenshots/01-sg-select-kernel.png)
+
+**Expected:** the top-right corner shows **.venv (Python 3.13.x)**.
+
+![Notebook toolbar showing .venv (Python 3.13.16) as the kernel](screenshots/02-sg-notebook-ready.png)
+
+Run one cell at a time with **Shift+Enter**. Keep the **Outline** view open: the numbered sections tell the story.
 
 | Notebook | The question it starts with | Time | The aha |
 |---|---|---|---|
