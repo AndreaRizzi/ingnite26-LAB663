@@ -22,6 +22,9 @@ param projectPrincipalId string
 
 param bootstrapPrincipalId string = ''
 
+@description('Create learner roles while retaining bootstrap and project-identity roles.')
+param assignLearnerRoles bool = true
+
 // Built-in role definition IDs. We use IDs so the roles survive renames.
 var foundryUserRoleId = '53ca6127-db72-4b80-b1b0-d745d6d5456d'
 var monitoringMetricsPublisherRoleId = '3913510d-42f4-4e42-8a64-420c390055eb'
@@ -37,7 +40,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 }
 
 // The names use the project name, not its principal ID, so they resolve at the start of the deployment.
-resource learnerFoundryUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource learnerFoundryUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (assignLearnerRoles) {
   name: guid(account.id, principalId, foundryUserRoleId)
   scope: account
   properties: {
@@ -87,7 +90,7 @@ resource projectMonitoringReader 'Microsoft.Authorization/roleAssignments@2022-0
   }
 }
 
-resource learnerLogAnalyticsReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource learnerLogAnalyticsReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (assignLearnerRoles) {
   name: guid(appInsights.id, principalId, logAnalyticsReaderRoleId)
   scope: appInsights
   properties: {

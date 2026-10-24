@@ -25,6 +25,12 @@ param principalType string = 'User'
 @description('Optional service principal that bootstraps the agent for a Skillable learner')
 param bootstrapPrincipalId string = ''
 
+@description('Create role assignments. Set false when all roles are managed outside this template.')
+param assignRoles bool = true
+
+@description('Create learner role assignments. Set false when Skillable already grants learner access.')
+param assignLearnerRoles bool = true
+
 @description('Ownership tags used by the lifecycle scripts')
 param resourceTags object = {}
 
@@ -114,7 +120,7 @@ module foundry 'modules/foundry.bicep' = {
   }
 }
 
-module roles 'modules/roles.bicep' = {
+module roles 'modules/roles.bicep' = if (assignRoles) {
   name: 'roles'
   params: {
     accountName: foundry.outputs.accountName
@@ -122,6 +128,7 @@ module roles 'modules/roles.bicep' = {
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     principalId: principalId
     principalType: principalType
+    assignLearnerRoles: assignLearnerRoles
     projectPrincipalId: foundry.outputs.projectPrincipalId
     bootstrapPrincipalId: bootstrapPrincipalId
   }
@@ -131,6 +138,7 @@ output accountName string = foundry.outputs.accountName
 output projectName string = foundry.outputs.projectName
 output projectEndpoint string = foundry.outputs.projectEndpoint
 output applicationInsightsName string = monitoring.outputs.applicationInsightsName
+output chatModelDeploymentNames array = foundry.outputs.chatModelDeploymentNames
 output managedResourceIds array = [
   foundry.outputs.accountId
   monitoring.outputs.applicationInsightsId
