@@ -20,11 +20,17 @@ $RepoRoot = (Resolve-Path -LiteralPath $RepoRoot).Path
 $manifestPath = Get-LabManifestPath $RepoRoot $LabInstanceId
 $stateDirectory = Split-Path $manifestPath -Parent
 $Location = $Location.ToLowerInvariant()
+if ($Location -ne 'eastus2') {
+    throw 'LAB663 resources must be deployed to eastus2. The allocated group metadata location does not select the resource region.'
+}
 $deploymentName = "lab663-$LabInstanceId"
 $compiledTemplate = Join-Path $stateDirectory "$LabInstanceId.template.json"
 $parameterFile = Join-Path $stateDirectory "$LabInstanceId.parameters.json"
-$envPath = Join-Path $RepoRoot '.env'
 $manifest = $null
+
+if (-not (Test-Path -LiteralPath (Join-Path $RepoRoot '.env.sample') -PathType Leaf)) {
+    throw 'The checkout is missing .env.sample. Restore it before running the deployment lifecycle.'
+}
 
 if (-not $UseCurrentAzureLogin -and $BootstrapObjectId -eq [guid]::Empty) {
     throw 'Supply the service principal OBJECT ID in BootstrapObjectId, not its application/client ID.'
@@ -42,16 +48,6 @@ if (Test-Path -LiteralPath $manifestPath) {
         throw 'The saved lifecycle belongs to different deployment settings. Use a new lab instance ID.'
     }
     if ($manifest.phase -in @('deleting', 'deleted', 'purge-pending')) { throw 'This lab instance has entered teardown. Use a new lab instance ID.' }
-    if (Test-Path -LiteralPath $envPath) {
-        $savedSettings = Get-Content -LiteralPath $envPath
-        if ("AZURE_RESOURCE_GROUP=$ResourceGroup" -notin $savedSettings -or
-            "AZURE_SUBSCRIPTION_ID=$SubscriptionId" -notin $savedSettings) {
-            throw 'The current .env belongs to another environment. Preserve it before resuming this deployment.'
-        }
-    }
-}
-elseif (Test-Path -LiteralPath $envPath) {
-    throw 'An existing .env has no matching lifecycle manifest. Preserve it before deploying a different environment.'
 }
 
 if (-not $InfrastructureOnly) {
@@ -64,6 +60,9 @@ Invoke-LabAz @('bicep', 'version') | Out-Null
 Invoke-LabAz @('bicep', 'build', '--file', (Join-Path $RepoRoot 'infra\main.bicep'), '--outfile', $compiledTemplate) | Out-Null
 $template = Get-Content -Raw -LiteralPath $compiledTemplate | ConvertFrom-Json
 $defaults = $template.parameters
+if ($defaults.chatModels.defaultValue.Count -ne 2) {
+    throw 'LAB663 requires two chat deployments: the frontier model first and the smaller model second.'
+}
 $wanted = @(
     foreach ($model in $defaults.chatModels.defaultValue) {
         [pscustomobject]@{ name = $model.name; version = $model.version; deploymentName = $model.name }
@@ -82,7 +81,7 @@ try {
     Start-LabAuthentication -TenantId "$TenantId" -SubscriptionId "$SubscriptionId" `
         -StateDirectory $stateDirectory -UseCurrentAzureLogin:$UseCurrentAzureLogin
 
-    foreach ($provider in @('Microsoft.CognitiveServices', 'Microsoft.Insights', 'Microsoft.OperationalInsights')) {
+    foreach ($provider in @('Microsoft.CognitiveServices', 'Microsoft.Insights', 'Microsoft.OperationalInsights', 'Microsoft.AlertsManagement')) {
         $registration = Invoke-LabAz @('provider', 'show', '--namespace', $provider, '--subscription', "$SubscriptionId",
             '--query', 'registrationState', '--output', 'tsv')
         if ($registration -ne 'Registered') {
@@ -181,36 +180,9 @@ try {
     $manifest.phase = 'infrastructure-ready'
     Write-LabJson $manifestPath $manifest
 
-    $connection = Invoke-LabAz @('resource', 'show', '--resource-group', $ResourceGroup, '--subscription', "$SubscriptionId",
-        '--name', $outputs.applicationInsightsName.value, '--resource-type', 'Microsoft.Insights/components',
-        '--query', 'properties.ConnectionString', '--output', 'tsv')
-    $settings = @(
-        '# Generated locally by the LAB663 lifecycle. Never commit this file.'
-        "FOUNDRY_PROJECT_ENDPOINT=$($outputs.projectEndpoint.value)"
-        'TRAILMATE_AGENT_NAME=trailmate'
-        'TRAILMATE_MODEL_DEPLOYMENT=gpt-5.4'
-        'TRAILMATE_SMALL_MODEL_DEPLOYMENT=gpt-5.4-mini'
-        "APPLICATIONINSIGHTS_CONNECTION_STRING=$connection"
-        "AZURE_SUBSCRIPTION_ID=$SubscriptionId"
-        "AZURE_TENANT_ID=$TenantId"
-        "AZURE_RESOURCE_GROUP=$ResourceGroup"
-        "AZURE_AI_ACCOUNT_NAME=$($outputs.accountName.value)"
-        "AZURE_AI_PROJECT_NAME=$($outputs.projectName.value)"
-        "AZURE_LOCATION=$Location"
-        'LAB663_DELIVERY_MODE=skillable'
-    )
-    [IO.File]::WriteAllText($envPath, ($settings -join "`n") + "`n", [Text.UTF8Encoding]::new($false))
-
-    if ($InfrastructureOnly) {
-        Write-Host 'Infrastructure is ready. Agent creation and notebook validation were skipped; this is not a learner-ready result.'
-    }
-    else {
-        & $Python (Join-Path $RepoRoot 'src\agent\01_build_agent.py')
-        if ($LASTEXITCODE -ne 0) { throw 'Agent setup failed. Infrastructure is retained; rerun with the same lab instance ID after correcting the error.' }
-        $manifest.phase = 'agent-ready'
-        Write-LabJson $manifestPath $manifest
-        Write-Host 'Agent setup is complete. Sign in as the learner and run notebook 01 before opening the lab to attendees.'
-    }
+    Complete-LabDeployment -RepoRoot $RepoRoot -ManifestPath $manifestPath -Manifest $manifest `
+        -Outputs $outputs -ChatModelNames @($defaults.chatModels.defaultValue | ForEach-Object { $_.name }) `
+        -Python $Python -InfrastructureOnly:$InfrastructureOnly
 }
 finally {
     Stop-LabAuthentication

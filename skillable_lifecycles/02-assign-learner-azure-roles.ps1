@@ -5,10 +5,6 @@ $env:LAB663_CLIENT_ID = '@lab.CloudSubscription.AppId'
 $env:LAB663_CLIENT_SECRET = '@lab.CloudSubscription.AppSecret'
 $statusResult = 'FAILED'
 try {
-    $learnerObjectId = [guid]::Empty
-    if (-not [guid]::TryParse('@lab.Variable(Lab663LearnerObjectId)', [ref]$learnerObjectId) -or $learnerObjectId -eq [guid]::Empty) {
-        throw 'Lab663LearnerObjectId is missing or invalid. Run the updated blocking action 1 first; it resolves the allocated learner and records this variable.'
-    }
     & {
         [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
         param(
@@ -37,49 +33,23 @@ try {
         $armRoot = 'https://management.azure.com'
         $apiVersion = 'api-version=2022-04-01'
 
-        function Get-LabSubscriptionHeaders {
-            param(
-                [ValidateSet('https://management.azure.com', 'https://graph.microsoft.com')]
-                [string]$Resource = 'https://management.azure.com'
-            )
-            $clientId = [guid]::Empty
-            if (-not [guid]::TryParse($env:LAB663_CLIENT_ID, [ref]$clientId) -or $clientId -eq [guid]::Empty -or
-                -not $env:LAB663_CLIENT_SECRET -or $env:LAB663_CLIENT_SECRET.StartsWith('@' + 'lab.')) {
+        function Get-LabArmHeaders {
+            if (-not $env:LAB663_CLIENT_ID -or -not $env:LAB663_CLIENT_SECRET) {
                 throw 'Supply the subscription application ID and secret in LAB663_CLIENT_ID and LAB663_CLIENT_SECRET.'
             }
             $body = @{
                 grant_type = 'client_credentials'
                 client_id = $env:LAB663_CLIENT_ID
                 client_secret = $env:LAB663_CLIENT_SECRET
-                scope = "$Resource/.default"
+                scope = 'https://management.azure.com/.default'
             }
             $token = Invoke-RestMethod -Method Post `
                 -Uri "https://login.microsoftonline.com/$TenantId/oauth2/v2.0/token" `
                 -ContentType 'application/x-www-form-urlencoded' -Body $body -TimeoutSec 60
             if (-not ($token.PSObject.Properties['access_token'] -and $token.access_token)) {
-                throw "Authentication for $Resource returned no access token."
+                throw 'Azure Resource Manager authentication returned no access token.'
             }
             return @{ Authorization = "Bearer $($token.access_token)" }
-        }
-
-        function Get-LabBootstrapObjectId {
-            $graphHeaders = Get-LabSubscriptionHeaders -Resource 'https://graph.microsoft.com'
-            try {
-                # An application can read its own service principal without directory-wide read permissions.
-                $appId = [guid]$env:LAB663_CLIENT_ID
-                $principal = Invoke-RestMethod -Method Get -Headers $graphHeaders -TimeoutSec 60 `
-                    -Uri "https://graph.microsoft.com/v1.0/servicePrincipals(appId='$appId')?`$select=id,appId"
-                $id = [guid]::Empty
-                if (-not $principal -or -not $principal.PSObject.Properties['id'] -or
-                    -not $principal.PSObject.Properties['appId'] -or [string]$principal.appId -ne "$appId" -or
-                    -not [guid]::TryParse([string]$principal.id, [ref]$id) -or $id -eq [guid]::Empty) {
-                    throw 'Microsoft Graph did not return the object ID of the subscription application. No learner roles were changed.'
-                }
-                return $id
-            }
-            finally {
-                $graphHeaders.Clear()
-            }
         }
 
         function Get-LabArmError {
@@ -172,17 +142,9 @@ try {
             throw 'ConfirmLearnerObjectId must match the learner whose Azure role assignments will be removed.'
         }
 
-        $headers = Get-LabSubscriptionHeaders
+        $headers = Get-LabArmHeaders
         try {
             if ($Action -eq 'Assign') {
-                if ($PSCmdlet.ShouldProcess('later LAB663 actions', 'Record the subscription service principal object ID')) {
-                    $bootstrapObjectId = Get-LabBootstrapObjectId
-                    Set-LabVariable -Name 'Lab663BootstrapObjectId' -Value "$bootstrapObjectId" -ErrorAction Stop
-                    Write-Host 'Recorded Lab663BootstrapObjectId for action 3.'
-                }
-                elseif (-not $WhatIfPreference) {
-                    throw 'Recording the deployment identity was not confirmed. No learner roles were changed.'
-                }
                 $existing = @(Get-LabLearnerRoleAssignment | Where-Object { $_.Scope -eq $subscriptionScope } | ForEach-Object { $_.RoleId })
                 foreach ($roleId in @($assignRoles.Keys)) {
                     $roleName = $assignRoles[$roleId]
@@ -250,7 +212,7 @@ try {
     } -Action Assign `
         -TenantId '@lab.CloudSubscription.TenantId' `
         -SubscriptionId '@lab.CloudSubscription.Id' `
-        -LearnerObjectId $learnerObjectId `
+        -LearnerObjectId '@lab.Variable(Lab663LearnerObjectId)' `
         -Confirm:$false
     $statusResult = 'SUCCEEDED'
 }
