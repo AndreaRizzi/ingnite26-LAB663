@@ -83,6 +83,12 @@ Open [the wait-time challenges](../../labs/bonus/wait-time-challenges.ipynb) in 
 
 **Expected:** progress and a saved run ID in the core notebook. A bounded wait may end while the service job continues. Resume that ID as the cell explains; do not repeatedly submit the batch. If requests fail, inspect the saved output, fix the cause, and explicitly select a new attempt.
 
+## Go further: optimize more than the instructions
+
+After notebook 05, [the second-lever bonus](../../labs/bonus/optimize-more-than-instructions.ipynb) lets the optimizer change the **model** as well as the instructions, choosing between `gpt-5.4`, `gpt-5.4-mini` and `mr-default`. It stages the best candidate as a separate agent, scores it on `test` and never promotes it. It's outside the 60-minute core: expect an optimizer run of 15 minutes or more plus one evaluation batch.
+
+**Expected:** a table showing what each candidate changed (model, instructions or both), its score and tokens, then the best candidate's test score next to the retained baseline.
+
 ## What to verify in our subscription
 
 - **Feature access:** insights, rubric generation and the optimizer must work here, not only in the original BAMI environment.
