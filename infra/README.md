@@ -35,6 +35,8 @@ For a pre-provisioned Windows Skillable VM, use the [Skillable lifecycle scripts
 ## Good to know
 
 - We need permission to create role assignments (Owner or User Access Administrator) on the resource group.
+- Both Bicep role controls default to `true`, so self-guided deployment creates learner and project-identity roles. The Skillable PowerShell lifecycle passes `assignLearnerRoles=false`: only learner roles are skipped, while bootstrap and project-identity roles remain. `assignRoles=false` skips the entire roles module.
+- The `chatModelDeploymentNames` output returns the deployed chat model names in input order (frontier first, smaller model second). The PowerShell and Skillable setup helpers use it to check or populate the learner's environment.
 - To skip the questions, set `AZURE_SUBSCRIPTION_ID`, `AZURE_LOCATION` or `LAB663_CHAT_MODELS` first, or pass `--yes` to accept the defaults.
 - To remove everything, run `bash infra/cleanup.sh`. It deletes only the resource group named in `.env`, after we type its name to confirm. Add `--purge` to also purge the deleted Foundry resource. Local files are left alone.
 - To deploy the infrastructure without the agent, pass `--skip-agent`.

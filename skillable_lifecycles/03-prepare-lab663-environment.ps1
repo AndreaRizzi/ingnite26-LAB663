@@ -1,7 +1,14 @@
 # First Displayable: Execute Script in Virtual Machine on Win11-Pro-Base; blocking.
 # Paste this complete file into the matching Skillable VM action.
+# Deploys infra\main.bicep, or finishes an existing infra\skillable.bicep deployment.
+# Populates the existing .env and creates the starting TrailMate agent.
+# Run on the VM, not in Execute Script in Cloud Platform: the learner needs these local files.
+$env:PSExecutionPolicyPreference = 'Bypass'
 $ErrorActionPreference = 'Stop'
 $repoRoot = 'C:\Users\LabUser\Desktop\LAB663'
+# For the resource-template path, set this to its exact ARM deployment name.
+# Leave empty for the original all-in-one lifecycle deployment.
+$resourceDeploymentName = ''
 # Leave empty to write the status file to the desktop of the account that runs this action.
 $statusDirectory = ''
 $python = Join-Path $repoRoot '.venv\Scripts\python.exe'
@@ -12,7 +19,7 @@ $deploymentArguments = @{
     TenantId = '@lab.CloudSubscription.TenantId'
     SubscriptionId = '@lab.CloudSubscription.Id'
     ResourceGroup = '@lab.CloudResourceGroup(ResourceGroup1).Name'
-    Location = '@lab.CloudResourceGroup(ResourceGroup1).Location'
+    Location = 'eastus2'
     LabInstanceId = '@lab.LabInstance.Id'
     LearnerObjectId = '@lab.Variable(Lab663LearnerObjectId)'
     BootstrapObjectId = '@lab.Variable(Lab663BootstrapObjectId)'
@@ -90,26 +97,18 @@ try {
     if (-not $env:LAB663_CLIENT_ID -or $env:LAB663_CLIENT_ID.StartsWith($tokenPrefix)) { $missing += 'AppId' }
     if (-not $clientSecret -or $clientSecret.StartsWith($tokenPrefix)) { $missing += 'AppSecret' }
     if ($missing.Count) {
-        $message = "Skillable did not supply these values: $(($missing | Sort-Object) -join ', ')."
-        if ($missing -contains 'LearnerObjectId') { $message += ' Action 1 must publish Lab663LearnerObjectId.' }
-        if ($missing -contains 'BootstrapObjectId') { $message += ' Action 2 must publish Lab663BootstrapObjectId.' }
-        throw "$message Check the earlier action results, profile aliases and copied script versions."
-    }
-    foreach ($name in @('TenantId', 'SubscriptionId', 'LearnerObjectId', 'BootstrapObjectId', 'AppId')) {
-        $value = if ($name -eq 'AppId') { $env:LAB663_CLIENT_ID } else { $deploymentArguments[$name] }
-        $id = [guid]::Empty
-        if (-not [guid]::TryParse([string]$value, [ref]$id) -or $id -eq [guid]::Empty) {
-            throw "$name must be a non-empty GUID. Check the profile and the identity values published by actions 1 and 2."
-        }
-    }
-    foreach ($name in $earlierResults.Keys) {
-        if (-not ([string]$earlierResults[$name]).StartsWith('SUCCEEDED at ', [StringComparison]::Ordinal)) {
-            throw "$name did not report success. Review and rerun the blocking startup actions in order before action 3; setup and deployment have not run."
-        }
+        throw "Skillable did not supply these values: $(($missing | Sort-Object) -join ', '). Check the profile's credential and resource group aliases and custom variables."
     }
     $setup = Join-Path $repoRoot 'skillable_lifecycles\setup.ps1'
-    $deployment = Join-Path $repoRoot 'skillable_lifecycles\deployment.ps1'
-    foreach ($path in @($setup, $deployment)) {
+    $deploymentScript = if ($resourceDeploymentName) { 'post-deployment.ps1' } else { 'deployment.ps1' }
+    $deployment = Join-Path $repoRoot "skillable_lifecycles\$deploymentScript"
+    if ($resourceDeploymentName) {
+        if ($resourceDeploymentName.Contains($tokenPrefix)) {
+            throw 'The resource deployment name is an unresolved Skillable token. Supply the exact completed ARM deployment name.'
+        }
+        $deploymentArguments.ResourceDeploymentName = $resourceDeploymentName
+    }
+    foreach ($path in @($setup, $deployment, (Join-Path $repoRoot '.env.sample'))) {
         if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
             throw "Cannot find $path. Set `$repoRoot in this action to the pinned LAB663 checkout on the VM."
         }
@@ -117,9 +116,14 @@ try {
 
     $statusStage = 'Checking VM prerequisites (setup.ps1)'
     Write-Lab663Status -Result RUNNING
-    & $setup -RepoRoot $repoRoot -Python $python
+    & $setup -RepoRoot $repoRoot -Python $python -SkipBicep:([bool]$resourceDeploymentName)
 
-    $statusStage = 'Deploying Azure resources and the starting agent (deployment.ps1)'
+    $statusStage = if ($resourceDeploymentName) {
+        'Reading deployed Azure resources, populating .env and preparing the starting agent (post-deployment.ps1)'
+    }
+    else {
+        'Deploying Azure resources and the starting agent (deployment.ps1)'
+    }
     Write-Lab663Status -Result RUNNING
     & $deployment @deploymentArguments -RepoRoot $repoRoot -Python $python
 

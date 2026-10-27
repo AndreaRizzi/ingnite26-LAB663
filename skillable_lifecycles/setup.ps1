@@ -2,7 +2,8 @@
 param(
     [string]$RepoRoot = (Split-Path $PSScriptRoot -Parent),
     [string]$Python = (Join-Path $RepoRoot '.venv\Scripts\python.exe'),
-    [switch]$CheckOnly
+    [switch]$CheckOnly,
+    [switch]$SkipBicep
 )
 
 . (Join-Path $PSScriptRoot 'common.ps1')
@@ -13,7 +14,9 @@ foreach ($tool in @('az', $Python)) {
         throw "'$tool' is missing. Prepare the Skillable VM image before running the lifecycle."
     }
 }
-Invoke-LabAz @('bicep', 'version') | Write-Host
+if (-not $SkipBicep) {
+    Invoke-LabAz @('bicep', 'version') | Write-Host
+}
 
 & $Python (Join-Path $RepoRoot 'src\check_environment.py')
 if ($LASTEXITCODE -ne 0) {

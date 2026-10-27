@@ -161,3 +161,4 @@ output accountId string = account.id
 output projectName string = project.name
 output projectEndpoint string = 'https://${account.name}.services.ai.azure.com/api/projects/${project.name}'
 output projectPrincipalId string = project.identity.principalId
+output chatModelDeploymentNames array = [for (model, i) in chatModels: chatDeployments[i].name]

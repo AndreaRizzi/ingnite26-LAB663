@@ -4,7 +4,76 @@ LAB663 requires both **GitHub Copilot access** and the **Azure Foundry environme
 
 Deployment uses LAB663's [`infra/main.bicep`](../infra/main.bicep) to create the Foundry project, model deployments and monitoring, then runs [`src/agent/01_build_agent.py`](../src/agent/01_build_agent.py) to index the TrailMate manuals and create or reuse the starting agent.
 
+## Deploy and fill the learner's environment
+
+**Using the validated `infra\pwsh\deploy.ps1`:** paste [`deploy-pwsh.ps1`](deploy-pwsh.ps1) into the VM lifecycle **instead of action 03**. It authenticates using the Skillable subscription application, calls that PowerShell deployment without prompts, populates the existing `.env`, and writes `LAB663-deployment-output.txt` plus a timestamped run log to the learner's desktop. Set its checkout and desktop paths before pasting. Keep the other lifecycle actions, including teardown, unchanged. See the [PowerShell lifecycle configuration](../infra/README.md#run-the-powershell-deployment-as-a-skillable-lifecycle). This wrapper does not use the resource-template split.
+
+**For a profile that already grants learner access:** `deploy-pwsh.ps1` now relies on your existing learner-role action and requires neither `Lab663LearnerObjectId` nor `Lab663BootstrapObjectId`. It gets only the deployment application's own object ID from its ARM token, without a directory lookup. It skips learner role assignments but keeps bootstrap and project-identity roles. Ensure your existing action covers Foundry User and the learner's monitoring/query access; verify access as the learner before handover. The variable requirements below still apply to the original action 03, resource-template split, and repository-supplied actions 02/04. Do not replace your working role actions with those scripts just to use this wrapper.
+
+The `deploy-pwsh.ps1` wrapper deploys the lab resources to **`eastus2`**, independently of `ResourceGroup1.Location`. The existing group may have its metadata in France; resource location is passed explicitly to Bicep. Allow East US 2 in subscription policy and quota. To allocate the group itself there, change the Skillable profile's resource-group region for new instances. Existing deployments are not moved; use normal teardown and a fresh instance if a previous run recorded another region.
+
+Use [`03-prepare-lab663-environment.ps1`](03-prepare-lab663-environment.ps1) as the deployment lifecycle action. Paste the complete file into **First Displayable > Execute Script in Virtual Machine > PowerShell** and set `$repoRoot` to the pinned checkout on the learner's Windows VM, for example `C:\Users\LabUser\Desktop\LAB663`. Keep startup blocking and end the lab on failure.
+
+This action uses the subscription credentials and allocated resource group supplied by Skillable. It calls the existing setup and deployment helpers, not `azd`, and does not create a second resource group. Supply the custom learner/bootstrap object IDs and earlier-action status variables described below before running it.
+
+After deployment, the helper automatically populates the **existing `.env`** in that checkout. It preserves comments and unrelated settings, replaces all 12 deployment settings, and appends any missing ones. If `.env` does not exist, it starts from [`.env.sample`](../.env.sample). No manual copying or editing is needed. It fails rather than writing missing values, duplicate settings or unresolved Skillable tokens. Project endpoint, account and project names, tracing connection, tenant, subscription, resource group and region come from this deployment. The two model deployment names come from the Bicep defaults, not a separate hard-coded list. `LAB663_DELIVERY_MODE` is `skillable`.
+
+The agent bootstrap receives those same settings in its process environment, so an older inherited endpoint cannot override the new `.env`. The helper restores process settings and removes the isolated bootstrap sign-in afterwards. Client secrets and access tokens are never written to `.env`; learners sign in with their assigned Azure identity.
+
+Run this on the VM, not in a cloud-platform action: a remote cloud script cannot write the learner's local `.env` or register their notebook kernel. The VM image must already contain the CLI, Bicep and required Python packages. Keep the separate GitHub/Copilot and learner-role actions below.
+
+**Expected:** the desktop status file says `SUCCEEDED`, `.env` contains this instance's settings, and TrailMate v0 and its indexed manuals are ready. If preparation fails, the status file names the stage and error; repair the cause and rerun with the same instance ID. Do not rerun the self-guided deployment.
+
+## Use a resource template for Azure provisioning
+
+This is an alternative to deploying Azure resources from action 3. Keep the six lifecycle actions below, but let the resource template provision the Azure environment before VM preparation.
+
+1. Use [`infra/skillable.bicep`](../infra/skillable.bicep) as the Bicep entry point. For an ARM-only resource-template editor, export it with `az bicep build --file infra\skillable.bicep --outfile infra\skillable.json` on the prepared authoring machine and upload that JSON. All modules are embedded in the export.
+2. Map the parameters using [`skillable.parameters.json`](../infra/skillable.parameters.json). The allocated group is `ResourceGroup1`, and the region, instance ID, learner **object ID** and bootstrap **object ID** must belong to this instance. The platform must resolve the tokens before sending parameters to ARM. The identity provisioning integration must supply the object IDs before this template runs, not in a later Post-Build action.
+3. Configure the resource deployment to finish successfully before First Displayable. Record its exact ARM deployment name. For example, if the profile lets us choose `lab663-<instance ID>` as the name, use that same name in the VM action. Do not assume Skillable's generated name or invent a replacement token for it.
+4. In [`03-prepare-lab663-environment.ps1`](03-prepare-lab663-environment.ps1), set `$resourceDeploymentName` to that exact name. The rest of its credential, identity and checkout settings stay the same. Action 3 then calls [`post-deployment.ps1`](post-deployment.ps1), which reads the deployment and does not create or update Azure resources.
+
+The template creates Foundry, the two chat deployments, four router editions, Log Analytics, Application Insights, the tracing connection and the resource-scoped roles. It tags the account, project and monitoring resources for this instance. It does not create a resource group, grant subscription-wide roles, configure GitHub/Copilot, install packages, upload manuals or create the agent.
+
+The VM action checks the deployment's `Succeeded` state, instance ID, both identities, resource IDs, region and ownership tags. It uses the **deployed** model-name outputs when filling `.env`, not the current checkout's defaults. It fetches the Application Insights connection string directly from the deployed resource rather than exposing it in deployment outputs. It then indexes the manuals and prepares TrailMate using the shared completion code used by the all-in-one lifecycle.
+
+The VM still needs Azure CLI and the prepared Python environment, but this path does not compile Bicep on the VM. Bicep is needed on the authoring machine when exporting the resource template, or on the VM when using the original all-in-one deployment path.
+
+The action records the same `.lab-lifecycle` ownership manifest as the original deployment path, with `ownsResourceGroup=false`. Existing teardown can remove the recorded, tagged resources without deleting Skillable's group or VM. If the resource template fails, or the VM action never reaches the manifest-writing step, automated VM teardown deliberately refuses to guess. The operator must inspect the template failure and clean up that instance through the platform's allocated-resource cleanup or a reviewed manual operation. Configure and rehearse that failure path before publishing the profile.
+
+Resource provisioning now happens before the VM's model-catalog and quota preflight from the all-in-one path. Check provider registration, all six model deployments' regional availability, combined quota and Azure Policy with the actual resource-template deployment identity before enabling the profile. The template identity needs deployment and role-assignment rights; the VM bootstrap identity needs ARM read access plus the Foundry role assigned by the template.
+
+Leave `$resourceDeploymentName` empty to retain the original action-3 infrastructure deployment. Do not switch provisioning modes for an instance that already has a manifest.
+
+**Expected:** one Azure provisioner runs, the VM action only completes local and agent setup, and the existing `.env` contains the allocated environment's settings. A mismatched deployment or ownership tag stops preparation before `.env` is changed.
+
 ## Configure six actions in Skillable
+
+### Register providers when the subscription pool is not prepared
+
+If the VM deployment reports that `Microsoft.CognitiveServices` must be registered, add [`00-register-azure-providers.ps1`](00-register-azure-providers.ps1) as an **additional** lifecycle action before the existing startup actions:
+
+| Setting | Value |
+|---------|-------|
+| Name | Register LAB663 Azure providers |
+| Event | Post-Build, before the other Post-Build actions |
+| Action type | Execute Script in Cloud Platform |
+| Cloud platform / language | Azure / PowerShell |
+| Script | Paste the complete `00-register-azure-providers.ps1` file |
+| Enabled / blocking | Yes / Yes |
+| Timeout | 15 minutes; the script permits up to eight minutes for provider registration after authentication |
+| Error action | End the lab on failure |
+| Delay / retries / repeat | 0 / 0 / disabled |
+
+This cloud action uses only the built-in `CloudSubscription` tenant, subscription ID, AppId and AppSecret tokens. It needs no VM files, Azure CLI, Az modules, directory lookup or custom variables. The subscription must already be allocated when the action runs. Make sure it completes before the First Displayable VM deployment.
+
+It registers `Microsoft.CognitiveServices`, `Microsoft.Insights`, `Microsoft.OperationalInsights` and `Microsoft.AlertsManagement` through Azure Resource Manager, then checks all four reach `Registered`. Alerts Management supports Application Insights smart-detection alert rules, including the separate Failure Anomalies alert-rule deployment. Already registered providers are left alone; an in-progress registration is waited on. No resource group, model or role assignment is created. Provider registration is subscription-wide and does not change the East US 2 resource location. Do not unregister the providers during teardown.
+
+The application identified by `@lab.CloudSubscription.AppId` needs **subscription-level provider read/register permission**. Resource-group permissions and Entra directory permissions do not provide it. If this action reports HTTP 403, the subscription administrator must pre-register the providers for the subscription pool or authorize this cloud action. The script does not grant itself permissions or fall back to learner credentials.
+
+**Expected:** the cloud action logs `SUCCEEDED: all four LAB663 Azure resource providers are registered`, then the existing VM deployment passes its provider check. When providers are already registered throughout the subscription pool, this extra action is unnecessary.
+
+For an existing instance that reports `MissingSubscriptionRegistration` for `Microsoft.AlertsManagement`, repaste the updated cloud script and explicitly run that registration action against the same allocated subscription, or ask the subscription administrator to register the provider. Updating the action does not rerun it on an already-started instance. Registration does not automatically repair a previously failed alert-rule deployment; after registration, an authorized operator can redeploy that specific alert rule. Do not recreate successful Foundry resources to repair this separate alert.
 
 In **Edit Profile**, open **Advanced > Life Cycle Actions** and select **Add Life Cycle Action**. Existing actions can also be managed on the **Life Cycle** tab. Add the six actions below, keeping the listed order within each event. The [Skillable lifecycle reference](https://docs.skillable.com/docs/life-cycle-actions-5) explains these controls.
 
@@ -19,7 +88,7 @@ In **Edit Profile**, open **Advanced > Life Cycle Actions** and select **Add Lif
 
 Copy the **complete contents** of each numbered file into its matching Skillable action editor. The filenames are the action order. Files 01, 02, 04 and 06 are self-contained cloud actions; no manual insertion of another script is needed. In files 03 and 05, change `$repoRoot` to the same pinned checkout path on the VM.
 
-The unnumbered `setup.ps1`, `deployment.ps1`, `teardown.ps1` and `common.ps1` are required VM implementation files, not additional Skillable actions. Keep them in the VM checkout: file 03 calls setup and deployment, file 05 calls teardown, and all three implementations load `common.ps1`. The cloud files need no separate cloud source or export utility. Files 01 and 06 embed the same directory implementation, and files 02 and 04 embed the same role implementation. When you change one file of a pair, make the same change in the other.
+The unnumbered `setup.ps1`, `deployment.ps1`, `post-deployment.ps1`, `teardown.ps1` and `common.ps1` are VM implementation files, not additional Skillable actions. Keep them in the VM checkout: file 03 calls setup and either deployment or post-deployment, file 05 calls teardown, and the implementations load `common.ps1`. The cloud files need no separate cloud source or export utility. Files 01 and 06 embed the same directory implementation, and files 02 and 04 embed the same role implementation. When you change one file of a pair, make the same change in the other.
 
 For every action, set **Enabled = Yes**, **Delay = 0**, **Retries = 0**, and leave **Repeat disabled**. These scripts throw on failure; they do not implement a true/false polling contract. Do not use **Log** alone for startup failures. For cleanup notifications, say that cleanup failed and the facilitator must review the lab instance error before reusing the account or subscription.
 
@@ -50,49 +119,38 @@ The original actions ran with **Blocking = No** and **Error Action = Log**, so a
 
 Use the actual credential alias `User1`, resource group alias `ResourceGroup1` and VM name from your profile. The table uses the names in the supplied lifecycle; change every corresponding wrapper reference if your profile differs. Check available built-in tokens with the instructions editor's **@lab** picker.
 
-Create the following **non-secret tenant settings** through the profile's [Variables panel](https://docs.skillable.com/docs/variables). These are names defined for this lab, not additional built-in Skillable tokens.
+Create the following **non-secret** custom variables through the profile's [Variables panel](https://docs.skillable.com/docs/variables). These are names defined for this lab, not additional built-in Skillable tokens.
 
 | Custom variable | Value and timing |
 |---|---|
+| `Lab663LearnerObjectId` | This instance's Entra user object ID for `@lab.CloudPortalCredential(User1).Username`; supplied by identity provisioning before Post-Build, never a static ID shared across learners |
+| `Lab663BootstrapObjectId` | Service principal object ID corresponding to `@lab.CloudSubscription.AppId`; supplied for the allocated subscription before VM startup |
 | `Lab663LicenseGroupObjectId` | Object ID of the static GitHub/Copilot entitlement group configured by the tenant administrator; the supplied group name was `_Skillable Events GHE w/ Copilot` |
 | `Lab663GitHubServicePrincipalObjectId` | Object ID of the GitHub enterprise application's service principal, not its client/application ID |
 | `Lab663GitHubSyncJobId` | Existing synchronization job in that enterprise application |
 | `Lab663GitHubSyncRuleId` | Existing user-provisioning rule for that job |
 
-The startup actions resolve the two instance-specific identities themselves. Do **not** enter static learner or deployment-principal IDs in the Variables panel.
+The identity provisioning integration must set the first two variables for the allocated identities. If it sets them using `Set-LabVariable`, do so in an earlier action/event; replacement tokens cannot consume a variable created inside the same action. A UPN is not an object ID. Do not invent a `.ObjectId` property on `CloudPortalCredential` or reuse IDs from the example tenant.
 
-| Generated variable | Written by | Used by |
-|---|---|---|
-| `Lab663LearnerObjectId` | Action 1 looks up the exact `@lab.CloudPortalCredential(User1).Username` in Entra and records its user object ID before changing group membership | Actions 2, 3, 4 and 6 |
-| `Lab663BootstrapObjectId` | Action 2 authenticates as `@lab.CloudSubscription.AppId`, reads that application's own service principal and records its object ID before assigning roles | Action 3 |
-| `Lab663CopilotAccessStatus` | Action 1 records `SUCCEEDED` or `FAILED` and a UTC timestamp | Action 3 |
-| `Lab663AzureRolesStatus` | Action 2 records `SUCCEEDED` or `FAILED` and a UTC timestamp | Action 3 |
-
-Keep actions 1 and 2 **blocking and in that order**. [Skillable variables](https://docs.skillable.com/docs/variables-1) set with `Set-LabVariable` become available to later actions, not replacement tokens inside the action that sets them. Action 1 therefore uses its resolved ID directly, then publishes it for the other actions. A user principal name (UPN, the learner's sign-in name) is not an object ID. Do not invent a `.ObjectId` property on `CloudPortalCredential` or use the application/client ID as the bootstrap object ID.
+Actions 1 and 2 also set `Lab663CopilotAccessStatus` and `Lab663AzureRolesStatus` with `Set-LabVariable`, so action 3 can show their results on the VM. Don't supply values for these two; the actions set them.
 
 Supply `LAB663_DIRECTORY_CLIENT_ID` and `LAB663_DIRECTORY_CLIENT_SECRET` as process environment variables in **actions 1 and 6**, using the operator's approved protected secret-injection mechanism. Skillable does not create these variables automatically. Actions 2 and 4 use the subscription credentials instead. Keep the dedicated Entra provisioning application from the supplied lifecycle separate from the subscription deployment application. Do not put its secret in Git, `.env`, ordinary lab variables or learner credential pools. Confirm this secret binding with the Skillable administrator before testing; actions 1 and 6 fail if it is missing.
 
-The directory app needs admin-consented Microsoft Graph **application permissions**: `User.Read.All` for action 1's [learner lookup](https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0) and `GroupMember.ReadWrite.All` for membership changes. **Updating the scripts does not grant that consent**; a tenant administrator must configure it before launch. For on-demand synchronization, the [Graph API reference](https://learn.microsoft.com/en-us/graph/api/synchronization-synchronizationjob-provisionondemand?view=graph-rest-1.0) lists `Application.ReadWrite.OwnedBy` for an application it owns, or `Synchronization.ReadWrite.All`. Configure the intended enterprise application's group assignment, provisioning scope and Copilot seat policy beforehand. A group name alone does not configure those services.
+The directory app needs admin-consented `GroupMember.ReadWrite.All`. For on-demand synchronization, the [Graph API reference](https://learn.microsoft.com/en-us/graph/api/synchronization-synchronizationjob-provisionondemand?view=graph-rest-1.0) lists `Application.ReadWrite.OwnedBy` for an application it owns, or `Synchronization.ReadWrite.All`. Configure the intended enterprise application's group assignment, provisioning scope and Copilot seat policy beforehand. A group name alone does not configure those services.
 
-Action 2 uses the subscription application's own credentials for its [service principal lookup](https://learn.microsoft.com/en-us/graph/api/serviceprincipal-get?view=graph-rest-1.0#permissions-for-specific-scenarios). An application can read its own service principal without application permissions. This does not require `Application.Read.All` or `Directory.Read.All` on the subscription application.
-
-**Expected:** the four tenant settings resolve correctly, actions 1 and 2 publish the allocated identity IDs, and privileged directory credentials are available only to actions 1 and 6.
+**Expected:** every custom variable resolves to the correct instance or tenant setting, and privileged directory credentials are available only to actions 1 and 6.
 
 ## Action 1: Prepare GitHub Copilot access
 
 Paste the complete [`01-prepare-github-copilot-access.ps1`](01-prepare-github-copilot-access.ps1) file into the **Post-Build** cloud action. It is self-contained: it needs no repository checkout, helper file, Az module or Graph PowerShell SDK on the cloud host. The file already selects `Prepare`, supplies the profile replacement tokens and clears directory credentials on exit. Do not replace it with a path to a file on the VM.
 
-This action first resolves the allocated learner's UPN and publishes `Lab663LearnerObjectId`. It checks that the returned UPN matches and that the object ID is valid, retries a not-yet-visible user for up to eight attempts, and explains a missing `User.Read.All` permission. Publishing the ID must succeed before any membership change, so cleanup still has the exact identity if synchronization later fails.
-
-It then adds and verifies direct group membership and runs the configured Entra synchronization job. Rerunning it does not add duplicate membership. An HTTP 200 with failed or out-of-scope provisioning still throws; only `Success` or unchanged `RedundantExport` with a target identity passes. It records `SUCCEEDED` or `FAILED` in `Lab663CopilotAccessStatus` for action 3's status file. If that status can't be recorded, the action logs a warning; its own result doesn't change.
+This single action adds and verifies direct group membership, then runs the configured Entra synchronization job. Rerunning it does not add duplicate membership. An HTTP 200 with failed or out-of-scope provisioning still throws; only `Success` or unchanged `RedundantExport` with a target identity passes. It then records `SUCCEEDED` or `FAILED` in `Lab663CopilotAccessStatus` for action 3's status file. If that can't be recorded, the action logs a warning; its own result doesn't change.
 
 **Expected:** the learner belongs to the configured entitlement group and Entra reports a provisioned GitHub identity. Actual GitHub sign-in and a usable Copilot response remain required handover checks; there is no fixed delay that proves a seat is ready.
 
 ## Action 2: Assign the learner's Azure roles
 
 Paste the complete [`02-assign-learner-azure-roles.ps1`](02-assign-learner-azure-roles.ps1) file into a second **Post-Build** cloud action, after action 1. It replaces the profile's original Role Assignment action and uses the subscription credentials Skillable already supplies, `@lab.CloudSubscription.AppId` and `.AppSecret`. It needs no directory app, Az module or VM checkout.
-
-The action requires the learner ID published by action 1. Before changing roles, it reads its own service principal through Microsoft Graph, checks the returned client ID against the supplied application ID and publishes `Lab663BootstrapObjectId` for action 3. A lookup or variable-publication failure stops the action without assigning roles.
 
 It assigns two built-in roles to the learner at subscription scope:
 
@@ -113,7 +171,13 @@ The subscription application needs to read, create and delete role assignments a
 
 Use a reviewed, pinned repository commit on the VM, for example at `C:\Users\LabUser\Desktop\LAB663`. Do not download a moving `main` branch when each learner starts. Record the commit, image version and package versions used in the rehearsal.
 
+For the `deploy-pwsh.ps1` route, include **PowerShell 7** at `C:\Program Files\PowerShell\7\pwsh.exe` (or set `$powerShell7` in the pasted action to its installed path). Skillable can still start the action with `powershell.exe`; the wrapper verifies and invokes `pwsh.exe` for deployment. Missing PowerShell 7 ends the action before Azure sign-in, with a desktop failure summary. Keep Windows PowerShell 5.1 installed. Update the VM's `infra\pwsh\deploy.ps1` and repaste the launcher together. **Expected:** the deployment summary reports PowerShell version 7 or later.
+
+Keep `$resumeDeployment = $false` for new instances. If Azure succeeded but the same instance stopped before local setup, use the [recovery instructions](../infra/README.md#run-the-powershell-deployment-as-a-skillable-lifecycle) to resume without resubmitting resources. Resume requires the existing ownership manifest and matching deployment parameters; it is not a substitute for normal startup.
+
 The image must already contain Azure CLI, Bicep, VS Code with Python/Jupyter and GitHub Copilot support, and a Python environment satisfying [`requirements.txt`](../requirements.txt). In particular, the lab requires `azure-ai-projects>=2.8.0`; an older SDK can create an agent but cannot run the newer rubric, insights and optimizer calls. Confirm preview feature access in the **Skillable subscription**, not just the development subscription.
+
+For the `deploy-pwsh.ps1` route, verify the Bicep executable under the **lab VM user**, not only an administrator account. Deployment finds it on `PATH` or in that user's `.azure\bin` directory and compiles the template directly before submitting ARM JSON. The fresh lifecycle sign-in cache must not trigger a compiler download. For a CLI-managed image installation, check `& "$HOME\.azure\bin\bicep.exe" --version`; for a standalone installation, check `bicep --version`. **Expected:** the prepared compiler prints its version, and the deployment log separates compilation from Azure submission.
 
 Install the Skillable integration service in the image and configure Windows automatic sign-in for the intended lab VM account. Skillable's **Execute Script in Virtual Machine** action requires that service and a signed-in VM user. Do not bake a personal GitHub login, Azure login or access token into the image.
 
@@ -132,20 +196,21 @@ Prepare the root `.venv` from `requirements.txt` while building the image, befor
 
 ## Supply the cloud identity and scope
 
-The Skillable lifecycle service principal needs resource deployment and role-assignment rights **on the allocated lab resource group**. Actions 2 and 4 also read, create and delete the learner's role assignments at **subscription scope**, so the principal needs those rights there too: for example Owner, or Role Based Access Control Administrator with a condition that allows the role IDs in [action 2](#action-2-assign-the-learners-azure-roles) and Log Analytics Reader. The subscription administrator must register `Microsoft.CognitiveServices`, `Microsoft.Insights` and `Microsoft.OperationalInsights` beforehand. Normal Skillable deployment does not create a resource group or register providers.
+The Skillable lifecycle service principal needs resource deployment and role-assignment rights **on the allocated lab resource group**. Actions 2 and 4 also read, create and delete the learner's role assignments at **subscription scope**, so the principal needs those rights there too: for example Owner, or Role Based Access Control Administrator with a condition that allows the role IDs in [action 2](#action-2-assign-the-learners-azure-roles) and Log Analytics Reader. The subscription administrator must register `Microsoft.CognitiveServices`, `Microsoft.Insights`, `Microsoft.OperationalInsights` and `Microsoft.AlertsManagement` beforehand. The VM deployment does not create a resource group or register providers; use the separate cloud registration action when authorized.
 
 Preflight also needs subscription-level read access to provider registration and regional model/quota metadata. Authorize the soft-deleted-account purge operation used by teardown separately; resource-group deployment rights alone must not be assumed to include purge. Verify both against the actual lifecycle principal without broadening the learner's permissions.
 
-The platform must allocate the learner account before action 1. Action 1 resolves its Entra **object ID**, and action 2 resolves the lifecycle service principal's **object ID**. An application/client ID identifies the application, not its tenant-specific service principal. The VM deployment still accepts both object IDs explicitly; it never needs directory-app credentials or directory read permissions.
+Supply the learner's Entra **object ID** and the lifecycle service principal's **object ID** from the lab's identity provisioning step. An application/client ID is not a service principal object ID. The scripts accept these explicitly and do not require broad directory permissions just to look them up.
 
 | Input | Source |
 |---|---|
 | Tenant and subscription | `@lab.CloudSubscription.TenantId`, `@lab.CloudSubscription.Id` |
-| Resource group and region | `@lab.CloudResourceGroup(ResourceGroup1).Name`, `.Location` |
+| Resource group | `@lab.CloudResourceGroup(ResourceGroup1).Name` |
+| Lab resource region | `eastus2`, independent of the group's metadata location; enforced by Bicep and deployment scripts |
 | Lab instance ID | `@lab.LabInstance.Id` |
 | Client ID and secret | `@lab.CloudSubscription.AppId`, `.AppSecret`, injected into **process-only** variables |
-| Learner object ID | `@lab.Variable(Lab663LearnerObjectId)`, published by action 1 from `@lab.CloudPortalCredential(User1).Username` |
-| Bootstrap object ID | `@lab.Variable(Lab663BootstrapObjectId)`, published by action 2 from the subscription application's own service principal |
+| Learner object ID | Identity provisioning for `@lab.CloudPortalCredential(User1).Username` |
+| Bootstrap object ID | Identity provisioning for the lifecycle service principal |
 
 The macro names must match the resource group and credential aliases configured in the Skillable lab profile. Validate substitution in a real Skillable rehearsal; a successful local PowerShell run does not prove that mapping.
 
@@ -176,7 +241,7 @@ The allocated resource group's region must be allowed. Policies must also allow 
 
 Paste the complete [`03-prepare-lab663-environment.ps1`](03-prepare-lab663-environment.ps1) file into the **First Displayable** VM action. Change `$repoRoot` to the pinned checkout path in your image; the example is `C:\Users\LabUser\Desktop\LAB663`. The file injects the subscription credentials, runs setup followed by deployment and clears the credentials on exit.
 
-Before it starts, the action checks that Skillable replaced every value it needs, that the identity IDs are valid and that actions 1 and 2 reported success. Missing learner or bootstrap IDs name the action that must publish them. A failed or unreported earlier action stops setup and deployment even if the profile accidentally allows action 3 to run. The action also checks that the checkout exists and writes `LAB663-03-environment-status.txt` to the desktop as it goes; see [Check each action's result](#check-each-actions-result).
+Before it starts, the action checks that Skillable replaced every value it needs and that the checkout exists. If anything is missing, it fails straight away and names the missing values. It writes `LAB663-03-environment-status.txt` to the desktop as it goes; see [Check each action's result](#check-each-actions-result).
 
 Setup and deployment are deliberately in one blocking action: a failed prerequisite check stops deployment, and no ordering between separate script processes is assumed.
 
@@ -213,7 +278,7 @@ If the portal says **You don't have permission to build agents in this project**
 
 Paste the complete [`04-remove-learner-azure-roles.ps1`](04-remove-learner-azure-roles.ps1) file into the first **Tearing Down** action, a cloud-platform action that runs before action 5. It replaces the profile's original Tear Down Roles action and embeds the same role implementation as action 2.
 
-It removes this learner's Foundry User, Cognitive Services Contributor and Log Analytics Reader assignments anywhere in their subscription. That covers the subscription-scope roles from action 2 and the resource-scoped roles from `roles.bicep`. It only touches the learner whose saved ID it confirms, and never deletes a user, group or role definition. If action 1 did not publish a valid ID, cleanup fails explicitly; it never searches for a substitute learner.
+It removes this learner's Foundry User, Cognitive Services Contributor and Log Analytics Reader assignments anywhere in their subscription. That covers the subscription-scope roles from action 2 and the resource-scoped roles from `roles.bicep`. It only touches the learner whose ID it confirms, and never deletes a user, group or role definition.
 
 An assignment that's already gone counts as removed, and with nothing to remove the action succeeds without changes. It then checks that Azure no longer lists any of the three roles for the learner. It needs no VM, so it still runs if the VM is unavailable. Use it only with dedicated lab accounts, as with action 6.
 
@@ -239,7 +304,7 @@ For a separate operator rehearsal, `deployment.ps1 -UseCurrentAzureLogin -Create
 
 Add a **separate cloud-platform action** at **Tearing Down**, after action 5. It must not depend on reading the VM or on successful Azure cleanup. Configure cleanup errors to notify and log, and rehearse that Skillable still attempts this cloud action when action 4 or 5 fails or the VM is unavailable.
 
-Paste the complete [`06-remove-github-copilot-entitlement.ps1`](06-remove-github-copilot-entitlement.ps1) file into this cloud action. It embeds the implementation, selects `Cleanup`, confirms the learner object ID saved by action 1 and clears directory credentials on exit. It does not resolve the UPN again or substitute another account if the saved ID is missing.
+Paste the complete [`06-remove-github-copilot-entitlement.ps1`](06-remove-github-copilot-entitlement.ps1) file into this cloud action. It embeds the implementation, selects `Cleanup`, confirms the same learner object ID and clears directory credentials on exit.
 
 Inject the dedicated directory app credentials again; environment variables and PowerShell variables from startup do not carry over.
 
@@ -259,7 +324,7 @@ Actions 3 and 5 write a plain-text status file on the VM. Actions 1, 2, 4 and 6 
 - The file goes to the desktop of the account that runs the action. If Skillable runs the action as SYSTEM, it goes to the Public Desktop, which every user sees. To use another folder, set `$statusDirectory` at the top of the file.
 - `Result: RUNNING` is rewritten at each stage. If it still says RUNNING after the action's timeout, Skillable stopped the action before it could record a result.
 - `Result: FAILED` includes the error message with the subscription secret redacted. The full output is still on the lab instance details page.
-- "not reported" for action 1 or 2 means action 3 couldn't read that action's result variable. Check that action on the lab instance details page. A PowerShell parser error happens before the script runs, so even its status-recording code cannot run.
+- "not reported" for action 1 or 2 means action 3 couldn't read that action's result variable. Check that action on the lab instance details page.
 - Writing the file never changes an action's result. If the file can't be written, the action logs a warning and carries on.
 - Action 5's file is only visible if the VM is kept after teardown.
 - During a rehearsal, you can temporarily set actions 1 to 3 to **Notify User** instead of ending the lab, so you can read the file after a forced failure. Set them back before opening the lab.
@@ -268,28 +333,11 @@ Actions 3 and 5 write a plain-text status file on the VM. Actions 1, 2, 4 and 6 
 
 **Expected:** a facilitator can tell from the desktop whether the environment is ready, which stage failed and why, without opening the Skillable logs.
 
-### Repair an older profile with missing identity variables
-
-The earlier scripts expected another integration to populate `Lab663LearnerObjectId` and `Lab663BootstrapObjectId`, but none of the six actions did so. The current scripts resolve those IDs in actions 1 and 2; no seventh action is needed.
-
-| Error in the lab instance details | Meaning and correction |
-|---|---|
-| Action 1: `Unexpected token '.id'` beside `$details.targetIdentity .id` | The saved action has a space or line break inside the property expression. It must be `$details.targetIdentity.id`. Replace the complete saved action with the raw `.ps1` file, rather than copying formatted output. A parser failure explains why action 1's status is "not reported". |
-| Action 2: cannot convert `@lab.Variable(Lab663LearnerObjectId)` to `System.Guid` | Skillable passed an unresolved variable, not an Entra ID. The updated action 1 publishes it before action 2 starts. |
-| Action 3: missing `BootstrapObjectId, LearnerObjectId` | The earlier actions have not supplied their IDs. Repair and rerun actions 1 and 2 before retrying action 3; changing VM paths cannot fix this. |
-
-Replace the complete contents of actions **1, 2, 3, 4 and 6** with the corresponding files in this folder, and check the `User1` and `ResourceGroup1` aliases. Action 5 is unchanged. Have the administrator consent `User.Read.All` on the dedicated directory app, keep its protected credentials bound to actions 1 and 6, and retain the four tenant settings above. Keep all startup actions blocking and configured to end the lab on failure.
-
-Launch a fresh instance, or rerun the repaired startup actions in order on the same allocated identities. Check that action 1 reports the learner ID was recorded and action 2 reports the bootstrap ID was recorded before action 3 starts. Do not enter a previous learner's ID or the application/client ID to get past the error.
-
-**Expected:** both cloud startup actions succeed before VM preparation. Only `LAB663-03-environment-status.txt` is created on the desktop during startup; `.env` and state files appear inside the LAB663 checkout after deployment progresses. The cleanup status file is written only during teardown.
-
 ## Rehearse before opening the lab
 
 Run the following checks on the actual Skillable image and subscription. A development-subscription pass is useful evidence, but it does not replace them.
 
 - Confirm the pinned commit, package versions, macro substitution, directory application permissions, subscription role-assignment rights and preview feature access.
-- Confirm action 1 resolves this instance's learner, action 2 resolves its own service principal, and their published IDs reach action 3. Check missing consent, an unknown learner and variable-publication failure: the failing action must not change access, and action 3 must not deploy.
 - Confirm the profile's nine original actions are removed or disabled.
 - Exercise directory preparation and cleanup twice, a wrong learner confirmation, a synchronization failure and actual GitHub/Copilot access. Do not use a personal account.
 - Run actions 2 and 4 twice each with the subscription's policies applied. The second run must change nothing.
