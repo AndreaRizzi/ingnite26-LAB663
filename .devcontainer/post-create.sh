@@ -47,6 +47,26 @@ else
     fail "az bicep skipped because az is missing"
 fi
 
+# ------------------------------------------------------ azure dev cli ----
+log "Azure Developer CLI"
+if command -v azd >/dev/null 2>&1; then
+    # The feature can lag behind a cached image; updates are best-effort so offline builds still pass.
+    azd update --no-prompt >/dev/null 2>&1 \
+        || warn "could not update azd; using the installed version"
+    ok "$(azd version 2>/dev/null | head -n1)"
+    if azd extension list --installed 2>/dev/null | grep -q '^microsoft\.foundry\b'; then
+        azd extension update microsoft.foundry --no-prompt >/dev/null 2>&1 \
+            && ok "microsoft.foundry extension up to date" \
+            || warn "could not update the microsoft.foundry extension"
+    else
+        azd extension install microsoft.foundry --no-prompt >/dev/null 2>&1 \
+            && ok "installed microsoft.foundry extension" \
+            || warn "could not install the microsoft.foundry extension"
+    fi
+else
+    fail "azd not found"
+fi
+
 # --------------------------------------------------------- dependencies ----
 log "Python dependencies"
 if [[ ! -x "$PYTHON" ]]; then

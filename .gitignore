@@ -429,7 +429,7 @@ FodyWeavers.xsd
 *.msp
 
 # Local experiments - never commit
-.DO-NOT-COMMIT/
+.do-not-commit/
 
 # Lab state saved between notebooks
 .lab-state.json

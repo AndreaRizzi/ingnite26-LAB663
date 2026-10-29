@@ -4,10 +4,9 @@
     "name": "Model Router to Agent Optimizer (LAB663)",
     "image": "mcr.microsoft.com/devcontainers/python:3.13-bookworm",
     "features": {
-        "ghcr.io/devcontainers/features/azure-cli:1": {
-            "installBicep": true
-        },
-        "ghcr.io/devcontainers/features/copilot-cli:1": {}
+        "ghcr.io/devcontainers/features/azure-cli:1": {},
+        "ghcr.io/devcontainers/features/copilot-cli:1": {},
+        "ghcr.io/azure/azure-dev/azd:0": {}
     },
     "remoteUser": "vscode",
     "updateContentCommand": "bash .devcontainer/post-create.sh",
