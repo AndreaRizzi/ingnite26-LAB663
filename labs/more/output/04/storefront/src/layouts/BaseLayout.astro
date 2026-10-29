@@ -122,31 +122,44 @@ const { title = 'Contoso Outdoors' } = Astro.props;
 
 <style is:global>
   :root {
-    --canvas: #f7f1e7;
-    --surface: #fffaf1;
-    --surface-raised: #fffdf8;
-    --ink: #26382d;
-    --muted: #687267;
-    --line: #c9b99f;
-    --accent: #a4492d;
-    --accent-hover: #813722;
-    --accent-contrast: #fffaf3;
-    --gold: #b8892b;
-    --shadow: 0 14px 32px rgba(70, 48, 28, 0.08);
+    --ink-black: #001524;
+    --stormy-teal: #15616d;
+    --papaya-whip: #ffecd1;
+    --vivid-tangerine: #ff7d00;
+    --brandy: #78290f;
+    --canvas: var(--papaya-whip);
+    --surface: #fff7ea;
+    --surface-raised: #ffecd1;
+    --ink: #001524;
+    --muted: #15616d;
+    --line: rgba(21, 97, 109, 0.38);
+    --accent: #ff7d00;
+    --accent-hover: #78290f;
+    --accent-contrast: #001524;
+    --gold: #ff7d00;
+    --ask-bg: var(--stormy-teal);
+    --ask-contrast: var(--papaya-whip);
+    --ask-edge: var(--ink-black);
+    --ask-shadow: rgba(0, 21, 36, 0.28);
+    --shadow: 0 14px 32px rgba(120, 41, 15, 0.12);
     color-scheme: light;
   }
   :root[data-theme="dark"] {
-    --canvas: #1e261f;
-    --surface: #283229;
-    --surface-raised: #303a31;
-    --ink: #f5eddc;
-    --muted: #c2c7b8;
-    --line: #697261;
-    --accent: #d79a5b;
-    --accent-hover: #edb77f;
-    --accent-contrast: #20291f;
-    --gold: #e1b85b;
-    --shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+    --canvas: var(--ink-black);
+    --surface: var(--stormy-teal);
+    --surface-raised: #082f39;
+    --ink: var(--papaya-whip);
+    --muted: #cce0dc;
+    --line: rgba(255, 236, 209, 0.25);
+    --accent: var(--vivid-tangerine);
+    --accent-hover: var(--brandy);
+    --accent-contrast: var(--ink-black);
+    --gold: var(--papaya-whip);
+    --ask-bg: var(--vivid-tangerine);
+    --ask-contrast: var(--ink-black);
+    --ask-edge: var(--brandy);
+    --ask-shadow: rgba(255, 125, 0, 0.24);
+    --shadow: 0 16px 38px rgba(0, 0, 0, 0.32);
     color-scheme: dark;
   }
   * { box-sizing: border-box; }
@@ -163,7 +176,10 @@ const { title = 'Contoso Outdoors' } = Astro.props;
   .theme-toggle:hover { border-color: var(--accent); }
   .theme-icon { color: var(--gold); font-size: 1rem; }
   main { width: min(1120px, 90%); margin: 40px auto 80px; }
-  .ask-button { position: fixed; right: 24px; bottom: 24px; z-index: 20; border: 1px solid var(--line); border-radius: 999px; background: var(--accent); color: var(--accent-contrast); box-shadow: var(--shadow); padding: 14px 18px; font-weight: 700; cursor: pointer; }
+  .ask-button { position: fixed; right: 24px; bottom: 24px; z-index: 20; border: 1px solid var(--ask-bg); border-radius: 999px; background: var(--ask-bg); color: var(--ask-contrast); box-shadow: 0 5px 0 var(--ask-edge), 0 12px 24px var(--ask-shadow); padding: 14px 18px; font-weight: 800; cursor: pointer; transform: translateY(0); transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease; }
+  .ask-button:hover { filter: brightness(1.06); transform: translateY(-2px); box-shadow: 0 7px 0 var(--ask-edge), 0 16px 28px var(--ask-shadow); }
+  .ask-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ask-edge), 0 6px 14px var(--ask-shadow); }
+  .ask-button:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
   .chat-panel { position: fixed; right: 24px; bottom: 84px; z-index: 30; width: min(360px, calc(100vw - 48px)); max-height: min(520px, calc(100vh - 120px)); display: none; grid-template-rows: auto minmax(120px, 1fr) auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); box-shadow: var(--shadow); overflow: hidden; }
   .chat-panel.is-open { display: grid; }
   .chat-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding: 14px 16px; }
