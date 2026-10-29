@@ -176,6 +176,14 @@ if ! PRINCIPAL_ID="${LAB663_PRINCIPAL_ID:-$(az ad signed-in-user show --query id
 fi
 PRINCIPAL_TYPE="${LAB663_PRINCIPAL_TYPE:-$PRINCIPAL_TYPE}"
 
+# Roles we already hold (directly, through a group, or inherited from the subscription) are skipped, so reruns stay quiet.
+LEARNER_ROLE_IDS="53ca6127-db72-4b80-b1b0-d745d6d5456d a97b65f3-24c7-4388-baec-2e87135dc908 73c42c96-874c-492b-b04d-ab87d138a893"
+HELD_ROLE_IDS="$(az role assignment list --assignee "$PRINCIPAL_ID" --scope "/subscriptions/$AZURE_SUBSCRIPTION_ID" \
+  --include-inherited --include-groups --query "[].roleDefinitionId" -o tsv 2>/dev/null | awk -F/ '{print $NF}' || true)"
+SKIP_ROLE_IDS_JSON="$(LEARNER="$LEARNER_ROLE_IDS" HELD="$HELD_ROLE_IDS" "$PYTHON" -c \
+  'import json, os; held = set(os.environ["HELD"].split()); print(json.dumps([r for r in os.environ["LEARNER"].split() if r in held]))')"
+[[ "$SKIP_ROLE_IDS_JSON" == "[]" ]] || echo "Already held, so not assigned again: $SKIP_ROLE_IDS_JSON"
+
 echo
 echo "We're about to create:"
 echo "  Resource group : $RESOURCE_GROUP"
@@ -210,6 +218,7 @@ az deployment group create \
                capacity="$CAPACITY" \
                chatModels="$CHAT_MODELS_JSON" \
                imageModels="$IMAGE_MODELS_JSON" \
+               skipLearnerRoleIds="$SKIP_ROLE_IDS_JSON" \
   --output none
 
 # --- 7. Write .env ---
@@ -238,6 +247,10 @@ AZURE_LOCATION=$LOCATION
 LAB663_DELIVERY_MODE=self-guided
 MODEL_IMAGE_HERO=${IMAGE_HERO:-}
 MODEL_IMAGE_BULK=${IMAGE_BULK:-}
+# MAI voice and transcription come with the Foundry resource; nothing to deploy.
+MODEL_VOICE_HERO=MAI-Voice-2.1
+MODEL_VOICE_FAST=MAI-Voice-2.1-Flash
+MODEL_TRANSCRIBE=MAI-Transcribe-2
 EOF
 echo "Done. Project endpoint: $PROJECT_ENDPOINT"
 

@@ -31,6 +31,9 @@ param assignRoles bool = true
 @description('Create learner role assignments. Set false when Skillable already grants learner access.')
 param assignLearnerRoles bool = true
 
+@description('Learner role definition IDs the learner already holds; deploy.sh fills this so they are not assigned twice.')
+param skipLearnerRoleIds array = []
+
 @description('Ownership tags used by the lifecycle scripts')
 param resourceTags object = {}
 
@@ -138,6 +141,7 @@ module roles 'modules/roles.bicep' = if (assignRoles) {
     principalId: principalId
     principalType: principalType
     assignLearnerRoles: assignLearnerRoles
+    skipLearnerRoleIds: skipLearnerRoleIds
     projectPrincipalId: foundry.outputs.projectPrincipalId
     bootstrapPrincipalId: bootstrapPrincipalId
   }

@@ -36,6 +36,7 @@ For a pre-provisioned Windows Skillable VM, use the [Skillable lifecycle scripts
 ## Good to know
 
 - We need permission to create role assignments (Owner or User Access Administrator) on the resource group.
+- We get three roles on the new resources: Foundry User (models and agents), Cognitive Services User (MAI voice and transcription) and Log Analytics Reader (traces). `deploy.sh` first checks which of these we already hold, directly, through a group or inherited from the subscription, and skips those, so reruns don't warn.
 - Both Bicep role controls default to `true`, so self-guided deployment creates learner and project-identity roles. The Skillable PowerShell lifecycle passes `assignLearnerRoles=false`: only learner roles are skipped, while bootstrap and project-identity roles remain. `assignRoles=false` skips the entire roles module.
 - The `chatModelDeploymentNames` output returns the deployed chat model names in input order (frontier first, smaller model second). The PowerShell and Skillable setup helpers use it to check or populate the learner's environment.
 - To skip the questions, set `AZURE_SUBSCRIPTION_ID`, `AZURE_LOCATION` or `LAB663_CHAT_MODELS` first, or pass `--yes` to accept the defaults. Set `LAB663_IMAGE_MODELS=""` to skip the image models.
