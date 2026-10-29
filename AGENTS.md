@@ -16,7 +16,7 @@ We climb the hill together: build it, measure it, improve it.
 - **Build, break, fix, learn.** Every module ends with something we built,
   broke on purpose or by accident, fixed, and can explain.
 - **Time budget.** The slowest learner finishes the core modules in 60
-  minutes. Fast learners get the bonus labs.
+  minutes. Fast learners go on to the `more` labs.
 
 ## How we write
 

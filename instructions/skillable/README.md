@@ -56,7 +56,7 @@ Then follow the notebooks in order. The times below are planning targets, not me
 
 ## Step 3: Use the waits
 
-Open [the wait-time challenges](../../labs/bonus/wait-time-challenges.ipynb) in a **separate kernel** while a service job runs. They use local files only and do not spend model quota or change the measuring stick.
+Open [the practice decisions](../../labs/more/00-practice-decisions.ipynb) in a **separate kernel** while a service job runs. They use local files only and do not spend model quota or change the measuring stick.
 
 The core helpers print progress and save evaluation/optimizer IDs. If a bounded wait expires, resume the existing job as the cell explains. Do not click the submit cell repeatedly, restart its kernel unnecessarily, or launch all notebooks at once.
 

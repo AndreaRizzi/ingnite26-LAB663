@@ -57,7 +57,7 @@ If you're learning at your own pace:
 2. Run `bash infra/deploy.sh` from the repo root. It builds everything we need in our own Azure subscription and creates our first agent.
 3. Follow the [self-guided walkthrough](instructions/self-guided/README.md). It takes us through the notebooks in [`labs/core/`](labs/core/), starting at `00-set-the-stage.ipynb`.
 
-The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deployment, VM preparation and the introductory reading happen before the clock starts. Service waits still need a timed rehearsal; additional model experiments and router editions are optional. While jobs run, try the [local wait-time challenges](labs/bonus/wait-time-challenges.ipynb) without spending more model quota.
+The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deployment, VM preparation and the introductory reading happen before the clock starts. Service waits still need a timed rehearsal; additional model experiments and router editions are optional. While jobs run, try the [practice decisions](labs/more/00-practice-decisions.ipynb) without spending more model quota.
 
 This is a code-first lab for beginner and intermediate participants. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
 

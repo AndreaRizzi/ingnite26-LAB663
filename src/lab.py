@@ -168,7 +168,7 @@ def wait_for_runs(openai_client, eval_id, runs, poll_seconds: int = 15, timeout_
                 raise TimeoutError(
                     "Evaluation is still running. Its IDs are saved in .lab-state.json. "
                     "Rerun this cell to resume, not submit another batch. "
-                    "While waiting, open labs/bonus/wait-time-challenges.ipynb."
+                    "While waiting, open labs/more/00-practice-decisions.ipynb."
                 )
             time.sleep(poll_seconds)
     return [done[run.id] for run in runs]
@@ -179,7 +179,7 @@ def wait_for_poller(poller, label: str, timeout_seconds: int = 900):
     started = time.monotonic()
     while not poller.done():
         elapsed = int(time.monotonic() - started)
-        print(f"{label}: {poller.status()} ({elapsed}s). The bonus notebook needs no Azure calls.", flush=True)
+        print(f"{label}: {poller.status()} ({elapsed}s). The practice decisions notebook needs no Azure calls.", flush=True)
         if elapsed >= timeout_seconds:
             raise TimeoutError(
                 f"{label} is still running. Keep this kernel open and call "
