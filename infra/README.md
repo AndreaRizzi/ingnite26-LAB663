@@ -19,7 +19,7 @@ For a pre-provisioned Windows Skillable VM, use the [Skillable lifecycle scripts
 | Foundry resource and project | Where our agent and models live |
 | `gpt-5.4`, `gpt-5.4-mini` | The chat models we compare |
 | `mr-default`, `mr-cost`, `mr-quality`, `mr-subset` | Four model router editions. Each one picks models differently |
-| `MAI-Image-2.6`, `MAI-Image-2.6-Flash` | Image models for the optional image lab. Self-guided only for now |
+| `MAI-Image-2.6`, `MAI-Image-2.6-Flash` | Image models for the optional image lab, at capacity 30 each, or the quota that's free if less. Self-guided only for now |
 | Application Insights | Where traces land, so we can see what the agent did |
 | Role assignments | Access for us and for the project identity |
 

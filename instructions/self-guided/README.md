@@ -86,7 +86,7 @@ A complete twelve-question, two-repeat baseline batch took 213 seconds in the is
 
 Each core notebook has a **While you wait** box next to its long-running cells. It needs no code, so it doesn't compete with the busy kernel, spend model quota or change the rubric.
 
-**Longer wait, or finished early?** Read the optional [More labs](../../labs/more/README.md). They come pre-run in replay mode, so reading them needs no Azure and costs nothing. To run them live, set `DEMO_MODE=live` in `labs/more/.env`; `deploy.sh` has already deployed the image models and given us access to voice and transcription.
+**Longer wait, or finished early?** Read the optional [More labs](../../labs/more/README.md). They come pre-run in replay mode, so reading them needs no Azure and costs nothing. To run them live, set `DEMO_MODE = "live"` in each notebook's mode cell, or add `DEMO_MODE=live` to the repo's `.env`; `deploy.sh` has already deployed the image models and given us access to voice and transcription.
 
 **Expected:** progress and a saved run ID in the core notebook. A bounded wait may end while the service job continues. Resume that ID as the cell explains; do not repeatedly submit the batch. If requests fail, inspect the saved output, fix the cause, and explicitly select a new attempt.
 

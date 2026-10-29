@@ -21,7 +21,7 @@
 #   AZURE_SUBSCRIPTION_ID, AZURE_LOCATION,
 #   LAB663_CHAT_MODELS (for example "gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"),
 #   LAB663_IMAGE_MODELS (set it to "" to skip the image models),
-#   LAB663_CAPACITY
+#   LAB663_CAPACITY, LAB663_IMAGE_CAPACITY (30 by default, lowered to the quota that's free)
 #
 # Flags:
 #   --yes          accept every default without asking
@@ -48,6 +48,7 @@ DEFAULT_LOCATION="eastus"
 DEFAULT_CHAT_MODELS="gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"
 DEFAULT_IMAGE_MODELS="MAI-Image-2.6@2026-07-31,MAI-Image-2.6-Flash@2026-07-31"
 DEFAULT_CAPACITY="250"
+DEFAULT_IMAGE_CAPACITY="30"
 
 step() { printf '\n==> %s\n' "$*"; }
 
@@ -167,6 +168,35 @@ if [[ -n "$MISSING" ]]; then
 fi
 echo "All models found."
 
+# Image deployments get as much capacity as we ask for, up to the quota that's still free in this region.
+IMAGE_CAPACITY="${LAB663_IMAGE_CAPACITY:-$DEFAULT_IMAGE_CAPACITY}"
+if [[ -n "$IMAGE_MODELS" ]]; then
+  USAGE_FILE="$(mktemp)"
+  trap 'rm -f "$CATALOG_FILE" "$USAGE_FILE"' EXIT
+  az cognitiveservices usage list --location "$LOCATION" -o json > "$USAGE_FILE" 2>/dev/null || echo "[]" > "$USAGE_FILE"
+  IMAGE_CAPACITY="$(USAGE_FILE="$USAGE_FILE" IMAGE_MODELS_JSON="$IMAGE_MODELS_JSON" WANTED="$IMAGE_CAPACITY" "$PYTHON" - <<'PY'
+import json, os, sys
+with open(os.environ["USAGE_FILE"], encoding="utf-8") as f:
+    usages = json.load(f)
+capacity = int(os.environ["WANTED"])
+for model in json.loads(os.environ["IMAGE_MODELS_JSON"]):
+    name = model["name"].lower()
+    matches = [u for u in usages if "globalstandard" in u["name"]["value"].lower() and u["name"]["value"].lower().endswith(name)]
+    if not matches:
+        print(f"No quota entry found for {model['name']}; asking for {capacity}.", file=sys.stderr)
+        continue
+    free = int(matches[0]["limit"] - matches[0]["currentValue"])
+    print(f"{model['name']}: {free} capacity free in this region.", file=sys.stderr)
+    capacity = min(capacity, free)
+print(capacity)
+PY
+)"
+  if (( IMAGE_CAPACITY < 1 )); then
+    echo "There's no free MAI image quota in $LOCATION. Free some up, try the other region, or set LAB663_IMAGE_MODELS=\"\" to skip the image models. Nothing was deployed."
+    exit 1
+  fi
+fi
+
 # --- 5. Who gets access ---
 PRINCIPAL_TYPE="User"
 if ! PRINCIPAL_ID="${LAB663_PRINCIPAL_ID:-$(az ad signed-in-user show --query id -o tsv 2>/dev/null)}" || [[ -z "$PRINCIPAL_ID" ]]; then
@@ -190,7 +220,7 @@ echo "  Resource group : $RESOURCE_GROUP"
 echo "  Region         : $LOCATION"
 echo "  Chat models    : $CHAT_MODELS"
 echo "  Router editions: mr-default, mr-cost, mr-quality, mr-subset"
-echo "  Image models   : ${IMAGE_MODELS:-none}"
+echo "  Image models   : ${IMAGE_MODELS:-none}${IMAGE_MODELS:+ (capacity $IMAGE_CAPACITY each)}"
 if ! $ASSUME_YES; then
   read -r -p "Go ahead? [y/N] " confirm
   [[ "$confirm" =~ ^[Yy]$ ]] || { echo "Cancelled. Nothing was created."; exit 0; }
@@ -218,6 +248,7 @@ az deployment group create \
                capacity="$CAPACITY" \
                chatModels="$CHAT_MODELS_JSON" \
                imageModels="$IMAGE_MODELS_JSON" \
+               imageCapacity="$IMAGE_CAPACITY" \
                skipLearnerRoleIds="$SKIP_ROLE_IDS_JSON" \
   --output none
 
@@ -230,6 +261,16 @@ PROJECT_ENDPOINT="$(output projectEndpoint)"
 APPI_NAME="$(output applicationInsightsName)"
 APPI_CONNECTION_STRING="$(az resource show -g "$RESOURCE_GROUP" -n "$APPI_NAME" \
   --resource-type Microsoft.Insights/components --query properties.ConnectionString -o tsv)"
+
+# The notebooks pace image requests to the deployment's own request limit; the slower of the two sets the pace.
+IMAGE_RPM=""
+for model in ${IMAGE_HERO:-} ${IMAGE_BULK:-}; do
+  rpm="$(az cognitiveservices account deployment show -g "$RESOURCE_GROUP" -n "$ACCOUNT_NAME" --deployment-name "$model" \
+    --query "properties.rateLimits[?key=='request'].count | [0]" -o tsv 2>/dev/null || true)"
+  rpm="${rpm%%.*}"
+  [[ "$rpm" =~ ^[0-9]+$ ]] || continue
+  [[ -z "$IMAGE_RPM" || "$rpm" -lt "$IMAGE_RPM" ]] && IMAGE_RPM="$rpm"
+done
 
 umask 077
 cat > "$ENV_FILE" <<EOF
@@ -247,6 +288,7 @@ AZURE_LOCATION=$LOCATION
 LAB663_DELIVERY_MODE=self-guided
 MODEL_IMAGE_HERO=${IMAGE_HERO:-}
 MODEL_IMAGE_BULK=${IMAGE_BULK:-}
+RATE_LIMIT_RPM=${IMAGE_RPM:-6}
 # MAI voice and transcription come with the Foundry resource; nothing to deploy.
 MODEL_VOICE_HERO=MAI-Voice-2.1
 MODEL_VOICE_FAST=MAI-Voice-2.1-Flash

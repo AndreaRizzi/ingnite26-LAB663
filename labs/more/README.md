@@ -42,7 +42,7 @@ Run them live **at home**, with no time pressure, or **in the venue** if you fin
 ## Run it live
 
 1. **Deploy.** If you ran `bash infra/deploy.sh` for the core lab, you're set: it deploys MAI-Image-2.6 and Flash, gives you access to MAI voice and transcription, and writes the settings to the repo's `.env`. Use `eastus` or `westus`.
-2. **Switch to live.** Copy `.env.example` to `.env` in this folder, and set `DEMO_MODE=live`.
+2. **Switch to live.** In each notebook's "Before you start" section, set `DEMO_MODE = "live"` in the mode cell. To switch every notebook at once, add `DEMO_MODE=live` to the repo's `.env` instead. The mode cell wins over `.env`.
 3. **Run the cells in order** with **Shift + Enter**.
 
 Your pictures, audio and site files are saved under `output/`, which Git ignores. Replay mode shows yours first, then ours from `examples/`.
@@ -67,7 +67,7 @@ Your pictures, audio and site files are saved under `output/`, which Git ignores
 | Path | What it is |
 | --- | --- |
 | `00-…ipynb` to `04-…ipynb` | The notebooks |
-| `.env.example` | Settings for live runs |
+| `.env.example` | Optional settings you can add to the repo's `.env` |
 | `assets/` | Banners, the section banners, and the napkin sketches |
 | `examples/` | Saved results from our runs, used in replay mode |
 | `output/` | Your own results from live runs. Git ignores it |
