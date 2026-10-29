@@ -438,3 +438,6 @@ FodyWeavers.xsd
 .lab-lifecycle/
 .venv/
 .ipynb_checkpoints/
+
+# Pictures, audio and sites made by the More labs; replay copies live in labs/more/examples/
+labs/more/output/

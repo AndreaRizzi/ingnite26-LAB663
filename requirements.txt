@@ -6,3 +6,8 @@ ipykernel>=6.29.0
 pandas>=2.2.0
 jinja2>=3.1.0
 matplotlib>=3.8.0
+
+# More labs: MAI image REST calls, pictures, and MAI voice/transcription.
+requests>=2.32.0
+Pillow>=11.0.0
+azure-cognitiveservices-speech>=1.53.0
