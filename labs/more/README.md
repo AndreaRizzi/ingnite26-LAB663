@@ -45,6 +45,8 @@ Run them live **at home**, with no time pressure, or **in the venue** if you fin
 2. **Switch to live.** In each notebook's "Before you start" section, set `DEMO_MODE = "live"` in the mode cell. To switch every notebook at once, add `DEMO_MODE=live` to the repo's `.env` instead. The mode cell wins over `.env`.
 3. **Run the cells in order** with **Shift + Enter**.
 
+Notebook 04 builds a website, so running it live also needs **Node.js** and npm. The dev container includes them; its readiness check in notebook 00 tells you if they're missing.
+
 Your pictures, audio and site files are saved under `output/`, which Git ignores. Replay mode shows yours first, then ours from `examples/`.
 
 > **Skillable:** the guided environment doesn't include the image models yet. Read the saved results there, and run live at home.

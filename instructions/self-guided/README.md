@@ -2,7 +2,7 @@
 
 This is the full pass through the lab. We deploy once, then work through seven notebooks in order. Each notebook starts with a question, and ends with an "aha" that answers it.
 
-> **Check the evidence, not just the happy path.** Historical BAMI results informed this revision, but they do not validate the changed workflow. Stale notebook outputs have been cleared. The [isolated rehearsal](../../docs/narrative.md#what-the-isolated-rehearsal-tells-us) still found router/file-search failures. When something differs from its **Expected** result, keep the exact message and run ID.
+> **Check the evidence, not just the happy path.** Some features are in preview and can fail in ways the notebooks don't predict. When something differs from its **Expected** result, keep the exact message and run ID.
 
 ## Before we start
 
@@ -80,7 +80,7 @@ Notebooks 04, 05 and 06 share `.lab-state.json`, so run them in order, not concu
 
 The timing column is a planning budget, not a measured promise. The core uses one router edition; choose all four **before** starting Module 6 for a longer experiment. Reasoning-effort and full photo comparisons are optional. Do not cut cases or repeats to meet the clock.
 
-A complete twelve-question, two-repeat baseline batch took 213 seconds in the isolated rehearsal. Module 5 runs several batches plus optimization, so its allocation needs a full timed rehearsal before delivery.
+Module 5 runs several evaluation batches plus rubric generation and optimization, so its time is a target until a timed run confirms it.
 
 ## While a service job runs
 
@@ -92,7 +92,7 @@ Each core notebook has a **While you wait** box next to its long-running cells. 
 
 ## What to verify in our subscription
 
-- **Feature access:** insights, rubric generation and the optimizer must work here, not only in the original BAMI environment.
+- **Feature access:** insights, rubric generation and the optimizer must work in our own subscription and region.
 - **Tracing:** a connection string is not proof of ingestion. Confirm the analysis actually saw the practice traces.
 - **Evaluation inputs:** retrieval criteria need structured tool evidence. Inspect the judge's per-dimension reasons before trusting the aggregate.
 - **Coverage:** every repeat must score all twelve questions. An incomplete batch cannot earn promotion.

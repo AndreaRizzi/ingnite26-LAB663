@@ -52,7 +52,7 @@ Then follow the notebooks in order. The times below are planning targets, not me
 
 **Expected:** pinned agent IDs, a frozen rubric, complete evaluation results and an explicit promote-or-retain decision. A lower score, pending job, invalid batch or unknown cost is not a success to hide.
 
-**Facilitator note:** the [isolated rehearsal](../../docs/narrative.md#what-the-isolated-rehearsal-tells-us) found router/file-search failures, and one complete evaluation pair took 213 seconds. Resolve the service issue and rehearse the whole schedule on the actual Skillable image; the 60-minute plan has not yet been demonstrated.
+**Facilitator note:** rehearse the whole schedule on the actual Skillable image before delivery; the 60-minute plan has not yet been demonstrated there.
 
 ## Step 3: Use the waits
 

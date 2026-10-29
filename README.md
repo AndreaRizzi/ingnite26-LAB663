@@ -61,16 +61,17 @@ The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deplo
 
 **More labs (optional):** [Model Fundamentals: Explore Microsoft AI Models](labs/more/README.md) takes the same company, Contoso Outdoors, and builds a product launch with MAI image, voice, transcription and coding models. The notebooks come pre-run, so you can read them during long waits and run them live at home.
 
-This is a code-first lab for beginner and intermediate participants. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
+This is a code-first lab for everyone who builds or decides on AI agents: beginners, experienced AI engineers, and business decision makers who want to judge the evidence. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
 
 <br/>
+
 ### 🎯 Learning outcomes
 
 By the end of this session, you will be able to:
 
 - Use model router in Foundry to automate model selection for reliable, cost-effective AI agents
 - Use Rubric evaluator and insights in Foundry to assess agent behavior and identify optimization opportunities from production evidence
-- Use agent optimizer in Foundry Agent Service to turn production evidence into continuous improvements in agent reliability and cost-effectiveness
+- Use agent optimizer in Foundry Agent Service to turn production evidence into continuous, measured improvements in agent reliability
 
 ### 💻 Technologies used
 
