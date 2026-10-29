@@ -5,7 +5,7 @@
 # What we get:
 #   - A Foundry resource and project, with tracing wired up
 #   - Chat models and four model router editions
-#   - MAI-Image-2.6 and MAI-Image-2.6-Flash, for the image lab in labs/more/
+#   - MAI-Image-2.6 and MAI-Image-2.6-Flash, for the optional image lab
 #   - The access (RBAC) we need, assigned to us
 #   - A local .env file and the v0 TrailMate agent
 #

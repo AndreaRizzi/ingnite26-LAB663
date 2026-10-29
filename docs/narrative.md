@@ -150,7 +150,7 @@ The complete baseline pair took **213 seconds** in this rehearsal. The router pa
 
 The common thread for all three audiences is a customer-facing decision: should we keep this change? A business decision maker should be able to explain the risk and evidence; a developer should be able to reproduce the versioned calls; an AI engineer should be able to challenge the judge, coverage and comparison.
 
-The 60-minute schedule is a target pending a timed learner rehearsal. Prepare the environment and read Module 0 beforehand. Keep extra reasoning-effort, photo and router-edition experiments optional; do not reduce the frozen evaluation set. While services run, use the [practice decisions](../labs/more/00-practice-decisions.ipynb). If the live job exceeds the session, preserve its ID and report a pending decision.
+The 60-minute schedule is a target pending a timed learner rehearsal. Prepare the environment and read Module 0 beforehand. Keep extra reasoning-effort, photo and router-edition experiments optional; do not reduce the frozen evaluation set. While services run, use the **While you wait** boxes in Modules 4 to 6. If the live job exceeds the session, preserve its ID and report a pending decision.
 
 There is also a useful data-quality lesson: the Adventurer Pro manual contains conflicting rain-cover statements, while `pr-04` expects an unqualified "no." Preserve the current dataset during the run, record the ambiguity, and review the answer key with the content owners for the next version. A quote check alone does not resolve conflicting source material.
 

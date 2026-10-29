@@ -84,7 +84,7 @@ A complete twelve-question, two-repeat baseline batch took 213 seconds in the is
 
 ## While a service job runs
 
-Open [the practice decisions](../../labs/more/00-practice-decisions.ipynb) in a separate kernel. They read local files only: no additional Azure calls, no changes to the rubric and no interference with the busy kernel.
+Each core notebook has a **While you wait** box next to its long-running cells. It needs no code, so it doesn't compete with the busy kernel, spend model quota or change the rubric.
 
 **Expected:** progress and a saved run ID in the core notebook. A bounded wait may end while the service job continues. Resume that ID as the cell explains; do not repeatedly submit the batch. If requests fail, inspect the saved output, fix the cause, and explicitly select a new attempt.
 
