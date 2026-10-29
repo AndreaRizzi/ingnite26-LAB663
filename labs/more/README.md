@@ -20,7 +20,7 @@ Each notebook gives one job to one Microsoft AI (MAI) model family, and answers 
 | 01 | [Build the launch kit](./01-build-launch-kit.ipynb) | How can MAI-Image-2.6 models support a real product launch? | MAI-Image-2.6, MAI-Image-2.6-Flash |
 | 02 | [Give it a voice](./02-give-it-a-voice.ipynb) | How can MAI-Voice-2.1 models give a launch its voice? | MAI-Voice-2.1, MAI-Voice-2.1-Flash |
 | 03 | [Hear your customers](./03-hear-your-customers.ipynb) | How can MAI-Transcribe-2 turn launch audio into answers? | MAI-Transcribe-2 |
-| 04 | [Refresh the storefront](./04-refresh-the-storefront.ipynb) | Can a coding model turn our napkin sketch into a website? | MAI-Code-1.1-Flash, in GitHub Copilot |
+| 04 | [Refresh the storefront](./04-refresh-the-storefront.ipynb) | Can a coding model turn our napkin sketch into a website? | The latest MAI-Code-X.Y-Flash in GitHub Copilot (may be in preview) |
 
 Each one stands alone, but they tell one story in order: the pictures from 01 become the radio ad in 02, the ad is checked in 03, and 04 puts it all on the new launch page.
 
@@ -55,7 +55,7 @@ Your pictures, audio and site files are saved under `output/`, which Git ignores
 
 | Note | What it means for you |
 | --- | --- |
-| **Preview models** | MAI-Voice-2.1 and MAI-Code-1.1-Flash are in preview. Great for pilots; check the model cards before production promises |
+| **Release status varies** | MAI-Image-2.6 and Flash are generally available in Foundry. MAI-Voice-2.1 and Flash are in preview, and the MAI-Code Flash model in Copilot may be too. Check the model cards before production promises |
 | **Every run is different** | Your pictures and audio won't match ours. Judge them with each section's checklist, not by matching ours |
 | **Text and speech are English-first** | Have a native speaker check other languages |
 | **You pay per use** | Per picture, per character spoken and per hour transcribed. See [MAI pricing](https://aka.ms/MAIModelPricing) and [Speech pricing](https://aka.ms/SpeechPricing) |
