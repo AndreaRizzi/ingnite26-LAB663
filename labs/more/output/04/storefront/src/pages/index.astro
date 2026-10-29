@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { products } from '../data/products.js';
+const featured = products.find((product) => product.slug === 'trailmaster-x4-tent');
+---
+<BaseLayout title="Contoso Outdoors">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Contoso Outdoors</p>
+      <h1>Gear for the way outside</h1>
+      <p>See the new TrailMaster X4 launch.</p>
+      <a class="primary-link" href="/launch">View the launch</a>
+      <a class="secondary-link" href="/tents">Browse tents</a>
+    </div>
+    {featured && <img src={featured.image} alt={featured.name} />}
+  </section>
+
+  <section class="categories" aria-label="Product categories">
+    <a href="/tents"><strong>Tents</strong><span>View tents</span></a>
+    <a href="/products/adventurer-pro-backpack"><strong>Packs</strong><span>View packs</span></a>
+    <a href="/products/ecofire-camping-stove"><strong>Stoves</strong><span>View stoves</span></a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { min-height: 360px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; border: 1px solid var(--line); border-radius: 8px; padding: 32px; background: var(--surface-raised); box-shadow: var(--shadow); }
+  .hero img { width: 100%; height: 290px; object-fit: contain; }
+  h1 { margin: 8px 0 24px; max-width: 420px; font-size: clamp(2.4rem, 5vw, 4.8rem); line-height: 0.98; }
+  .eyebrow { margin: 0; color: var(--accent); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; }
+  .primary-link, .secondary-link { display: inline-block; border: 1px solid var(--accent); border-radius: 6px; padding: 10px 16px; text-decoration: none; font-weight: 700; }
+  .primary-link { background: var(--accent); color: var(--accent-contrast); }
+  .primary-link:hover { background: var(--accent-hover); }
+  .secondary-link { margin-left: 8px; }
+  .categories { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+  .categories a { min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--line); border-radius: 6px; padding: 20px; background: var(--surface); text-decoration: none; }
+  .categories a:hover { border-color: var(--accent); }
+  .categories strong { font-family: "Fraunces", Georgia, serif; font-size: 1.25rem; }
+  .categories span { color: var(--muted); }
+  @media (max-width: 700px) { .hero { grid-template-columns: 1fr; } .hero img { height: 220px; } .categories { grid-template-columns: 1fr; } }
+</style>

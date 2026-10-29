@@ -1,0 +1,184 @@
+---
+const { title = 'Contoso Outdoors' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Fraunces:opsz,wght@9..144,600;9..144,700&amp;display=swap" rel="stylesheet" />
+    <script is:inline>
+      const savedTheme = localStorage.getItem('contoso-theme');
+      const preferredTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = savedTheme || preferredTheme;
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Contoso Outdoors</a>
+      <nav aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/tents">All tents</a>
+        <a href="/launch">Launch</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+        <span class="theme-icon" aria-hidden="true">◐</span>
+        <span class="theme-label">Dark</span>
+      </button>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <aside id="chat-panel" class="chat-panel" aria-label="Ask Contoso chat" aria-hidden="true">
+      <div class="chat-header">
+        <div>
+          <strong>Ask Contoso</strong>
+          <p>TrailMate, our support agent, will answer here.</p>
+        </div>
+        <button class="chat-close" type="button" aria-label="Close Ask Contoso chat">×</button>
+      </div>
+      <div class="chat-messages" aria-live="polite">
+        <p class="chat-message agent-message">TrailMate is ready for a question.</p>
+      </div>
+      <form class="chat-form">
+        <label for="chat-question">Your question</label>
+        <div class="chat-input-row">
+          <input id="chat-question" name="question" type="text" autocomplete="off" placeholder="Type a question" />
+          <button type="submit">Send</button>
+        </div>
+      </form>
+    </aside>
+    <button class="ask-button" type="button" aria-expanded="false" aria-controls="chat-panel">Ask Contoso</button>
+  </body>
+</html>
+
+<script is:inline>
+  async function askTrailMate(question) {
+    return `TrailMate will answer “${question}” when the chat service is connected.`;
+  }
+
+  const chatPanel = document.querySelector('.chat-panel');
+  const askButton = document.querySelector('.ask-button');
+  const chatClose = document.querySelector('.chat-close');
+  const chatForm = document.querySelector('.chat-form');
+  const chatInput = document.querySelector('#chat-question');
+  const chatMessages = document.querySelector('.chat-messages');
+
+  function setChatOpen(open) {
+    chatPanel?.classList.toggle('is-open', open);
+    chatPanel?.setAttribute('aria-hidden', String(!open));
+    askButton?.setAttribute('aria-expanded', String(open));
+    if (open) chatInput?.focus();
+  }
+
+  askButton?.addEventListener('click', () => setChatOpen(!chatPanel?.classList.contains('is-open')));
+  chatClose?.addEventListener('click', () => {
+    setChatOpen(false);
+    askButton?.focus();
+  });
+
+  chatForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const question = chatInput?.value.trim();
+    if (!question) return;
+
+    const userMessage = document.createElement('p');
+    userMessage.className = 'chat-message user-message';
+    userMessage.textContent = question;
+    chatMessages?.appendChild(userMessage);
+
+    chatInput.value = '';
+    const answer = await askTrailMate(question);
+
+    const agentMessage = document.createElement('p');
+    agentMessage.className = 'chat-message agent-message';
+    agentMessage.textContent = answer;
+    chatMessages?.appendChild(agentMessage);
+    chatMessages?.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+  });
+
+  const themeToggle = document.querySelector('.theme-toggle');
+  const themeLabel = document.querySelector('.theme-label');
+
+  function updateThemeControl() {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    themeToggle?.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} theme`);
+    if (themeLabel) themeLabel.textContent = isDark ? 'Light' : 'Dark';
+  }
+
+  themeToggle?.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem('contoso-theme', nextTheme);
+    updateThemeControl();
+  });
+
+  updateThemeControl();
+</script>
+
+<style is:global>
+  :root {
+    --canvas: #f7f1e7;
+    --surface: #fffaf1;
+    --surface-raised: #fffdf8;
+    --ink: #26382d;
+    --muted: #687267;
+    --line: #c9b99f;
+    --accent: #a4492d;
+    --accent-hover: #813722;
+    --accent-contrast: #fffaf3;
+    --gold: #b8892b;
+    --shadow: 0 14px 32px rgba(70, 48, 28, 0.08);
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --canvas: #1e261f;
+    --surface: #283229;
+    --surface-raised: #303a31;
+    --ink: #f5eddc;
+    --muted: #c2c7b8;
+    --line: #697261;
+    --accent: #d79a5b;
+    --accent-hover: #edb77f;
+    --accent-contrast: #20291f;
+    --gold: #e1b85b;
+    --shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--canvas); }
+  body { margin: 0; color: var(--ink); background: var(--canvas); font-family: "DM Sans", sans-serif; line-height: 1.5; }
+  h1, h2, h3, .brand { font-family: "Fraunces", Georgia, serif; }
+  a { color: inherit; }
+  .site-header { min-height: 76px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 28px; padding: 0 5%; border-bottom: 1px solid var(--line); background: var(--surface-raised); }
+  .brand { font-size: 1.35rem; font-weight: 700; text-decoration: none; }
+  nav { display: flex; justify-self: end; gap: 24px; }
+  nav a { padding: 8px 0; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+  nav a:hover { color: var(--accent); }
+  .theme-toggle { min-width: 82px; height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); cursor: pointer; font: 700 0.78rem "DM Sans", sans-serif; }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-icon { color: var(--gold); font-size: 1rem; }
+  main { width: min(1120px, 90%); margin: 40px auto 80px; }
+  .ask-button { position: fixed; right: 24px; bottom: 24px; z-index: 20; border: 1px solid var(--line); border-radius: 999px; background: var(--accent); color: var(--accent-contrast); box-shadow: var(--shadow); padding: 14px 18px; font-weight: 700; cursor: pointer; }
+  .chat-panel { position: fixed; right: 24px; bottom: 84px; z-index: 30; width: min(360px, calc(100vw - 48px)); max-height: min(520px, calc(100vh - 120px)); display: none; grid-template-rows: auto minmax(120px, 1fr) auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); box-shadow: var(--shadow); overflow: hidden; }
+  .chat-panel.is-open { display: grid; }
+  .chat-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding: 14px 16px; }
+  .chat-header strong { font-family: "Fraunces", Georgia, serif; }
+  .chat-header p { margin: 3px 0 0; color: var(--muted); font-size: 0.82rem; }
+  .chat-close { border: 0; background: transparent; color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .chat-messages { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding: 14px 16px; }
+  .chat-message { max-width: 85%; margin: 0; border-radius: 7px; padding: 9px 11px; font-size: 0.88rem; }
+  .agent-message { align-self: flex-start; border: 1px solid var(--line); background: var(--surface); }
+  .user-message { align-self: flex-end; background: var(--accent); color: var(--accent-contrast); }
+  .chat-form { border-top: 1px solid var(--line); padding: 12px 16px 16px; }
+  .chat-form label { display: block; margin-bottom: 6px; font-size: 0.78rem; font-weight: 700; }
+  .chat-input-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .chat-input-row input { min-width: 0; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink); padding: 9px 10px; }
+  .chat-input-row button { border: 1px solid var(--accent); border-radius: 5px; background: var(--accent); color: var(--accent-contrast); padding: 8px 10px; font-weight: 700; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+  @media (max-width: 640px) { .site-header { grid-template-columns: 1fr auto; gap: 12px; padding-top: 14px; padding-bottom: 14px; } nav { grid-row: 2; grid-column: 1 / -1; justify-self: start; gap: 16px; } .theme-toggle { grid-column: 2; grid-row: 1; } main { margin-top: 24px; } .chat-panel { right: 16px; bottom: 76px; width: calc(100vw - 32px); } .ask-button { right: 16px; bottom: 16px; } }
+</style>
