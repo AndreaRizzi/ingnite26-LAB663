@@ -58,6 +58,8 @@ Then follow the notebooks in order. The times below are planning targets, not me
 
 While a service job runs, read the **While you wait** box next to that cell in the core notebook. It needs no code, so it doesn't spend model quota or change the measuring stick.
 
+**Longer wait, or finished early?** Read the optional [More labs](../../labs/more/README.md). They come pre-run in replay mode, so reading them needs no setup. The image models aren't in this environment yet, so read them here and run them live at home.
+
 The core helpers print progress and save evaluation/optimizer IDs. If a bounded wait expires, resume the existing job as the cell explains. Do not click the submit cell repeatedly, restart its kernel unnecessarily, or launch all notebooks at once.
 
 **Expected:** we can discuss an answer-key contradiction, judge evidence, unknown pricing or missing evaluation cases while the core job continues. If the service runs past the session, retain its ID and record the decision as pending.

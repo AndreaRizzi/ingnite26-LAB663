@@ -59,6 +59,8 @@ If you're learning at your own pace:
 
 The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deployment, VM preparation and the introductory reading happen before the clock starts. Service waits still need a timed rehearsal; additional model experiments and router editions are optional. While jobs run, each core notebook has a short **While you wait** box that needs no extra model calls.
 
+**More labs (optional):** [Model Fundamentals: Explore Microsoft AI Models](labs/more/README.md) takes the same company, Contoso Outdoors, and builds a product launch with MAI image, voice, transcription and coding models. The notebooks come pre-run, so you can read them during long waits and run them live at home.
+
 This is a code-first lab for beginner and intermediate participants. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
 
 <br/>
