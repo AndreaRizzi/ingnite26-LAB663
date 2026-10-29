@@ -76,6 +76,13 @@ type chatModel = {
   version: string
 }
 
+@description('MAI image models to deploy. Empty by default; MAI-Image-2.6 is only in some regions, such as eastus and westus.')
+param imageModels chatModel[] = []
+
+@description('Capacity for each image deployment')
+@minValue(1)
+param imageCapacity int = 1
+
 type routerEdition = {
   name: string
   mode: ('cost' | 'balanced' | 'quality')?
@@ -114,6 +121,8 @@ module foundry 'modules/foundry.bicep' = {
     routerModelName: routerModelName
     routerModelVersion: routerModelVersion
     routerEditions: routerEditions
+    imageModels: imageModels
+    imageCapacity: imageCapacity
     applicationInsightsId: monitoring.outputs.applicationInsightsId
     applicationInsightsConnectionString: appInsights.properties.ConnectionString
     resourceTags: resourceTags
@@ -139,6 +148,7 @@ output projectName string = foundry.outputs.projectName
 output projectEndpoint string = foundry.outputs.projectEndpoint
 output applicationInsightsName string = monitoring.outputs.applicationInsightsName
 output chatModelDeploymentNames array = foundry.outputs.chatModelDeploymentNames
+output imageModelDeploymentNames array = foundry.outputs.imageModelDeploymentNames
 output managedResourceIds array = [
   foundry.outputs.accountId
   monitoring.outputs.applicationInsightsId

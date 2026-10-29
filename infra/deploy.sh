@@ -5,8 +5,12 @@
 # What we get:
 #   - A Foundry resource and project, with tracing wired up
 #   - Chat models and four model router editions
+#   - MAI-Image-2.6 and MAI-Image-2.6-Flash, for the image lab in labs/more/
 #   - The access (RBAC) we need, assigned to us
 #   - A local .env file and the v0 TrailMate agent
+#
+# Regions: use eastus (the default) or westus. Both offer every model this lab deploys,
+# including the MAI image models; eastus2 does not offer MAI-Image-2.6.
 #
 # Run it from anywhere:  bash infra/deploy.sh
 #
@@ -16,6 +20,7 @@
 # We ask a few questions. To skip a question, set its variable first:
 #   AZURE_SUBSCRIPTION_ID, AZURE_LOCATION,
 #   LAB663_CHAT_MODELS (for example "gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"),
+#   LAB663_IMAGE_MODELS (set it to "" to skip the image models),
 #   LAB663_CAPACITY
 #
 # Flags:
@@ -38,8 +43,10 @@ for arg in "$@"; do
   esac
 done
 
-DEFAULT_LOCATION="eastus2"
+# Valid regions: eastus and westus. Checked against the model catalog on 2026-10-29.
+DEFAULT_LOCATION="eastus"
 DEFAULT_CHAT_MODELS="gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"
+DEFAULT_IMAGE_MODELS="MAI-Image-2.6@2026-07-31,MAI-Image-2.6-Flash@2026-07-31"
 DEFAULT_CAPACITY="250"
 
 step() { printf '\n==> %s\n' "$*"; }
@@ -86,9 +93,9 @@ az account set --subscription "$AZURE_SUBSCRIPTION_ID"
 echo "Using subscription: $(az account show --query name -o tsv)"
 
 # --- 3. Location, resource group, models ---
-LOCATION="${AZURE_LOCATION:-$(ask "Azure region" "$DEFAULT_LOCATION")}"
+LOCATION="${AZURE_LOCATION:-$(ask "Azure region (eastus or westus)" "$DEFAULT_LOCATION")}"
 if ! az account list-locations --query "[].name" -o tsv | grep -qxF "$LOCATION"; then
-  echo "'$LOCATION' isn't an Azure region name. Examples: eastus2, swedencentral, westus3."
+  echo "'$LOCATION' isn't an Azure region name. This lab supports eastus and westus."
   exit 1
 fi
 
@@ -118,6 +125,23 @@ PY
 read -r FRONTIER_MODEL SMALL_MODEL < <(CHAT_MODELS_JSON="$CHAT_MODELS_JSON" "$PYTHON" -c \
   'import json, os; print(*(m["name"] for m in json.loads(os.environ["CHAT_MODELS_JSON"])))')
 
+IMAGE_MODELS="${LAB663_IMAGE_MODELS-$DEFAULT_IMAGE_MODELS}"
+IMAGE_MODELS_JSON="$(IMAGE_MODELS="$IMAGE_MODELS" "$PYTHON" - <<'PY'
+import json, os, sys
+items = []
+for part in filter(None, (p.strip() for p in os.environ["IMAGE_MODELS"].split(","))):
+    name, _, version = part.partition("@")
+    if not name or not version:
+        sys.exit(f"'{part}' should look like name@version")
+    items.append({"name": name, "version": version})
+if items and len(items) != 2:
+    sys.exit("The image lab needs two image models: best quality first, faster second. Set LAB663_IMAGE_MODELS=\"\" to skip them.")
+print(json.dumps(items))
+PY
+)"
+read -r IMAGE_HERO IMAGE_BULK < <(IMAGE_MODELS_JSON="$IMAGE_MODELS_JSON" "$PYTHON" -c \
+  'import json, os; print(*(m["name"] for m in json.loads(os.environ["IMAGE_MODELS_JSON"])))')
+
 # --- 4. Check the models exist in this region ---
 step "Checking the models are available in $LOCATION"
 # The full catalog is big, so we keep only names and versions and hand them over in a file.
@@ -125,11 +149,12 @@ CATALOG_FILE="$(mktemp)"
 trap 'rm -f "$CATALOG_FILE"' EXIT
 az cognitiveservices model list --location "$LOCATION" \
   --query "[].{name:model.name, version:model.version}" -o json > "$CATALOG_FILE"
-MISSING="$(CATALOG_FILE="$CATALOG_FILE" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" "$PYTHON" - <<'PY'
+MISSING="$(CATALOG_FILE="$CATALOG_FILE" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" IMAGE_MODELS_JSON="$IMAGE_MODELS_JSON" "$PYTHON" - <<'PY'
 import json, os
 with open(os.environ["CATALOG_FILE"], encoding="utf-8") as f:
     catalog = {(m["name"], m["version"]) for m in json.load(f)}
 wanted = [(m["name"], m["version"]) for m in json.loads(os.environ["CHAT_MODELS_JSON"])]
+wanted += [(m["name"], m["version"]) for m in json.loads(os.environ["IMAGE_MODELS_JSON"])]
 wanted.append(("model-router", "2025-11-18"))
 print("\n".join(f"{n}@{v}" for n, v in wanted if (n, v) not in catalog))
 PY
@@ -137,7 +162,7 @@ PY
 if [[ -n "$MISSING" ]]; then
   echo "These models aren't in the $LOCATION catalog:"
   echo "$MISSING" | sed 's/^/  - /'
-  echo "We can pick another region, or change the model list. Nothing was deployed."
+  echo "Use eastus or westus, or change the model list. Nothing was deployed."
   exit 1
 fi
 echo "All models found."
@@ -157,6 +182,7 @@ echo "  Resource group : $RESOURCE_GROUP"
 echo "  Region         : $LOCATION"
 echo "  Chat models    : $CHAT_MODELS"
 echo "  Router editions: mr-default, mr-cost, mr-quality, mr-subset"
+echo "  Image models   : ${IMAGE_MODELS:-none}"
 if ! $ASSUME_YES; then
   read -r -p "Go ahead? [y/N] " confirm
   [[ "$confirm" =~ ^[Yy]$ ]] || { echo "Cancelled. Nothing was created."; exit 0; }
@@ -183,6 +209,7 @@ az deployment group create \
                principalType="$PRINCIPAL_TYPE" \
                capacity="$CAPACITY" \
                chatModels="$CHAT_MODELS_JSON" \
+               imageModels="$IMAGE_MODELS_JSON" \
   --output none
 
 # --- 7. Write .env ---
@@ -209,6 +236,8 @@ AZURE_AI_ACCOUNT_NAME=$ACCOUNT_NAME
 AZURE_AI_PROJECT_NAME=$PROJECT_NAME
 AZURE_LOCATION=$LOCATION
 LAB663_DELIVERY_MODE=self-guided
+MODEL_IMAGE_HERO=${IMAGE_HERO:-}
+MODEL_IMAGE_BULK=${IMAGE_BULK:-}
 EOF
 echo "Done. Project endpoint: $PROJECT_ENDPOINT"
 

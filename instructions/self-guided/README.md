@@ -10,7 +10,7 @@ We need:
 
 - A GitHub account with active Copilot access, signed into the Copilot experience in our editor.
 - An Azure subscription where we can create resources and role assignments (Owner, or Contributor plus User Access Administrator).
-- Quota for `gpt-5.4`, `gpt-5.4-mini` and the model router in the region we pick.
+- Quota for `gpt-5.4`, `gpt-5.4-mini`, the model router and the MAI image models in `eastus` or `westus`.
 - This repo open in the dev container or a Codespace. It brings Python, the Azure CLI and Bicep.
 - The repository's Python requirements, including `azure-ai-projects>=2.8.0`, and access to the preview rubric, insights and optimizer APIs. Notebook 01 stops if the SDK is too old.
 
@@ -46,7 +46,7 @@ python -m venv .venv
 bash infra/deploy.sh
 ```
 
-It asks for a subscription, region and chat models, then builds our Foundry project in a fresh `rg-lab663-NNNN` resource group, six model deployments (two chat models and four router editions), tracing, access, a `.env` file and our first agent, **v0**. Details are in [infra/README.md](../../infra/README.md).
+It asks for a subscription, region (`eastus` by default, or `westus`) and chat models, then builds our Foundry project in a fresh `rg-lab663-NNNN` resource group, eight model deployments (two chat models, four router editions and two image models), tracing, access, a `.env` file and our first agent, **v0**. Details are in [infra/README.md](../../infra/README.md).
 
 **Expected:** it ends with `TrailMate v0 is ready.`
 
@@ -84,7 +84,7 @@ A complete twelve-question, two-repeat baseline batch took 213 seconds in the is
 
 ## While a service job runs
 
-Open [the wait-time challenges](../../labs/bonus/wait-time-challenges.ipynb) in a separate kernel. They read local files only: no additional Azure calls, no changes to the rubric and no interference with the busy kernel.
+Open [the practice decisions](../../labs/more/00-practice-decisions.ipynb) in a separate kernel. They read local files only: no additional Azure calls, no changes to the rubric and no interference with the busy kernel.
 
 **Expected:** progress and a saved run ID in the core notebook. A bounded wait may end while the service job continues. Resume that ID as the cell explains; do not repeatedly submit the batch. If requests fail, inspect the saved output, fix the cause, and explicitly select a new attempt.
 
