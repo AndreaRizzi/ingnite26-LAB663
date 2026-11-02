@@ -37,6 +37,9 @@ Full guide: [workshop-content.instructions.md](.github/instructions/workshop-con
   we deploy with `infra/deploy.sh`.
 - **Skillable** (`instructions/skillable/`): infrastructure is
   pre-provisioned. Never mix the two. When shared setup changes, update both.
+- Each notebook has one page in each mode. Keep them in step with the
+  [update-lab-instructions skill](.github/skills/update-lab-instructions/SKILL.md),
+  then run `python3 instructions/scripts/check_sync.py`.
 
 ## Ground rules
 
