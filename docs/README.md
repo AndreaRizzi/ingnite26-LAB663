@@ -1,10 +1,5 @@
 # Docs
 
-<!-- IGNITE TEMPLATE PLACEHOLDER: remove this folder when the session needs no additional documentation. -->
+Background reading for LAB663. Learner step-by-step guidance lives in [`instructions/`](../instructions/).
 
-Use this folder for supporting documentation such as reference material and
-architecture/context.
-
-If this repository intentionally uses MkDocs or another docs-site pattern,
-attendee instructions can remain here. Link the attendee entry point clearly
-from the root README.
+- [Narrative](narrative.md): the story we tell, the six ways we lose trust, our measurement rules and what the latest rehearsal found.
