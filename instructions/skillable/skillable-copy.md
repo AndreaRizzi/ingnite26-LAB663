@@ -132,7 +132,7 @@ Send the same three questions to two models and compare speed, tokens, cost and 
 1. [] In section 2.4, read both answers to each question and check your guess.
 1. [] In section 2.5, run the cost cell.
 
-   > [!Knowledge] Prices in data/pricing.json are a dated snapshot for one region, westus. In any other region the cell shows no dollar figures, because a price from another region isn't a verified price. That's the correct result.
+   > [!Knowledge] Prices in data/pricing.json are a dated snapshot for one region, eastus. In any other region the cell shows no dollar figures, because a price from another region isn't a verified price. That's the correct result.
 
 1. [] Skip section 2.6 in the timed lab. It makes extra billed calls.
 

@@ -32,9 +32,9 @@ Check the prediction. Would a customer be happy with each answer?
 
 ## Step 4: Look at cost (section 2.5)
 
-Prices come from `data/pricing.json`, a dated list-price snapshot for one region (`westus`).
+Prices come from `data/pricing.json`, a dated list-price snapshot for one region (`eastus`).
 
-**Expected:** dollar figures if we deployed to `westus`. In any other region the cell shows no dollars, because a price from another region isn't a verified price. That's the correct result, not a bug.
+**Expected:** dollar figures if we deployed to `eastus`. In any other region the cell shows no dollars, because a price from another region isn't a verified price. That's the correct result, not a bug.
 
 ## Step 5: Skip or try reasoning effort (section 2.6, optional)
 

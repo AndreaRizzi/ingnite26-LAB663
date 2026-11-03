@@ -13,7 +13,7 @@ $resumeDeployment = $false
 $tenantId = '@lab.CloudSubscription.TenantId'
 $subscriptionId = '@lab.CloudSubscription.Id'
 $resourceGroup = '@lab.CloudResourceGroup(ResourceGroup1).Name'
-# Resource deployment region (eastus or westus), independent of the allocated resource group's metadata location.
+# Resource deployment region (eastus only), independent of the allocated resource group's metadata location.
 $location = 'eastus'
 $labInstanceId = '@lab.LabInstance.Id'
 # Learner access is granted by the profile's existing role action, not this deployment.

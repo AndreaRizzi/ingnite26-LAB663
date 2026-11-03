@@ -1,9 +1,8 @@
 targetScope = 'resourceGroup'
 
-@description('Deploy LAB663 resources to East US or West US, independently of the allocated group location.')
+@description('Deploy LAB663 resources to East US, independently of the allocated group location. Prices in data/pricing.json are for eastus.')
 @allowed([
   'eastus'
-  'westus'
 ])
 param location string = 'eastus'
 
