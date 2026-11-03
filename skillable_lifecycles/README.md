@@ -33,7 +33,7 @@ This is an alternative to deploying Azure resources from action 3. Keep the six 
 3. Configure the resource deployment to finish successfully before First Displayable. Record its exact ARM deployment name. For example, if the profile lets us choose `lab663-<instance ID>` as the name, use that same name in the VM action. Do not assume Skillable's generated name or invent a replacement token for it.
 4. In [`03-prepare-lab663-environment.ps1`](03-prepare-lab663-environment.ps1), set `$resourceDeploymentName` to that exact name. The rest of its credential, identity and checkout settings stay the same. Action 3 then calls [`post-deployment.ps1`](post-deployment.ps1), which reads the deployment and does not create or update Azure resources.
 
-The template creates Foundry, the two chat deployments, four router editions, Log Analytics, Application Insights, the tracing connection and the resource-scoped roles. It tags the account, project and monitoring resources for this instance. It does not create a resource group, grant subscription-wide roles, configure GitHub/Copilot, install packages, upload manuals or create the agent.
+The template creates Foundry, the two chat deployments, four router editions, the extra models in [`infra/extra-models.json`](../infra/extra-models.json), Log Analytics, Application Insights, the tracing connection and the resource-scoped roles. It tags the account, project and monitoring resources for this instance. It does not create a resource group, grant subscription-wide roles, configure GitHub/Copilot, install packages, upload manuals or create the agent.
 
 The VM action checks the deployment's `Succeeded` state, instance ID, both identities, resource IDs, region and ownership tags. It uses the **deployed** model-name outputs when filling `.env`, not the current checkout's defaults. It fetches the Application Insights connection string directly from the deployed resource rather than exposing it in deployment outputs. It then indexes the manuals and prepares TrailMate using the shared completion code used by the all-in-one lifecycle.
 
@@ -225,6 +225,7 @@ Each learner gets their own subscription, and the platform applies Azure Policy 
 | Foundry account `aif-lab663-<token>` | Kind `AIServices`, SKU `S0`, a system-assigned identity, project management, a custom subdomain and public network access. LAB663 doesn't set `disableLocalAuth`, so a policy that denies accounts without it blocks the deployment. |
 | Foundry project `trailmate` | A system-assigned identity |
 | Six model deployments | `GlobalStandard` SKU at 250 capacity units each |
+| Extra model deployments | From [`infra/extra-models.json`](../infra/extra-models.json), each with its own SKU and capacity. Today: `MAI-Image-2.6` and `MAI-Image-2.6-Flash`, `GlobalStandard` at 10 each |
 | Project connection to Application Insights | A connection that stores the Application Insights connection string (`ApiKey` auth type) |
 | Log Analytics workspace `log-lab663-<token>` | SKU `PerGB2018` with 30-day retention |
 | Application Insights `appi-lab663-<token>` | Kind `web`, workspace-based. Tracing sends data with the connection string, so local authentication must stay enabled. |
@@ -245,11 +246,13 @@ Before it starts, the action checks that Skillable replaced every value it needs
 
 Setup and deployment are deliberately in one blocking action: a failed prerequisite check stops deployment, and no ordering between separate script processes is assumed.
 
-**Expected:** `Python (LAB663)` is registered; six model deployments, a project and monitoring resources exist; the VM has a local `.env`, ten indexed manuals and a pinned v0 in `.lab-state.json`. The scripts retain a manifest under the ignored `.lab-lifecycle` directory. A failed action throws rather than reporting success.
+**Expected:** `Python (LAB663)` is registered; six chat and router deployments, the extra MAI model deployments, a project and monitoring resources exist; the VM has a local `.env` (including `MAI_IMAGE_DEPLOYMENT` and `MAI_IMAGE_FLASH_DEPLOYMENT`), ten indexed manuals and a pinned v0 in `.lab-state.json`. The scripts retain a manifest under the ignored `.lab-lifecycle` directory. A failed action throws rather than reporting success.
 
 An existing VS Code interpreter selection can override a new workspace default. Select the prepared `.venv` and **Python (LAB663)** explicitly when updating an existing image; notebook 01 prints the interpreter it actually uses.
 
 Capacity defaults to 250 units for **each** deployment. Quota is shared at subscription, region, model and SKU scope, and each learner has their own subscription. So **every learner subscription** needs this `GlobalStandard` quota in the lab region: 250 for `gpt-5.4`, 250 for `gpt-5.4-mini` and 1,000 for `model-router`, which serves four router editions. Existing deployments and soft-deleted accounts that haven't been purged also count against it. Catalog and quota checks do not reserve capacity or guarantee preview feature access.
+
+Each learner subscription also needs `GlobalStandard` quota for the extra models: 10 for `MAI-Image-2.6` and 10 for `MAI-Image-2.6-Flash`. The preflight below does not check extra models; confirm their quota when you rehearse.
 
 The preflight reads model names, versions, deployment names and SKU from the compiled `infra/main.bicep` defaults rather than a separate hard-coded list. It combines requirements sharing a quota bucket and credits only matching existing deployments, capped at the requested capacity for each.
 

@@ -70,7 +70,8 @@ param routerEditions routerEdition[] = [
     ]
   }
 ]
-
+@description('Extra model deployments (for example MAI image models). Pass [] to skip them.')
+param extraModels extraModel[] = loadJsonContent('extra-models.json')
 type chatModel = {
   name: string
   version: string
@@ -80,6 +81,15 @@ type routerEdition = {
   name: string
   mode: ('cost' | 'balanced' | 'quality')?
   models: chatModel[]?
+}
+
+type extraModel = {
+  name: string
+  format: string
+  version: string
+  sku: string
+  capacity: int
+  envVar: string?
 }
 
 var token = take(uniqueString(resourceGroup().id), 6)
@@ -114,6 +124,7 @@ module foundry 'modules/foundry.bicep' = {
     routerModelName: routerModelName
     routerModelVersion: routerModelVersion
     routerEditions: routerEditions
+    extraModels: extraModels
     applicationInsightsId: monitoring.outputs.applicationInsightsId
     applicationInsightsConnectionString: appInsights.properties.ConnectionString
     resourceTags: resourceTags
@@ -139,6 +150,8 @@ output projectName string = foundry.outputs.projectName
 output projectEndpoint string = foundry.outputs.projectEndpoint
 output applicationInsightsName string = monitoring.outputs.applicationInsightsName
 output chatModelDeploymentNames array = foundry.outputs.chatModelDeploymentNames
+output extraModelDeploymentNames array = foundry.outputs.extraModelDeploymentNames
+output extraModels array = extraModels
 output managedResourceIds array = [
   foundry.outputs.accountId
   monitoring.outputs.applicationInsightsId

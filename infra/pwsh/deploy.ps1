@@ -251,6 +251,11 @@ function Assert-ResumeParameters {
                 }
             }
         }
+        elseif ($key -eq 'extraModels') {
+            $have = @($value | ForEach-Object { "$($_.name)@$($_.version)" }) -join ','
+            $need = @($wanted | ForEach-Object { "$($_.name)@$($_.version)" }) -join ','
+            if ($have -cne $need) { throw 'Cannot resume: extra models differ.' }
+        }
         elseif ($key -eq 'resourceTags') {
             foreach ($tag in $wanted.Keys) {
                 if (-not $value -or -not $value.PSObject.Properties[$tag] -or $value.$tag -cne $wanted[$tag]) {
@@ -464,8 +469,8 @@ try {
     $Location = $env:AZURE_LOCATION
     if ([string]::IsNullOrWhiteSpace($Location)) { $Location = Read-WithDefault 'Azure region' $DefaultLocation }
     $Location = $Location.Trim().ToLowerInvariant()
-    if ($Location -ne 'eastus') {
-        throw 'LAB663 resources must be deployed to eastus. Set AZURE_LOCATION=eastus; the allocated resource group can have a different metadata location.'
+    if (($Lifecycle -or $Skillable) -and $Location -ne 'eastus') {
+        throw 'Skillable LAB663 resources must be deployed to eastus. Set AZURE_LOCATION=eastus; the allocated resource group can have a different metadata location.'
     }
     $regions = Invoke-Az account list-locations --query "[].name" --output tsv
     if ($regions -notcontains $Location) {
@@ -511,9 +516,17 @@ try {
     if ($missing.Count -gt 0) {
         Write-Host "These models aren't in the $Location catalog:"
         $missing | ForEach-Object { Write-Host "  - $_" }
-        Exit-WithMessage 'Check model availability and subscription access in eastus. Nothing was deployed.'
+        Exit-WithMessage "Check model availability and subscription access in $Location. Nothing was deployed."
     }
     Write-Host 'All models found.'
+
+    # Extra models are optional: deploy the ones this region offers and skip the rest.
+    $ExtraModelItems = @()
+    foreach ($m in @((Get-Content -Raw -LiteralPath (Join-Path $InfraDir 'extra-models.json')) | ConvertFrom-Json)) {
+        if ($catalog.Contains("$($m.name)@$($m.version)")) { $ExtraModelItems += $m }
+        else { Write-Host "  - $($m.name)@$($m.version) isn't offered in $Location, so we'll skip it. The core lab doesn't need it." }
+    }
+    $ExtraModelNames = if ($ExtraModelItems.Count) { ($ExtraModelItems.name) -join ', ' } else { 'none in this region' }
 
     # --- 5. Who gets access ---
     $PrincipalId = if ($LearnerAccessManagedExternally) { '' } else { $env:LAB663_PRINCIPAL_ID }
@@ -562,6 +575,7 @@ try {
     Write-Host "  Region         : $Location"
     Write-Host "  Chat models    : $ChatModels"
     Write-Host '  Router editions: mr-default, mr-cost, mr-quality, mr-subset'
+    Write-Host "  Extra models   : $ExtraModelNames"
     if ($Skillable) { Write-Host '  Role assignments: skipped (granted by Skillable lifecycle actions)' }
     if ($LearnerAccessManagedExternally) {
         Write-Host '  Learner roles: supplied by the existing Skillable role action; no directory lookup.'
@@ -619,6 +633,7 @@ try {
                 principalType = @{ value = $PrincipalType }
                 capacity      = @{ value = [int]$Capacity }
                 chatModels    = @{ value = $ChatModelItems }
+                extraModels   = @{ value = @($ExtraModelItems) }
                 assignRoles   = @{ value = -not $Skillable }
                 assignLearnerRoles = @{ value = -not $LearnerAccessManagedExternally }
                 bootstrapPrincipalId = @{ value = $(if ($Lifecycle) { "$BootstrapPrincipalId" } else { '' }) }
@@ -712,6 +727,12 @@ try {
         AZURE_AI_PROJECT_NAME = $ProjectName
         AZURE_LOCATION = $Location
         LAB663_DELIVERY_MODE = $(if ($Skillable -or $Lifecycle) { 'skillable' } else { 'self-guided' })
+    }
+    # Each deployed extra model names its own .env variable in infra/extra-models.json.
+    foreach ($m in $ExtraModelItems) {
+        if (-not $m.PSObject.Properties['envVar'] -or -not $m.envVar) { continue }
+        if ($m.envVar -notmatch '^[A-Z][A-Z0-9_]*$') { throw "Invalid envVar '$($m.envVar)' in infra/extra-models.json." }
+        $settings[$m.envVar] = $m.name
     }
     Write-Step "Writing $EnvFile"
     Write-LabEnvironment -RepoRoot $RepoRoot -Values $settings

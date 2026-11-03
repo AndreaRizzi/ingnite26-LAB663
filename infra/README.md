@@ -19,6 +19,7 @@ For a pre-provisioned Windows Skillable VM, use the [Skillable lifecycle scripts
 | Foundry resource and project | Where our agent and models live |
 | `gpt-5.4`, `gpt-5.4-mini` | The chat models we compare |
 | `mr-default`, `mr-cost`, `mr-quality`, `mr-subset` | Four model router editions. Each one picks models differently |
+| `MAI-Image-2.6`, `MAI-Image-2.6-Flash` | Extra models for later labs, listed in [`extra-models.json`](extra-models.json). Deployed only where the region offers them |
 | Application Insights | Where traces land, so we can see what the agent did |
 | Role assignments | Access for us and for the project identity |
 
@@ -28,6 +29,7 @@ For a pre-provisioned Windows Skillable VM, use the [Skillable lifecycle scripts
 |------|---------|
 | [`deploy.sh`](deploy.sh) | Asks the questions, deploys, writes `.env`, builds the agent |
 | [`main.bicep`](main.bicep) | Ties the modules together and holds the defaults |
+| [`extra-models.json`](extra-models.json) | Extra model deployments, each with its own format, SKU, capacity and `.env` variable |
 | [`modules/foundry.bicep`](modules/foundry.bicep) | Foundry resource, project, model deployments and the tracing connection |
 | [`modules/monitoring.bicep`](modules/monitoring.bicep) | Log Analytics and Application Insights |
 | [`modules/roles.bicep`](modules/roles.bicep) | Who can do what |
@@ -43,4 +45,5 @@ For a pre-provisioned Windows Skillable VM, use the [Skillable lifecycle scripts
 - `--skip-agent` still creates a **new** group and explicitly skips package/agent checks; it needs the `.venv` interpreter for local JSON handling. If only agent setup failed, rerun `src/agent/01_build_agent.py` with the same `.venv` interpreter, not the infrastructure deployment.
 - `.env` holds our project details. It stays on our machine and is never committed.
 - The bootstrap pins the actual v0 version and index in `.lab-state.json`. It reuses a matching baseline and refuses to replace an incomplete index that might already be attached to an agent.
-- All six deployments default to the same capacity. Check subscription/region quota for the total number of concurrent learner instances, not just one VM. Global Standard does not promise in-region processing.
+- The chat and router deployments share one capacity setting. Check subscription/region quota for the total number of concurrent learner instances, not just one VM. Global Standard does not promise in-region processing.
+- Extra models come from [`extra-models.json`](extra-models.json). Each entry sets its own format, version, SKU and capacity, plus the `.env` variable that receives its deployment name. To add a model for a later lab, add one line there; the Bicep and deploy scripts pick it up. The self-guided scripts skip any extra model the chosen region doesn't offer and say so, because the core lab doesn't need them. Skillable always deploys them in `eastus`.

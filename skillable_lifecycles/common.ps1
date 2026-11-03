@@ -135,6 +135,16 @@ function Complete-LabDeployment {
         AZURE_LOCATION = $Manifest.location
         LAB663_DELIVERY_MODE = 'skillable'
     }
+    # Extra models (for example MAI) name their own .env variable in infra/extra-models.json.
+    if ($Outputs.PSObject.Properties['extraModels']) {
+        foreach ($model in @($Outputs.extraModels.value)) {
+            if (-not $model.PSObject.Properties['envVar'] -or -not $model.envVar) { continue }
+            if ($model.envVar -notmatch '^[A-Z][A-Z0-9_]*$') {
+                throw "Invalid envVar '$($model.envVar)' in infra/extra-models.json."
+            }
+            $settings[$model.envVar] = $model.name
+        }
+    }
     Write-LabEnvironment -RepoRoot $RepoRoot -Values $settings
 
     if ($InfrastructureOnly) {
