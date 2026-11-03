@@ -38,7 +38,7 @@ for arg in "$@"; do
   esac
 done
 
-DEFAULT_LOCATION="eastus2"
+DEFAULT_LOCATION="eastus"
 DEFAULT_CHAT_MODELS="gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"
 DEFAULT_CAPACITY="250"
 
@@ -88,7 +88,7 @@ echo "Using subscription: $(az account show --query name -o tsv)"
 # --- 3. Location, resource group, models ---
 LOCATION="${AZURE_LOCATION:-$(ask "Azure region" "$DEFAULT_LOCATION")}"
 if ! az account list-locations --query "[].name" -o tsv | grep -qxF "$LOCATION"; then
-  echo "'$LOCATION' isn't an Azure region name. Examples: eastus2, swedencentral, westus3."
+  echo "'$LOCATION' isn't an Azure region name. Examples: eastus, swedencentral, westus3."
   exit 1
 fi
 

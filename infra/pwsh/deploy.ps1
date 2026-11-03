@@ -82,7 +82,7 @@ $CompiledTemplate = ''
 $BicepExecutable = ''
 $StartedAt = [DateTime]::UtcNow.ToString('u')
 
-$DefaultLocation = 'eastus2'
+$DefaultLocation = 'eastus'
 $DefaultChatModels = 'gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17'
 $DefaultCapacity = '250'
 
@@ -464,8 +464,8 @@ try {
     $Location = $env:AZURE_LOCATION
     if ([string]::IsNullOrWhiteSpace($Location)) { $Location = Read-WithDefault 'Azure region' $DefaultLocation }
     $Location = $Location.Trim().ToLowerInvariant()
-    if ($Location -ne 'eastus2') {
-        throw 'LAB663 resources must be deployed to eastus2. Set AZURE_LOCATION=eastus2; the allocated resource group can have a different metadata location.'
+    if ($Location -ne 'eastus') {
+        throw 'LAB663 resources must be deployed to eastus. Set AZURE_LOCATION=eastus; the allocated resource group can have a different metadata location.'
     }
     $regions = Invoke-Az account list-locations --query "[].name" --output tsv
     if ($regions -notcontains $Location) {
@@ -511,7 +511,7 @@ try {
     if ($missing.Count -gt 0) {
         Write-Host "These models aren't in the $Location catalog:"
         $missing | ForEach-Object { Write-Host "  - $_" }
-        Exit-WithMessage 'Check model availability and subscription access in eastus2. Nothing was deployed.'
+        Exit-WithMessage 'Check model availability and subscription access in eastus. Nothing was deployed.'
     }
     Write-Host 'All models found.'
 

@@ -18,8 +18,8 @@ param(
 $RepoRoot = (Resolve-Path -LiteralPath $RepoRoot).Path
 $manifestPath = Get-LabManifestPath $RepoRoot $LabInstanceId
 $Location = $Location.ToLowerInvariant()
-if ($Location -ne 'eastus2') {
-    throw 'LAB663 requires an eastus2 resource deployment. Existing resources in another region are not migrated by this script.'
+if ($Location -ne 'eastus') {
+    throw 'LAB663 requires an eastus resource deployment. Existing resources in another region are not migrated by this script.'
 }
 $manifest = $null
 

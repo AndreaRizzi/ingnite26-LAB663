@@ -1,7 +1,7 @@
 {
   "_note": "USD per 1 million tokens. Record the region, source URL, date and input/output/cached-input prices for every serving model before quoting estimated model cost. Unknown prices are not zero. Agent tools, storage and evaluation charges are separate.",
   "currency": "USD",
-  "region": "eastus2",
+  "region": "eastus",
   "source_url": null,
   "as_of": null,
   "models": {
