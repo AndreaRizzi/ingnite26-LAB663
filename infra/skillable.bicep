@@ -1,10 +1,11 @@
 targetScope = 'resourceGroup'
 
-@description('Deploy LAB663 resources to East US 2, independently of the allocated group location.')
+@description('Deploy LAB663 resources to East US or West US, independently of the allocated group location.')
 @allowed([
-  'eastus2'
+  'eastus'
+  'westus'
 ])
-param location string = 'eastus2'
+param location string = 'eastus'
 
 @minLength(1)
 @maxLength(40)

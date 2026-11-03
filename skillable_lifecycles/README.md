@@ -10,7 +10,7 @@ Deployment uses LAB663's [`infra/main.bicep`](../infra/main.bicep) to create the
 
 **For a profile that already grants learner access:** `deploy-pwsh.ps1` now relies on your existing learner-role action and requires neither `Lab663LearnerObjectId` nor `Lab663BootstrapObjectId`. It gets only the deployment application's own object ID from its ARM token, without a directory lookup. It skips learner role assignments but keeps bootstrap and project-identity roles. Ensure your existing action covers Foundry User and the learner's monitoring/query access; verify access as the learner before handover. The variable requirements below still apply to the original action 03, resource-template split, and repository-supplied actions 02/04. Do not replace your working role actions with those scripts just to use this wrapper.
 
-The `deploy-pwsh.ps1` wrapper deploys the lab resources to **`eastus2`**, independently of `ResourceGroup1.Location`. The existing group may have its metadata in France; resource location is passed explicitly to Bicep. Allow East US 2 in subscription policy and quota. To allocate the group itself there, change the Skillable profile's resource-group region for new instances. Existing deployments are not moved; use normal teardown and a fresh instance if a previous run recorded another region.
+The `deploy-pwsh.ps1` wrapper deploys the lab resources to **`eastus`** by default, or **`westus`** if we change `$location`, independently of `ResourceGroup1.Location`. These are the regions that offer every LAB663 model, including MAI-Image-2.6. The existing group may have its metadata in France; resource location is passed explicitly to Bicep. Allow the chosen region in subscription policy and quota. To allocate the group itself there, change the Skillable profile's resource-group region for new instances. Existing deployments are not moved; use normal teardown and a fresh instance if a previous run recorded another region.
 
 Use [`03-prepare-lab663-environment.ps1`](03-prepare-lab663-environment.ps1) as the deployment lifecycle action. Paste the complete file into **First Displayable > Execute Script in Virtual Machine > PowerShell** and set `$repoRoot` to the pinned checkout on the learner's Windows VM, for example `C:\Users\LabUser\Desktop\LAB663`. Keep startup blocking and end the lab on failure.
 
@@ -67,7 +67,7 @@ If the VM deployment reports that `Microsoft.CognitiveServices` must be register
 
 This cloud action uses only the built-in `CloudSubscription` tenant, subscription ID, AppId and AppSecret tokens. It needs no VM files, Azure CLI, Az modules, directory lookup or custom variables. The subscription must already be allocated when the action runs. Make sure it completes before the First Displayable VM deployment.
 
-It registers `Microsoft.CognitiveServices`, `Microsoft.Insights`, `Microsoft.OperationalInsights` and `Microsoft.AlertsManagement` through Azure Resource Manager, then checks all four reach `Registered`. Alerts Management supports Application Insights smart-detection alert rules, including the separate Failure Anomalies alert-rule deployment. Already registered providers are left alone; an in-progress registration is waited on. No resource group, model or role assignment is created. Provider registration is subscription-wide and does not change the East US 2 resource location. Do not unregister the providers during teardown.
+It registers `Microsoft.CognitiveServices`, `Microsoft.Insights`, `Microsoft.OperationalInsights` and `Microsoft.AlertsManagement` through Azure Resource Manager, then checks all four reach `Registered`. Alerts Management supports Application Insights smart-detection alert rules, including the separate Failure Anomalies alert-rule deployment. Already registered providers are left alone; an in-progress registration is waited on. No resource group, model or role assignment is created. Provider registration is subscription-wide and does not change the lab resource region. Do not unregister the providers during teardown.
 
 The application identified by `@lab.CloudSubscription.AppId` needs **subscription-level provider read/register permission**. Resource-group permissions and Entra directory permissions do not provide it. If this action reports HTTP 403, the subscription administrator must pre-register the providers for the subscription pool or authorize this cloud action. The script does not grant itself permissions or fall back to learner credentials.
 
@@ -206,7 +206,7 @@ Supply the learner's Entra **object ID** and the lifecycle service principal's *
 |---|---|
 | Tenant and subscription | `@lab.CloudSubscription.TenantId`, `@lab.CloudSubscription.Id` |
 | Resource group | `@lab.CloudResourceGroup(ResourceGroup1).Name` |
-| Lab resource region | `eastus2`, independent of the group's metadata location; enforced by Bicep and deployment scripts |
+| Lab resource region | `eastus` (default) or `westus`, independent of the group's metadata location; enforced by Bicep and deployment scripts |
 | Lab instance ID | `@lab.LabInstance.Id` |
 | Client ID and secret | `@lab.CloudSubscription.AppId`, `.AppSecret`, injected into **process-only** variables |
 | Learner object ID | Identity provisioning for `@lab.CloudPortalCredential(User1).Username` |

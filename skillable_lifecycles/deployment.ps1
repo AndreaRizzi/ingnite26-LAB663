@@ -20,8 +20,8 @@ $RepoRoot = (Resolve-Path -LiteralPath $RepoRoot).Path
 $manifestPath = Get-LabManifestPath $RepoRoot $LabInstanceId
 $stateDirectory = Split-Path $manifestPath -Parent
 $Location = $Location.ToLowerInvariant()
-if ($Location -ne 'eastus2') {
-    throw 'LAB663 resources must be deployed to eastus2. The allocated group metadata location does not select the resource region.'
+if ($Location -notin $LabRegions) {
+    throw "LAB663 resources must be deployed to $($LabRegions -join ' or '). The allocated group metadata location does not select the resource region."
 }
 $deploymentName = "lab663-$LabInstanceId"
 $compiledTemplate = Join-Path $stateDirectory "$LabInstanceId.template.json"
