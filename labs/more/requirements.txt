@@ -1,0 +1,7 @@
+# Extra packages for the More labs (labs/more). Kept out of the root requirements.txt
+# so the core lab setup check doesn't need them. Install into the repo .venv:
+#   Windows:   .\.venv\Scripts\python.exe -m pip install -r labs\more\requirements.txt
+#   Mac/Linux: .venv/bin/python -m pip install -r labs/more/requirements.txt
+requests>=2.32.0
+Pillow>=11.0.0
+azure-cognitiveservices-speech>=1.53.0
