@@ -16,7 +16,7 @@ Use the repository's `.venv` for scripts and the registered **Python (LAB663)** 
 
 Each evaluation repeat must contain exactly one finite 0-to-1 rubric score per expected query. Failed, cancelled, skipped, duplicate or missing items invalidate the batch. The result retains its errors and evidence path, but publishes no aggregate score or cost for promotion.
 
-`.lab-state.json` binds saved IDs to the project, agent and frozen data fingerprints. `.lab-results/` holds raw service records, SDK versions and the deployment snapshot. These files are local and ignored by Git; do not commit them. Main notebooks run sequentially; their "While you wait" boxes need no code or second kernel.
+`.lab-state.json` binds saved IDs to the project, agent and frozen data fingerprints. `.lab-results/` holds raw service records, SDK versions and the deployment snapshot. These files are local and ignored by Git; do not commit them. Main notebooks run sequentially, while the bonus notebook only reads local evidence.
 
 Run IDs are saved as soon as the service returns them. A rerun resumes that batch; after repairing a failed run, an explicit higher `attempt` starts a new one. A timeout stops local waiting, not the remote service job.
 

@@ -25,12 +25,6 @@ param routerModelVersion string
 @description('Model router editions to deploy')
 param routerEditions routerEdition[]
 
-@description('MAI image models to deploy; empty skips them')
-param imageModels chatModel[] = []
-
-@description('Capacity for each image deployment')
-param imageCapacity int = 1
-
 @description('Application Insights resource ID to connect to the project for tracing')
 param applicationInsightsId string
 
@@ -140,28 +134,6 @@ resource routerDeployments 'Microsoft.CognitiveServices/accounts/deployments@202
   }
 ]
 
-@batchSize(1)
-resource imageDeployments 'Microsoft.CognitiveServices/accounts/deployments@2026-09-01' = [
-  for m in imageModels: {
-    parent: account
-    name: m.name
-    sku: {
-      name: 'GlobalStandard'
-      capacity: imageCapacity
-    }
-    properties: {
-      model: {
-        format: 'Microsoft'
-        name: m.name
-        version: m.version
-      }
-    }
-    dependsOn: [
-      routerDeployments
-    ]
-  }
-]
-
 // Lets the Foundry portal show traces for agents in this project.
 resource appInsightsConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-09-01' = {
   parent: project
@@ -181,7 +153,6 @@ resource appInsightsConnection 'Microsoft.CognitiveServices/accounts/projects/co
   }
   dependsOn: [
     routerDeployments
-    imageDeployments
   ]
 }
 
@@ -191,4 +162,3 @@ output projectName string = project.name
 output projectEndpoint string = 'https://${account.name}.services.ai.azure.com/api/projects/${project.name}'
 output projectPrincipalId string = project.identity.principalId
 output chatModelDeploymentNames array = [for (model, i) in chatModels: chatDeployments[i].name]
-output imageModelDeploymentNames array = [for (model, i) in imageModels: imageDeployments[i].name]

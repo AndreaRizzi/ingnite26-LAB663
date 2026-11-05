@@ -31,9 +31,6 @@ param assignRoles bool = true
 @description('Create learner role assignments. Set false when Skillable already grants learner access.')
 param assignLearnerRoles bool = true
 
-@description('Learner role definition IDs the learner already holds; deploy.sh fills this so they are not assigned twice.')
-param skipLearnerRoleIds array = []
-
 @description('Ownership tags used by the lifecycle scripts')
 param resourceTags object = {}
 
@@ -79,13 +76,6 @@ type chatModel = {
   version: string
 }
 
-@description('MAI image models to deploy. Empty by default; MAI-Image-2.6 is only in some regions, such as eastus and westus.')
-param imageModels chatModel[] = []
-
-@description('Capacity for each image deployment')
-@minValue(1)
-param imageCapacity int = 1
-
 type routerEdition = {
   name: string
   mode: ('cost' | 'balanced' | 'quality')?
@@ -124,8 +114,6 @@ module foundry 'modules/foundry.bicep' = {
     routerModelName: routerModelName
     routerModelVersion: routerModelVersion
     routerEditions: routerEditions
-    imageModels: imageModels
-    imageCapacity: imageCapacity
     applicationInsightsId: monitoring.outputs.applicationInsightsId
     applicationInsightsConnectionString: appInsights.properties.ConnectionString
     resourceTags: resourceTags
@@ -141,7 +129,6 @@ module roles 'modules/roles.bicep' = if (assignRoles) {
     principalId: principalId
     principalType: principalType
     assignLearnerRoles: assignLearnerRoles
-    skipLearnerRoleIds: skipLearnerRoleIds
     projectPrincipalId: foundry.outputs.projectPrincipalId
     bootstrapPrincipalId: bootstrapPrincipalId
   }
@@ -152,7 +139,6 @@ output projectName string = foundry.outputs.projectName
 output projectEndpoint string = foundry.outputs.projectEndpoint
 output applicationInsightsName string = monitoring.outputs.applicationInsightsName
 output chatModelDeploymentNames array = foundry.outputs.chatModelDeploymentNames
-output imageModelDeploymentNames array = foundry.outputs.imageModelDeploymentNames
 output managedResourceIds array = [
   foundry.outputs.accountId
   monitoring.outputs.applicationInsightsId

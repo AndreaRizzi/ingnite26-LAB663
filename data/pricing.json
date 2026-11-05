@@ -1,14 +1,14 @@
 {
-  "_note": "USD per 1 million tokens, Global Standard deployments, standard (short-context) rates, list prices before any discount. Taken from the Azure Retail Prices API on the as_of date; prices change, so check the source before quoting. Meters: gpt-5.4 '5.4 inp/opt/cd inp Gl'; gpt-5.4-mini '5.4 mini Inp/Opt/cd Inp Gl'; gpt-5.4-nano '5.4 nano Inp/Opt/cd Inp Gl'; gpt-5.6-sol and gpt-5.6-luna '5.6 <name> ShortCo Inp/Opt/Cd Inp Std Gl'. Not covered: 5.6 cache-write meters, long-context rates, any model-router charge (no router meter found), agent tools, storage and evaluation charges. Only valid when AZURE_LOCATION matches region. Unknown prices are not zero.",
+  "_note": "USD per 1 million tokens. Record the region, source URL, date and input/output/cached-input prices for every serving model before quoting estimated model cost. Unknown prices are not zero. Agent tools, storage and evaluation charges are separate.",
   "currency": "USD",
-  "region": "eastus",
-  "source_url": "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Foundry Models' and armRegionName eq 'eastus'",
-  "as_of": "2026-11-03",
+  "region": "eastus2",
+  "source_url": null,
+  "as_of": null,
   "models": {
-    "gpt-5.4": { "input_per_million": 2.5, "output_per_million": 15.0, "cached_input_per_million": 0.25 },
-    "gpt-5.4-mini": { "input_per_million": 0.75, "output_per_million": 4.5, "cached_input_per_million": 0.075 },
-    "gpt-5.4-nano": { "input_per_million": 0.2, "output_per_million": 1.25, "cached_input_per_million": 0.02 },
-    "gpt-5.6-sol": { "input_per_million": 4.0, "output_per_million": 20.0, "cached_input_per_million": 0.4 },
-    "gpt-5.6-luna": { "input_per_million": 0.2, "output_per_million": 1.2, "cached_input_per_million": 0.02 }
+    "gpt-5.4": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.4-mini": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.4-nano": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.6-sol": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
+    "gpt-5.6-luna": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null }
   }
 }
