@@ -1,10 +1,10 @@
 targetScope = 'resourceGroup'
 
-@description('Deploy LAB663 resources to East US 2, independently of the allocated group location.')
+@description('Deploy LAB663 resources to East US, independently of the allocated group location.')
 @allowed([
-  'eastus2'
+  'eastus'
 ])
-param location string = 'eastus2'
+param location string = 'eastus'
 
 @minLength(1)
 @maxLength(40)
@@ -47,6 +47,8 @@ output projectName string = resources.outputs.projectName
 output projectEndpoint string = resources.outputs.projectEndpoint
 output applicationInsightsName string = resources.outputs.applicationInsightsName
 output chatModelDeploymentNames array = resources.outputs.chatModelDeploymentNames
+output extraModelDeploymentNames array = resources.outputs.extraModelDeploymentNames
+output extraModels array = resources.outputs.extraModels
 output managedResourceIds array = resources.outputs.managedResourceIds
 output labInstanceId string = labInstanceId
 output learnerObjectId string = learnerObjectId

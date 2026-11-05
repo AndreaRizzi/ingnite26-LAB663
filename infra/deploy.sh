@@ -5,6 +5,7 @@
 # What we get:
 #   - A Foundry resource and project, with tracing wired up
 #   - Chat models and four model router editions
+#   - Extra models from infra/extra-models.json (for example MAI image models), where the region offers them
 #   - The access (RBAC) we need, assigned to us
 #   - A local .env file and the v0 TrailMate agent
 #
@@ -38,7 +39,7 @@ for arg in "$@"; do
   esac
 done
 
-DEFAULT_LOCATION="eastus2"
+DEFAULT_LOCATION="eastus"
 DEFAULT_CHAT_MODELS="gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"
 DEFAULT_CAPACITY="250"
 
@@ -88,7 +89,7 @@ echo "Using subscription: $(az account show --query name -o tsv)"
 # --- 3. Location, resource group, models ---
 LOCATION="${AZURE_LOCATION:-$(ask "Azure region" "$DEFAULT_LOCATION")}"
 if ! az account list-locations --query "[].name" -o tsv | grep -qxF "$LOCATION"; then
-  echo "'$LOCATION' isn't an Azure region name. Examples: eastus2, swedencentral, westus3."
+  echo "'$LOCATION' isn't an Azure region name. Examples: eastus, swedencentral, westus3."
   exit 1
 fi
 
@@ -142,6 +143,23 @@ if [[ -n "$MISSING" ]]; then
 fi
 echo "All models found."
 
+# Extra models are optional: deploy the ones this region offers and skip the rest.
+EXTRA_MODELS_JSON="$(CATALOG_FILE="$CATALOG_FILE" EXTRA_MODELS_FILE="$SCRIPT_DIR/extra-models.json" "$PYTHON" - <<'PY'
+import json, os, sys
+with open(os.environ["CATALOG_FILE"], encoding="utf-8") as f:
+    catalog = {(m["name"], m["version"]) for m in json.load(f)}
+with open(os.environ["EXTRA_MODELS_FILE"], encoding="utf-8") as f:
+    extra = json.load(f)
+available = [m for m in extra if (m["name"], m["version"]) in catalog]
+for m in extra:
+    if m not in available:
+        print(f"  - {m['name']}@{m['version']} isn't offered here, so we'll skip it. The core lab doesn't need it.", file=sys.stderr)
+print(json.dumps(available))
+PY
+)"
+EXTRA_MODEL_NAMES="$(EXTRA_MODELS_JSON="$EXTRA_MODELS_JSON" "$PYTHON" -c \
+  'import json, os; print(", ".join(m["name"] for m in json.loads(os.environ["EXTRA_MODELS_JSON"])) or "none in this region")')"
+
 # --- 5. Who gets access ---
 PRINCIPAL_TYPE="User"
 if ! PRINCIPAL_ID="${LAB663_PRINCIPAL_ID:-$(az ad signed-in-user show --query id -o tsv 2>/dev/null)}" || [[ -z "$PRINCIPAL_ID" ]]; then
@@ -157,6 +175,7 @@ echo "  Resource group : $RESOURCE_GROUP"
 echo "  Region         : $LOCATION"
 echo "  Chat models    : $CHAT_MODELS"
 echo "  Router editions: mr-default, mr-cost, mr-quality, mr-subset"
+echo "  Extra models   : $EXTRA_MODEL_NAMES"
 if ! $ASSUME_YES; then
   read -r -p "Go ahead? [y/N] " confirm
   [[ "$confirm" =~ ^[Yy]$ ]] || { echo "Cancelled. Nothing was created."; exit 0; }
@@ -183,6 +202,7 @@ az deployment group create \
                principalType="$PRINCIPAL_TYPE" \
                capacity="$CAPACITY" \
                chatModels="$CHAT_MODELS_JSON" \
+               extraModels="$EXTRA_MODELS_JSON" \
   --output none
 
 # --- 7. Write .env ---
@@ -210,6 +230,17 @@ AZURE_AI_PROJECT_NAME=$PROJECT_NAME
 AZURE_LOCATION=$LOCATION
 LAB663_DELIVERY_MODE=self-guided
 EOF
+# Each deployed extra model names its own .env variable in infra/extra-models.json.
+EXTRA_MODELS_JSON="$EXTRA_MODELS_JSON" "$PYTHON" - >> "$ENV_FILE" <<'PY'
+import json, os, re, sys
+for m in json.loads(os.environ["EXTRA_MODELS_JSON"]):
+    name = m.get("envVar")
+    if not name:
+        continue
+    if not re.fullmatch(r"[A-Z][A-Z0-9_]*", name):
+        sys.exit(f"Invalid envVar '{name}' in infra/extra-models.json.")
+    print(f"{name}={m['name']}")
+PY
 echo "Done. Project endpoint: $PROJECT_ENDPOINT"
 
 # --- 8. Create the v0 agent ---

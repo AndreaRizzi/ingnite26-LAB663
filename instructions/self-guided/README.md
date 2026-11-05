@@ -10,7 +10,7 @@ We need:
 
 - A GitHub account with active Copilot access, signed into the Copilot experience in our editor.
 - An Azure subscription where we can create resources and role assignments (Owner, or Contributor plus User Access Administrator).
-- Quota for `gpt-5.4`, `gpt-5.4-mini` and the model router in the region we pick.
+- Quota for `gpt-5.4`, `gpt-5.4-mini` and the model router in the region we pick. Quota for `MAI-Image-2.6` and `MAI-Image-2.6-Flash` is optional: the core lab doesn't use them.
 - This repo open in the dev container or a Codespace. It brings Python, the Azure CLI and Bicep.
 - The repository's Python requirements, including `azure-ai-projects>=2.8.0`, and access to the preview rubric, insights and optimizer APIs. Notebook 01 stops if the SDK is too old.
 
@@ -46,7 +46,7 @@ python -m venv .venv
 bash infra/deploy.sh
 ```
 
-It asks for a subscription, region and chat models, then builds our Foundry project in a fresh `rg-lab663-NNNN` resource group, six model deployments (two chat models and four router editions), tracing, access, a `.env` file and our first agent, **v0**. Details are in [infra/README.md](../../infra/README.md).
+It asks for a subscription, region and chat models, then builds our Foundry project in a fresh `rg-lab663-NNNN` resource group, six model deployments (two chat models and four router editions), tracing, access, a `.env` file and our first agent, **v0**. If our region offers them, it also deploys two MAI image models for later labs; if not, it tells us and carries on. Details are in [infra/README.md](../../infra/README.md).
 
 **Expected:** it ends with `TrailMate v0 is ready.`
 

@@ -25,6 +25,9 @@ param routerModelVersion string
 @description('Model router editions to deploy')
 param routerEditions routerEdition[]
 
+@description('Extra model deployments with their own format, SKU and capacity')
+param extraModels extraModel[] = []
+
 @description('Application Insights resource ID to connect to the project for tracing')
 param applicationInsightsId string
 
@@ -43,6 +46,16 @@ type routerEdition = {
   name: string
   mode: ('cost' | 'balanced' | 'quality')?
   models: chatModel[]?
+}
+
+type extraModel = {
+  name: string
+  format: string
+  version: string
+  sku: string
+  capacity: int
+  @description('Name of the .env variable the deploy scripts write for this deployment')
+  envVar: string?
 }
 
 resource account 'Microsoft.CognitiveServices/accounts@2026-09-01' = {
@@ -134,6 +147,28 @@ resource routerDeployments 'Microsoft.CognitiveServices/accounts/deployments@202
   }
 ]
 
+@batchSize(1)
+resource extraDeployments 'Microsoft.CognitiveServices/accounts/deployments@2026-09-01' = [
+  for m in extraModels: {
+    parent: account
+    name: m.name
+    sku: {
+      name: m.sku
+      capacity: m.capacity
+    }
+    properties: {
+      model: {
+        format: m.format
+        name: m.name
+        version: m.version
+      }
+    }
+    dependsOn: [
+      routerDeployments
+    ]
+  }
+]
+
 // Lets the Foundry portal show traces for agents in this project.
 resource appInsightsConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-09-01' = {
   parent: project
@@ -152,7 +187,7 @@ resource appInsightsConnection 'Microsoft.CognitiveServices/accounts/projects/co
     }
   }
   dependsOn: [
-    routerDeployments
+    extraDeployments
   ]
 }
 
@@ -162,3 +197,4 @@ output projectName string = project.name
 output projectEndpoint string = 'https://${account.name}.services.ai.azure.com/api/projects/${project.name}'
 output projectPrincipalId string = project.identity.principalId
 output chatModelDeploymentNames array = [for (model, i) in chatModels: chatDeployments[i].name]
+output extraModelDeploymentNames array = [for (model, i) in extraModels: extraDeployments[i].name]

@@ -1,0 +1,4 @@
+[
+  { "name": "MAI-Image-2.6", "format": "Microsoft", "version": "2026-07-31", "sku": "GlobalStandard", "capacity": 10, "envVar": "MAI_IMAGE_DEPLOYMENT" },
+  { "name": "MAI-Image-2.6-Flash", "format": "Microsoft", "version": "2026-07-31", "sku": "GlobalStandard", "capacity": 10, "envVar": "MAI_IMAGE_FLASH_DEPLOYMENT" }
+]

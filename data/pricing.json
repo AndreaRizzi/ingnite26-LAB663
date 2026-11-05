@@ -1,14 +1,15 @@
 {
   "_note": "USD per 1 million tokens. Record the region, source URL, date and input/output/cached-input prices for every serving model before quoting estimated model cost. Unknown prices are not zero. Agent tools, storage and evaluation charges are separate.",
   "currency": "USD",
-  "region": "eastus2",
-  "source_url": null,
-  "as_of": null,
+  "region": "eastus",
+  "source_url": "https://prices.azure.com/api/retail/prices?$filter=armRegionName eq 'eastus' and serviceName eq 'Foundry Models'",
+  "as_of": "2026-11-03",
+  "basis": "Retail pay-as-you-go, GlobalStandard deployment, standard tier, short-context meters",
   "models": {
-    "gpt-5.4": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
-    "gpt-5.4-mini": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
-    "gpt-5.4-nano": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
-    "gpt-5.6-sol": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null },
-    "gpt-5.6-luna": { "input_per_million": null, "output_per_million": null, "cached_input_per_million": null }
+    "gpt-5.4": { "input_per_million": 2.5, "output_per_million": 15.0, "cached_input_per_million": 0.25 },
+    "gpt-5.4-mini": { "input_per_million": 0.75, "output_per_million": 4.5, "cached_input_per_million": 0.075 },
+    "gpt-5.4-nano": { "input_per_million": 0.2, "output_per_million": 1.25, "cached_input_per_million": 0.02 },
+    "gpt-5.6-sol": { "input_per_million": 4.0, "output_per_million": 20.0, "cached_input_per_million": 0.4 },
+    "gpt-5.6-luna": { "input_per_million": 0.2, "output_per_million": 1.2, "cached_input_per_million": 0.02 }
   }
 }
