@@ -13,16 +13,16 @@ Products used (Contoso Outdoors catalog):
 
 | # | Product | Manual | Image |
 |---|---------|--------|-------|
-| 1 | TrailMaster X4 Tent | `product_info_1.md` | `trailmaster-x4-tent.png` |
-| 8 | Alpine Explorer Tent | `product_info_8.md` | `alpine-explorer-tent.png` |
-| 2 | Adventurer Pro Backpack | `product_info_2.md` | `adventurer-pro-backpack.png` |
-| 16 | TrailLite Daypack | `product_info_16.md` | `traillite-daypack.png` |
-| 4 | TrekReady Hiking Boots | `product_info_4.md` | `trekready-hiking-boots.png` |
-| 11 | TrailWalker Hiking Shoes | `product_info_11.md` | `trailwalker-hiking-shoes.png` |
-| 3 | Summit Breeze Jacket | `product_info_3.md` | `summit-breeze-jacket.png` |
-| 17 | RainGuard Hiking Jacket | `product_info_17.md` | `rainguard-hiking-jacket.png` |
-| 7 | CozyNights Sleeping Bag | `product_info_7.md` | `cozynights-sleeping-bag.png` |
-| 6 | EcoFire Camping Stove | `product_info_6.md` | `ecofire-camping-stove.png` |
+| 1 | TrailMaster X4 Tent | `product_info_1.md` | `trailmaster-x4-tent.webp` |
+| 8 | Alpine Explorer Tent | `product_info_8.md` | `alpine-explorer-tent.webp` |
+| 2 | Adventurer Pro Backpack | `product_info_2.md` | `adventurer-pro-backpack.webp` |
+| 16 | TrailLite Daypack | `product_info_16.md` | `traillite-daypack.webp` |
+| 4 | TrekReady Hiking Boots | `product_info_4.md` | `trekready-hiking-boots.webp` |
+| 11 | TrailWalker Hiking Shoes | `product_info_11.md` | `trailwalker-hiking-shoes.webp` |
+| 3 | Summit Breeze Jacket | `product_info_3.md` | `summit-breeze-jacket.webp` |
+| 17 | RainGuard Hiking Jacket | `product_info_17.md` | `rainguard-hiking-jacket.webp` |
+| 7 | CozyNights Sleeping Bag | `product_info_7.md` | `cozynights-sleeping-bag.webp` |
+| 6 | EcoFire Camping Stove | `product_info_6.md` | `ecofire-camping-stove.webp` |
 
 The catalog is fictional. Brands, contact details and email addresses in the
 manuals are sample data, and we use them only for grounding examples.

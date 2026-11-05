@@ -1,6 +1,9 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+# Regions that offer every LAB663 model, including MAI-Image-2.6. Keep in step with infra/skillable.bicep.
+$LabRegions = @('eastus')
+
 function Invoke-LabAz {
     param([Parameter(Mandatory)][string[]]$Arguments)
 

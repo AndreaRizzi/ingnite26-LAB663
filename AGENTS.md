@@ -16,7 +16,7 @@ We climb the hill together: build it, measure it, improve it.
 - **Build, break, fix, learn.** Every module ends with something we built,
   broke on purpose or by accident, fixed, and can explain.
 - **Time budget.** The slowest learner finishes the core modules in 60
-  minutes. Fast learners get the bonus labs.
+  minutes. Fast learners go on to the `more` labs.
 
 ## How we write
 
@@ -37,6 +37,9 @@ Full guide: [workshop-content.instructions.md](.github/instructions/workshop-con
   we deploy with `infra/deploy.sh`.
 - **Skillable** (`instructions/skillable/`): infrastructure is
   pre-provisioned. Never mix the two. When shared setup changes, update both.
+- Each notebook has one page in each mode. Keep them in step with the
+  [update-lab-instructions skill](.github/skills/update-lab-instructions/SKILL.md),
+  then run `python3 instructions/scripts/check_sync.py`.
 
 ## Ground rules
 

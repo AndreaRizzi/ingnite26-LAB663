@@ -5,8 +5,12 @@
 # What we get:
 #   - A Foundry resource and project, with tracing wired up
 #   - Chat models and four model router editions
+#   - MAI-Image-2.6 and MAI-Image-2.6-Flash, for the optional image lab
 #   - The access (RBAC) we need, assigned to us
 #   - A local .env file and the v0 TrailMate agent
+#
+# Regions: use eastus (the default) or westus. Both offer every model this lab deploys,
+# including the MAI image models; eastus2 does not offer MAI-Image-2.6.
 #
 # Run it from anywhere:  bash infra/deploy.sh
 #
@@ -16,7 +20,8 @@
 # We ask a few questions. To skip a question, set its variable first:
 #   AZURE_SUBSCRIPTION_ID, AZURE_LOCATION,
 #   LAB663_CHAT_MODELS (for example "gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"),
-#   LAB663_CAPACITY
+#   LAB663_IMAGE_MODELS (set it to "" to skip the image models),
+#   LAB663_CAPACITY, LAB663_IMAGE_CAPACITY (30 by default, lowered to the quota that's free)
 #
 # Flags:
 #   --yes          accept every default without asking
@@ -38,9 +43,12 @@ for arg in "$@"; do
   esac
 done
 
-DEFAULT_LOCATION="eastus2"
+# Valid regions: eastus and westus. Checked against the model catalog on 2026-10-29.
+DEFAULT_LOCATION="eastus"
 DEFAULT_CHAT_MODELS="gpt-5.4@2026-03-05,gpt-5.4-mini@2026-03-17"
+DEFAULT_IMAGE_MODELS="MAI-Image-2.6@2026-07-31,MAI-Image-2.6-Flash@2026-07-31"
 DEFAULT_CAPACITY="250"
+DEFAULT_IMAGE_CAPACITY="30"
 
 step() { printf '\n==> %s\n' "$*"; }
 
@@ -86,9 +94,9 @@ az account set --subscription "$AZURE_SUBSCRIPTION_ID"
 echo "Using subscription: $(az account show --query name -o tsv)"
 
 # --- 3. Location, resource group, models ---
-LOCATION="${AZURE_LOCATION:-$(ask "Azure region" "$DEFAULT_LOCATION")}"
+LOCATION="${AZURE_LOCATION:-$(ask "Azure region (eastus or westus)" "$DEFAULT_LOCATION")}"
 if ! az account list-locations --query "[].name" -o tsv | grep -qxF "$LOCATION"; then
-  echo "'$LOCATION' isn't an Azure region name. Examples: eastus2, swedencentral, westus3."
+  echo "'$LOCATION' isn't an Azure region name. This lab supports eastus and westus."
   exit 1
 fi
 
@@ -118,6 +126,23 @@ PY
 read -r FRONTIER_MODEL SMALL_MODEL < <(CHAT_MODELS_JSON="$CHAT_MODELS_JSON" "$PYTHON" -c \
   'import json, os; print(*(m["name"] for m in json.loads(os.environ["CHAT_MODELS_JSON"])))')
 
+IMAGE_MODELS="${LAB663_IMAGE_MODELS-$DEFAULT_IMAGE_MODELS}"
+IMAGE_MODELS_JSON="$(IMAGE_MODELS="$IMAGE_MODELS" "$PYTHON" - <<'PY'
+import json, os, sys
+items = []
+for part in filter(None, (p.strip() for p in os.environ["IMAGE_MODELS"].split(","))):
+    name, _, version = part.partition("@")
+    if not name or not version:
+        sys.exit(f"'{part}' should look like name@version")
+    items.append({"name": name, "version": version})
+if items and len(items) != 2:
+    sys.exit("The image lab needs two image models: best quality first, faster second. Set LAB663_IMAGE_MODELS=\"\" to skip them.")
+print(json.dumps(items))
+PY
+)"
+read -r IMAGE_HERO IMAGE_BULK < <(IMAGE_MODELS_JSON="$IMAGE_MODELS_JSON" "$PYTHON" -c \
+  'import json, os; print(*(m["name"] for m in json.loads(os.environ["IMAGE_MODELS_JSON"])))')
+
 # --- 4. Check the models exist in this region ---
 step "Checking the models are available in $LOCATION"
 # The full catalog is big, so we keep only names and versions and hand them over in a file.
@@ -125,11 +150,12 @@ CATALOG_FILE="$(mktemp)"
 trap 'rm -f "$CATALOG_FILE"' EXIT
 az cognitiveservices model list --location "$LOCATION" \
   --query "[].{name:model.name, version:model.version}" -o json > "$CATALOG_FILE"
-MISSING="$(CATALOG_FILE="$CATALOG_FILE" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" "$PYTHON" - <<'PY'
+MISSING="$(CATALOG_FILE="$CATALOG_FILE" CHAT_MODELS_JSON="$CHAT_MODELS_JSON" IMAGE_MODELS_JSON="$IMAGE_MODELS_JSON" "$PYTHON" - <<'PY'
 import json, os
 with open(os.environ["CATALOG_FILE"], encoding="utf-8") as f:
     catalog = {(m["name"], m["version"]) for m in json.load(f)}
 wanted = [(m["name"], m["version"]) for m in json.loads(os.environ["CHAT_MODELS_JSON"])]
+wanted += [(m["name"], m["version"]) for m in json.loads(os.environ["IMAGE_MODELS_JSON"])]
 wanted.append(("model-router", "2025-11-18"))
 print("\n".join(f"{n}@{v}" for n, v in wanted if (n, v) not in catalog))
 PY
@@ -137,10 +163,39 @@ PY
 if [[ -n "$MISSING" ]]; then
   echo "These models aren't in the $LOCATION catalog:"
   echo "$MISSING" | sed 's/^/  - /'
-  echo "We can pick another region, or change the model list. Nothing was deployed."
+  echo "Use eastus or westus, or change the model list. Nothing was deployed."
   exit 1
 fi
 echo "All models found."
+
+# Image deployments get as much capacity as we ask for, up to the quota that's still free in this region.
+IMAGE_CAPACITY="${LAB663_IMAGE_CAPACITY:-$DEFAULT_IMAGE_CAPACITY}"
+if [[ -n "$IMAGE_MODELS" ]]; then
+  USAGE_FILE="$(mktemp)"
+  trap 'rm -f "$CATALOG_FILE" "$USAGE_FILE"' EXIT
+  az cognitiveservices usage list --location "$LOCATION" -o json > "$USAGE_FILE" 2>/dev/null || echo "[]" > "$USAGE_FILE"
+  IMAGE_CAPACITY="$(USAGE_FILE="$USAGE_FILE" IMAGE_MODELS_JSON="$IMAGE_MODELS_JSON" WANTED="$IMAGE_CAPACITY" "$PYTHON" - <<'PY'
+import json, os, sys
+with open(os.environ["USAGE_FILE"], encoding="utf-8") as f:
+    usages = json.load(f)
+capacity = int(os.environ["WANTED"])
+for model in json.loads(os.environ["IMAGE_MODELS_JSON"]):
+    name = model["name"].lower()
+    matches = [u for u in usages if "globalstandard" in u["name"]["value"].lower() and u["name"]["value"].lower().endswith(name)]
+    if not matches:
+        print(f"No quota entry found for {model['name']}; asking for {capacity}.", file=sys.stderr)
+        continue
+    free = int(matches[0]["limit"] - matches[0]["currentValue"])
+    print(f"{model['name']}: {free} capacity free in this region.", file=sys.stderr)
+    capacity = min(capacity, free)
+print(capacity)
+PY
+)"
+  if (( IMAGE_CAPACITY < 1 )); then
+    echo "There's no free MAI image quota in $LOCATION. Free some up, try the other region, or set LAB663_IMAGE_MODELS=\"\" to skip the image models. Nothing was deployed."
+    exit 1
+  fi
+fi
 
 # --- 5. Who gets access ---
 PRINCIPAL_TYPE="User"
@@ -151,12 +206,21 @@ if ! PRINCIPAL_ID="${LAB663_PRINCIPAL_ID:-$(az ad signed-in-user show --query id
 fi
 PRINCIPAL_TYPE="${LAB663_PRINCIPAL_TYPE:-$PRINCIPAL_TYPE}"
 
+# Roles we already hold (directly, through a group, or inherited from the subscription) are skipped, so reruns stay quiet.
+LEARNER_ROLE_IDS="53ca6127-db72-4b80-b1b0-d745d6d5456d a97b65f3-24c7-4388-baec-2e87135dc908 73c42c96-874c-492b-b04d-ab87d138a893"
+HELD_ROLE_IDS="$(az role assignment list --assignee "$PRINCIPAL_ID" --scope "/subscriptions/$AZURE_SUBSCRIPTION_ID" \
+  --include-inherited --include-groups --query "[].roleDefinitionId" -o tsv 2>/dev/null | awk -F/ '{print $NF}' || true)"
+SKIP_ROLE_IDS_JSON="$(LEARNER="$LEARNER_ROLE_IDS" HELD="$HELD_ROLE_IDS" "$PYTHON" -c \
+  'import json, os; held = set(os.environ["HELD"].split()); print(json.dumps([r for r in os.environ["LEARNER"].split() if r in held]))')"
+[[ "$SKIP_ROLE_IDS_JSON" == "[]" ]] || echo "Already held, so not assigned again: $SKIP_ROLE_IDS_JSON"
+
 echo
 echo "We're about to create:"
 echo "  Resource group : $RESOURCE_GROUP"
 echo "  Region         : $LOCATION"
 echo "  Chat models    : $CHAT_MODELS"
 echo "  Router editions: mr-default, mr-cost, mr-quality, mr-subset"
+echo "  Image models   : ${IMAGE_MODELS:-none}${IMAGE_MODELS:+ (capacity $IMAGE_CAPACITY each)}"
 if ! $ASSUME_YES; then
   read -r -p "Go ahead? [y/N] " confirm
   [[ "$confirm" =~ ^[Yy]$ ]] || { echo "Cancelled. Nothing was created."; exit 0; }
@@ -183,6 +247,9 @@ az deployment group create \
                principalType="$PRINCIPAL_TYPE" \
                capacity="$CAPACITY" \
                chatModels="$CHAT_MODELS_JSON" \
+               imageModels="$IMAGE_MODELS_JSON" \
+               imageCapacity="$IMAGE_CAPACITY" \
+               skipLearnerRoleIds="$SKIP_ROLE_IDS_JSON" \
   --output none
 
 # --- 7. Write .env ---
@@ -194,6 +261,16 @@ PROJECT_ENDPOINT="$(output projectEndpoint)"
 APPI_NAME="$(output applicationInsightsName)"
 APPI_CONNECTION_STRING="$(az resource show -g "$RESOURCE_GROUP" -n "$APPI_NAME" \
   --resource-type Microsoft.Insights/components --query properties.ConnectionString -o tsv)"
+
+# The notebooks pace image requests to the deployment's own request limit; the slower of the two sets the pace.
+IMAGE_RPM=""
+for model in ${IMAGE_HERO:-} ${IMAGE_BULK:-}; do
+  rpm="$(az cognitiveservices account deployment show -g "$RESOURCE_GROUP" -n "$ACCOUNT_NAME" --deployment-name "$model" \
+    --query "properties.rateLimits[?key=='request'].count | [0]" -o tsv 2>/dev/null || true)"
+  rpm="${rpm%%.*}"
+  [[ "$rpm" =~ ^[0-9]+$ ]] || continue
+  [[ -z "$IMAGE_RPM" || "$rpm" -lt "$IMAGE_RPM" ]] && IMAGE_RPM="$rpm"
+done
 
 umask 077
 cat > "$ENV_FILE" <<EOF
@@ -209,6 +286,13 @@ AZURE_AI_ACCOUNT_NAME=$ACCOUNT_NAME
 AZURE_AI_PROJECT_NAME=$PROJECT_NAME
 AZURE_LOCATION=$LOCATION
 LAB663_DELIVERY_MODE=self-guided
+MODEL_IMAGE_HERO=${IMAGE_HERO:-}
+MODEL_IMAGE_BULK=${IMAGE_BULK:-}
+RATE_LIMIT_RPM=${IMAGE_RPM:-6}
+# MAI voice and transcription come with the Foundry resource; nothing to deploy.
+MODEL_VOICE_HERO=MAI-Voice-2.1
+MODEL_VOICE_FAST=MAI-Voice-2.1-Flash
+MODEL_TRANSCRIBE=MAI-Transcribe-2
 EOF
 echo "Done. Project endpoint: $PROJECT_ENDPOINT"
 

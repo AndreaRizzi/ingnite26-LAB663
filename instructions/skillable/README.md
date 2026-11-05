@@ -1,71 +1,76 @@
-# Guided Skillable walkthrough
+# LAB663 Skillable manual
 
-Our environment is prepared before the session: GitHub Copilot access, a Foundry project, two chat models, four router editions, tracing and the starting TrailMate agent. We use the same code-first notebooks as the self-guided lab, but **we do not deploy or delete infrastructure ourselves**.
+The in-venue version of LAB663. Attendees follow a paged manual inside a Skillable lab, with the environment prepared for them: GitHub Copilot access, a Foundry project, two chat models, four router editions, tracing and the starting TrailMate agent. They run the same code-first notebooks as the [self-guided walkthrough](../self-guided/README.md), but **they don't deploy or delete infrastructure**.
 
-Basic Python is helpful; previous agent or evaluation experience is not required. Run one cell at a time, read the expected result, and keep the notebook outline open. Business decision makers can concentrate on the customer failure, the evidence and the promotion decision; developers and AI engineers can inspect the SDK calls and saved results.
+Each page file below holds one module, split into Skillable pages by `===`. The build script joins them into [skillable-copy.md](skillable-copy.md), the single file pasted into Skillable Studio.
 
-## Step 1: Sign in and check our environment
+## Prerequisites
 
-Let's start with `LAB663-03-environment-status.txt` on the VM desktop. Skillable writes it while it prepares our environment, so it tells us whether everything finished.
+The lab profile must give every attendee these before the lab starts. Operators set them up with the [Skillable lifecycle actions](../../skillable_lifecycles/README.md).
 
-**Expected:** the file says `Result: SUCCEEDED` and names our Foundry account and project. If it says `RUNNING`, preparation is still going: wait a few minutes and reopen it. If it says `FAILED`, don't start the lab. Tell the facilitator and share the `Stage` and `Error` lines.
+| Attendee needs | For | Notes |
+|---|---|---|
+| A Windows 11 VM (`Win11-Pro-Base`) with VS Code, the LAB663 folder on the desktop, and a prepared `.venv` registered as **Python (LAB663)** | All modules | Attendees don't install or clone anything |
+| A desktop status file that says `Result: SUCCEEDED` | All modules | Written by lifecycle action 3 (`LAB663-03-environment-status.txt`) or the `deploy-pwsh.ps1` route (`LAB663-deployment-output.txt`) |
+| GitHub Enterprise sign-in with Copilot, using the lab credentials | Module 0 onward | Lifecycle action 1 grants the entitlement |
+| `@lab.CloudPortalCredential(User1)` with Foundry User and Cognitive Services Contributor | Module 0 onward | Lifecycle action 2 assigns the roles. They can take up to 10 minutes to apply |
+| A `.env` file at the repository root, with no keys | Module 0 onward | Lifecycle action 3 writes it |
 
-Open the prepared LAB663 folder in VS Code and sign into GitHub using the **assigned enterprise learner identity**, not a personal account. Open Copilot Chat and ask it to explain a Python list comprehension.
+## Modules
 
-**Expected:** Copilot answers under the assigned GitHub account without a missing-license or access-denied message. If it does not, ask the facilitator to check the GitHub/Copilot lifecycle; do not switch to a personal subscription. Azure sign-in below is a separate check.
+| Page file | Skillable pages | Time |
+|---|---|---|
+| [core-0-get-ready.md](core-0-get-ready.md) | Sign in to your lab, Check your lab environment, Meet TrailMate | Before the clock, about 5 min of reading |
+| [core-1-setup-and-validate.md](core-1-setup-and-validate.md) | Validate your setup | 4 min |
+| [core-2-model-selection.md](core-2-model-selection.md) | Compare two models | 8 min |
+| [core-3-multi-model-vs-multimodal.md](core-3-multi-model-vs-multimodal.md) | Separate multi-model from multi-modal | 8 min |
+| [core-4-make-it-work.md](core-4-make-it-work.md) | Create v1 and leave traces, Read the insights | 12 min |
+| [core-5-make-it-better.md](core-5-make-it-better.md) | Turn good into a number, Let the optimizer climb, Decide whether to promote | 14 min target |
+| [core-6-make-it-optimal.md](core-6-make-it-optimal.md) | Try a model router, Decide on the router, Finish the lab | 14 min target |
+| [more-0-explore-mai-models.md](more-0-explore-mai-models.md) | More: Explore MAI models | Optional, replay only |
 
-In the VM terminal, sign in to Azure with the **assigned Skillable learner account**, not a personal account or the lifecycle service principal:
+The times are planning targets, not measured service guarantees. Rehearse the whole schedule on the actual Skillable image before delivery; the 60-minute plan hasn't been demonstrated there yet.
 
-```powershell
-az login --tenant '<tenant ID supplied by the lab>' --use-device-code
-az account show --query "{subscription:name, tenant:tenantId, user:user.name}"
+## If something goes wrong
+
+Attendees raise a hand for a proctor. Proctors check the desktop status file first, then the [handover checks](../../skillable_lifecycles/README.md#hand-over-to-the-learner). Attendees never run `infra/deploy.sh` or `infra/cleanup.sh` on the VM.
+
+## Maintainer notes
+
+### Keep both paths in step
+
+The notebooks in `labs/` are the source of truth. Every Skillable page file has a matching self-guided page with the same `<!-- sync: ... -->` header, which names the notebook and the sections both pages cover. Use the [update-lab-instructions skill](../../.github/skills/update-lab-instructions/SKILL.md) when notebooks, setup or lifecycle actions change, then run:
+
+```bash
+python3 instructions/scripts/check_sync.py
 ```
 
-Select the subscription supplied by the lab if the displayed one differs. Never paste a password, client secret or access token into a notebook.
+It checks that both paths cover the same notebook sections and times, that every Skillable page follows the conventions below, that links resolve, and that `skillable-copy.md` is current.
 
-**Expected:** the assigned learner identity and subscription are shown, and a local `.env` already exists in the repository root. If not, ask the facilitator to repair the lifecycle. Do not run `infra/deploy.sh`.
+### Syntax
 
-If we open the [Foundry portal](https://ai.azure.com) during the lab, let's use the `trailmate` project named in the status file. Creating a new project doesn't help: it has none of our models, router editions or starting agent.
+Write every page in Skillable Markdown. The references are [Creating instructions with Markdown syntax](https://docs.skillable.com/docs/creating-instructions-with-markdown-syntax) and [Instructions writing best practices](https://docs.skillable.com/docs/instructions-writing-best-practices). GitHub doesn't render Skillable-only syntax such as `> [!Knowledge]`, `1. []` checkboxes or `++copy text++`, so check the result in the Studio preview.
 
-**Expected:** the `trailmate` project opens without a permission message. If it says we don't have permission to build agents, wait a few minutes and refresh, because new role assignments can take up to 10 minutes. If the message stays, tell the facilitator.
+- Start each Skillable page with a `# ` heading of 40 characters or fewer, starting with a verb. It labels the **Next** button.
+- One sentence per step, in where-what-why order. Use `1. []` for every step.
+- Use `++text++` for text to copy and `+++text+++` to type credentials into the VM.
+- Bold only UI elements the attendee selects. Inside blocks, use italics instead.
+- Indent blocks that sit between steps under the step before them, and keep it to one block, occasionally two.
+- Put answers and recovery steps in expandable `> [+Hint]` or `> [+Help]` blocks.
+- End every page with `> [!Note] *Success:* ...` stating the visible result.
+- Don't link to repo files with relative paths; they don't resolve in Skillable. Name the file and use **Ctrl+P** instead.
+- Only use `@lab` tokens listed in the check script, and confirm new ones in Studio's **@lab** picker.
 
-Open [01 · Set up and validate](../../labs/core/01-setup-and-validate.ipynb), select **Python (LAB663)**, and run its checks.
+### Build the manual
 
-**Expected:** every check passes under our learner identity, including the SDK version, model calls and indexed manuals. If a check fails, keep its exact message and ask the facilitator; do not install packages or change the deployment during the session.
+```bash
+bash instructions/skillable/scripts/generate-skillable-copy.sh
+```
 
-Notebook 01 prints its Python interpreter before connecting. It should be the prepared `.venv` used by **Python (LAB663)**, not a system interpreter left selected in VS Code.
+It writes [skillable-copy.md](skillable-copy.md): every page, core then More, joined by `===`, with the sync headers removed. Paste the whole file into the lab profile (**Edit Instructions**).
 
-## Step 2: Follow the climb
+To have Skillable pull each page live from GitHub instead, use include mode. It writes one `[!include]` line per page and needs the repository to be public.
 
-Read [00 · What are we building?](../../labs/core/00-set-the-stage.ipynb) before the timed session. It explains our six failure categories, separate practice/dev/test sets, and the rule that a candidate must earn promotion.
-
-Then follow the notebooks in order. The times below are planning targets, not measured service guarantees.
-
-| Notebook | Our question | Core target |
-|---|---|---|
-| [01 · Set up and validate](../../labs/core/01-setup-and-validate.ipynb) | Can we trust the setup? | 4 minutes |
-| [02 · Choosing a model](../../labs/core/02-model-selection.ipynb) | What changes with model choice? | 8 minutes; reasoning-effort experiment optional |
-| [03 · Multi-model vs multi-modal](../../labs/core/03-multi-model-vs-multimodal.ipynb) | Can we trust each step in the pipeline? | 8 minutes; full photo/router experiments optional |
-| [04 · Make it work](../../labs/core/04-make-it-work.ipynb) | Which failures do the traces show? | 12 minutes |
-| [05 · Make it better](../../labs/core/05-make-it-better.ipynb) | Did the rewrite earn promotion? | 14 minutes |
-| [06 · Make it optimal](../../labs/core/06-make-it-optimal.ipynb) | Did routing improve an acceptable trade-off? | 14 minutes; one router edition |
-
-**Expected:** pinned agent IDs, a frozen rubric, complete evaluation results and an explicit promote-or-retain decision. A lower score, pending job, invalid batch or unknown cost is not a success to hide.
-
-**Facilitator note:** the [isolated rehearsal](../../docs/narrative.md#what-the-isolated-rehearsal-tells-us) found router/file-search failures, and one complete evaluation pair took 213 seconds. Resolve the service issue and rehearse the whole schedule on the actual Skillable image; the 60-minute plan has not yet been demonstrated.
-
-## Step 3: Use the waits
-
-Open [the wait-time challenges](../../labs/bonus/wait-time-challenges.ipynb) in a **separate kernel** while a service job runs. They use local files only and do not spend model quota or change the measuring stick.
-
-The core helpers print progress and save evaluation/optimizer IDs. If a bounded wait expires, resume the existing job as the cell explains. Do not click the submit cell repeatedly, restart its kernel unnecessarily, or launch all notebooks at once.
-
-**Expected:** we can discuss an answer-key contradiction, judge evidence, unknown pricing or missing evaluation cases while the core job continues. If the service runs past the session, retain its ID and record the decision as pending.
-
-## Step 4: Finish safely
-
-Read the final scoreboard together. We may retain the original baseline; that is the correct outcome when the evidence does not support a change. Twelve teaching cases and two repeats are not a production release guarantee.
-
-End the Skillable lab when instructed. The platform's teardown action removes this instance's tagged resources. Learners must not run the self-guided cleanup script, purge accounts, or delete the allocated resource group.
-
-**Expected:** the facilitator has our observed timings and any failed check messages, and the lab ends through the normal Skillable controls.
+```bash
+MODE=include BRANCH=main bash instructions/skillable/scripts/generate-skillable-copy.sh
+```

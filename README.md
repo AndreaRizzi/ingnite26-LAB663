@@ -29,7 +29,7 @@ Fill in the sections below yourself, then:
 <a name="start-building"></a>
 
 <p align="center">
-<img src="img/banner-ignite-26.png" alt="Microsoft Ignite 2026" width="100%"/>
+<img src="img/banner-ignite-26.webp" alt="Microsoft Ignite 2026" width="100%"/>
 </p>
 
 # [Microsoft Ignite 2026](https://ignite.microsoft.com)
@@ -57,18 +57,21 @@ If you're learning at your own pace:
 2. Run `bash infra/deploy.sh` from the repo root. It builds everything we need in our own Azure subscription and creates our first agent.
 3. Follow the [self-guided walkthrough](instructions/self-guided/README.md). It takes us through the notebooks in [`labs/core/`](labs/core/), starting at `00-set-the-stage.ipynb`.
 
-The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deployment, VM preparation and the introductory reading happen before the clock starts. Service waits still need a timed rehearsal; additional model experiments and router editions are optional. While jobs run, try the [local wait-time challenges](labs/bonus/wait-time-challenges.ipynb) without spending more model quota.
+The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deployment, VM preparation and the introductory reading happen before the clock starts. Service waits still need a timed rehearsal; additional model experiments and router editions are optional. While jobs run, each core notebook has a short **While you wait** box that needs no extra model calls.
 
-This is a code-first lab for beginner and intermediate participants. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
+**More labs (optional):** [Model Fundamentals: Explore Microsoft AI Models](labs/more/README.md) takes the same company, Contoso Outdoors, and builds a product launch with MAI image, voice, transcription and coding models. The notebooks come pre-run, so you can read them during long waits and run them live at home.
+
+This is a code-first lab for everyone who builds or decides on AI agents: beginners, experienced AI engineers, and business decision makers who want to judge the evidence. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
 
 <br/>
+
 ### 🎯 Learning outcomes
 
 By the end of this session, you will be able to:
 
 - Use model router in Foundry to automate model selection for reliable, cost-effective AI agents
 - Use Rubric evaluator and insights in Foundry to assess agent behavior and identify optimization opportunities from production evidence
-- Use agent optimizer in Foundry Agent Service to turn production evidence into continuous improvements in agent reliability and cost-effectiveness
+- Use agent optimizer in Foundry Agent Service to turn production evidence into continuous, measured improvements in agent reliability
 
 ### 💻 Technologies used
 
