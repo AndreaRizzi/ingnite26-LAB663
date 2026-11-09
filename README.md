@@ -34,6 +34,7 @@ The core lab targets 60 minutes: 20 to set the stage and 40 for the climb. Deplo
 This is a code-first lab for beginner and intermediate participants. Basic Python helps; prior agent experience is not required. We measure one change at a time, keep the datasets and rubric fixed, and retain the baseline when the evidence does not support promotion. Unknown prices are not a cost saving.
 
 <br/>
+
 ### 🎯 Learning outcomes
 
 By the end of this session, you will be able to:
@@ -44,11 +45,11 @@ By the end of this session, you will be able to:
 
 ### 💻 Technologies used
 
-- Microsoft Foundry platform
-- Rubric evaluator
-- model router in Foundry
-- insights in Foundry
-- agent optimizer in Foundry Agent Service
+- [Microsoft Foundry platform](https://learn.microsoft.com/azure/foundry/what-is-foundry)
+- [Rubric evaluator](https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/rubric-evaluators)
+- [model router in Foundry](https://learn.microsoft.com/azure/foundry/openai/concepts/model-router)
+- [insights in Foundry](https://learn.microsoft.com/azure/foundry/observability/how-to/agent-insights)
+- [agent optimizer in Foundry Agent Service](https://learn.microsoft.com/azure/foundry/agents/concepts/agent-optimizer-overview)
 
 ### 📚 Continue your learning
 
@@ -62,8 +63,6 @@ Pick your next step based on your learning style:
 | **[Microsoft Foundry Community](https://aka.ms/MicrosoftFoundryDiscord-Ignite26)** | Connect with other learners and experts in our Discord community |
 
 ### 🌟 Microsoft Learn MCP Server
-
-<!-- Remove this section if the Microsoft Learn MCP Server is not relevant to the session. -->
 
 The Microsoft Learn MCP Server gives your AI agent direct access to Microsoft's official documentation — grounded, up-to-date answers about the topics in this session.
 
@@ -79,11 +78,6 @@ copilot plugin install microsoftdocs/mcp
 For more information, visit the [Learn MCP Server repo](https://aka.ms/learnmcp).
 
 ### 👥 Content owners
-
-<!-- TODO: Add yourself as a content owner
-1. Change the src in the image tag to {your github url}.png
-2. Change INSERT NAME HERE to your name
-3. Change the github url in the final href to your url. -->
 
 <table>
 <tr>
