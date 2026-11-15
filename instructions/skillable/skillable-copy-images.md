@@ -467,9 +467,13 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
     <!-- IMAGE: 03-kickoff-02-rubric-created.png | Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1 -->
 1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows how many agent, evaluation, and optimization calls the job may make, and a cost range. In our test run, the typical estimate was about 62 agent calls and about $1.46, within a range of about $0.97 to $4.88. Yours may differ.
-1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running** and go on to page 4.1.
+1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
 
-    <!-- TODO screenshot: 03-kickoff-02-optimizer-running.png | Section 5.6 printing the optimization job ID and running status lines -->
+    <!-- IMAGE: 03-kickoff-02-optimizer-running.png | Section 5.6 printing the optimization job ID and an in_progress status line -->
+
+1. [] In the Foundry portal, open **trailmate** and select the **Optimize** tab. Our run is listed **In progress**, with **Version 2**, our v1, as its baseline.
+
+    <!-- IMAGE: 03-kickoff-02-optimize-tab.png | The trailmate Optimize tab with one run in progress and Version 2 as its baseline -->
 
 > [+Hint] Rubric generation fails or finds no traces
 >
@@ -481,7 +485,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 ---
 
-> [!Note] **Success:** We just started **Make it better**: the agent optimizer is working on v2 in Foundry while we head to the portal.
+> [!Note] **Success:** We just started **Make it better**: the agent optimizer is working on v2 in Foundry. Next, page 4.1.
 
 ===
 
@@ -737,7 +741,11 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 **What we'll do:** Pick up the optimizer job, read the instructions it proposed, and check that the winner isn't just more cautious.
 
-1. [] Jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
+1. [] In the Foundry portal, open **trailmate**, select the **Optimize** tab, and open our run. The details show the goal, the baseline score, and each candidate as it's scored.
+
+    <!-- IMAGE: 06-better-02-optimizer-run-details.png | The optimizer run details with its goal, run overview, and candidate results table -->
+
+1. [] Back in VS Code, jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
 
     <!-- TODO screenshot: 06-better-02-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
 

@@ -2,7 +2,11 @@
 
 **What we'll do:** Pick up the optimizer job, read the instructions it proposed, and check that the winner isn't just more cautious.
 
-1. [] Jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
+1. [] In the Foundry portal, open **trailmate**, select the **Optimize** tab, and open our run. The details show the goal, the baseline score, and each candidate as it's scored.
+
+    ![The optimizer run details with its goal, run overview, and candidate results table](screenshots/06-better-02-optimizer-run-details.png)
+
+1. [] Back in VS Code, jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
 
     <!-- TODO screenshot: 06-better-02-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
 
