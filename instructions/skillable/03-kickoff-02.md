@@ -36,7 +36,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     ![Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1](screenshots/03-kickoff-02-rubric-created.png)
 1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
-1. [] Jump to section **5.6** and run the estimate cell. It shows call counts and a cost range.
+1. [] Jump to section **5.6** and run the estimate cell. It shows how many agent, evaluation, and optimization calls the job may make, and a cost range. In our test run, the typical estimate was about 62 agent calls and about $1.46, within a range of about $0.97 to $4.88. Yours may differ.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running** and go on to page 4.1.
 
     <!-- TODO screenshot: 03-kickoff-02-optimizer-running.png | Section 5.6 printing the optimization job ID and running status lines -->
