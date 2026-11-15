@@ -623,8 +623,6 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] In the same menu, select **Compare versions** and pick **Version 1** and **Version 2**.
 
-    <!-- VERIFY: Compare versions lets us chat with both versions side by side -->
-
 1. [] Send the off-topic question from page 2.2 to both.
 
     ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
