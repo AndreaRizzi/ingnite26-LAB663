@@ -10,11 +10,11 @@
 
     <!-- TODO screenshot: 06-better-02-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
 
-    > [+Hint] Still running? Read a finished run
+    > [+Hint] Still running? Read our test run
     >
-    > Here's what a completed run looks like. Read it while ours finishes.
+    > In our test, two candidates beat the v1 baseline of 0.759: candidate_1 scored 0.822 and candidate_2 scored 0.802. Each row also shows average tokens and latency, so we can see quality, cost, and speed together. Select **View changes** to see what a candidate rewrote.
     >
-    > <!-- TODO screenshot: 06-better-02-completed-candidates.png | A completed optimizer run in the portal, listing its candidates and scores -->
+    > ![Optimizer candidate results with the baseline at 0.759, candidate_1 at 0.822 marked Best, and candidate_2 at 0.802](screenshots/06-better-02-candidates.png)
 
 1. [] Jump to section **5.7** and run its two code cells. Read each candidate's score, then read the winning instructions in full.
 1. [] Jump to section **5.8** and run its code cell. It stages the winner as a separate candidate agent. Nothing is promoted yet.
