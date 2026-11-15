@@ -2,7 +2,7 @@
 
 **What we'll do:** Send the hard question to a router in **cost** mode and one in **quality** mode, and compare their choices.
 
-1. [] Open **mr-cost** in the playground and turn on **Compare** with **mr-quality**.
+1. [] In the **Model** menu, select **mr-cost**. Then open **Compare models** and select **mr-quality**.
 1. [] Send the tent question.
 
     ++TrailMaster X4 Tent: 4-person, 12 lbs, $250, rainfly rated 2000mm. Alpine Explorer Tent: 8-person, 17 lbs, $350, rainfly rated 3000mm. A family of six is camping in heavy rain, wants the lightest setup possible, and has a tight budget. Weigh the trade-offs and recommend one.++

@@ -4,7 +4,7 @@
 
 > [!Knowledge] A **model router** is one deployment that looks at each request and sends it to a model from a pool. Easy work can go to a small model, and hard work to a bigger one.
 
-1. [] In the playground, switch the deployment to **mr-default** and turn off compare.
+1. [] Close the gpt-5.4-mini pane with its **X**. In the remaining pane, open the **Model** menu and select **mr-default**.
 
     <!-- VERIFY: how to switch deployments in the playground -->
 
