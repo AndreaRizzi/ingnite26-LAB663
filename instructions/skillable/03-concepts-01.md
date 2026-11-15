@@ -2,11 +2,7 @@
 
 **What we'll do:** Send the same two questions to a big and a small model, and see how model choice changes speed, tokens, and quality.
 
-1. [] In Edge, open the Foundry portal and sign in with the lab account if asked.
-
-    ++https://ai.azure.com++
-
-1. [] Open the project named in **LAB663-03-environment-status.txt**.
+1. [] In Edge, switch to the **Foundry portal** tab we opened on page 0.1 and select the **trailmate** project.
 1. [] Open the model playground for **gpt-5.4** and turn on **Compare** with **gpt-5.4-mini**.
 
     <!-- TODO screenshot: 03-concepts-01-compare-setup.png | The model playground in compare view with gpt-5.4 and gpt-5.4-mini -->

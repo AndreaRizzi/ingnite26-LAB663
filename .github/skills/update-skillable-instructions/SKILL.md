@@ -67,7 +67,7 @@ Rules:
 - Story: Setup → Kick-off (create v1, start the optimizer early) → Know the concepts (portal) → Make it work (portal) → Make it better (notebooks 04–05) → Keep improving (notebook 06) → Wrap. Versions climb v0 → v1 → v2 → v3, one lever at a time, measured with a frozen eval set and rubric.
 - Steps must match the notebook cells in `labs/core/`. Check section numbers and printed output in the `.ipynb` files before writing a step.
 - Skillable learners never run `infra/deploy.sh` or `infra/cleanup.sh`, and never delete resources. Keep `instructions/self-guided/` separate; when shared setup changes, update both.
-- Kernel: `.venv(3.13.14)(Python3.13.14)`. Status file: `LAB663-03-environment-status.txt` on the desktop. Agent: `trailmate`. Deployments: `gpt-5.4`, `gpt-5.4-mini`, `mr-default`, `mr-cost`, `mr-quality`, `mr-subset`.
+- Kernel: `.venv (3.13.14) (Python 3.13.14)`, selected via Select Kernel > Python Environments. Status files on the desktop: `LAB663-deployment-output.txt` (look for `Result: SUCCEEDED`) and `lab663-deploy-<timestamp>.txt` (look for `Populated .env`). Agent: `trailmate`. Deployments: `gpt-5.4`, `gpt-5.4-mini`, `mr-default`, `mr-cost`, `mr-quality`, `mr-subset`.
 - Per-attendee values use `@lab` tokens only: `@lab.VirtualMachine(Win11-Pro-Base).Password`, `@lab.CloudPortalCredential(User1).Username`, `.Password`, `.AccessToken`, `@lab.CloudSubscription.TenantId`.
 
 ## Screenshots

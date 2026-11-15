@@ -4,11 +4,8 @@
 
 > [!Knowledge] **Why now?** The agent optimizer takes several minutes. On these two pages we get it started, so it works while we explore the Foundry portal.
 
-1. [] In VS Code, press **Ctrl+P**, open this notebook, and select the **.venv(3.13.14)(Python3.13.14)** kernel.
-
-    ++04-make-it-work.ipynb++
-
-1. [] Open the **Outline** view in the Explorer sidebar. We use it to jump between numbered sections.
+1. [] In the Explorer, open **labs > core > 04-make-it-work.ipynb**.
+1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3. We use the **Outline** to jump to each section below.
 1. [] Run the first code cell (click it, then **Shift+Enter**). Confirm it prints **Connected. 12 practice questions ready.**
 1. [] Jump to section **4.3** and run its code cell to create the insights monitor.
 1. [] Jump to section **4.4** and run its code cell. Confirm it prints **Saved. TrailMate v1 is Foundry version** followed by a number.

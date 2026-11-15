@@ -9,36 +9,76 @@
 
 # 0.1 Sign in to your lab
 
-**What we'll do:** Sign in to the virtual machine, then to GitHub, so GitHub Copilot works in VS Code.
+**What we'll do:** Sign in to the virtual machine, then to GitHub, the Foundry portal, and the Azure portal, all with the lab credentials.
 
-1. [] Check that you see the **Instructions** and **Resources** tabs on the right, and the virtual machine's sign-in screen on the left.
+## Sign in to the virtual machine
 
-    <!-- TODO screenshot: 00-start-01-lab-tabs.png | Lab interface with the Instructions and Resources tabs and the VM sign-in screen -->
+1. [] Check that you see the **Instructions** and **Resources** tabs on the right, and the virtual machine's sign-in screen on the left. The blue bar at the bottom right shows the time left in the lab.
+
+    <!-- IMAGE: 00-start-01-lab-tabs.png | Lab interface with the Instructions and Resources tabs and the VM sign-in screen -->
 
 1. [] Click in the password field on the virtual machine, then click the password below to type it in.
 
     +++@lab.VirtualMachine(Win11-Pro-Base).Password+++
 
-1. [] On the virtual machine, open **Microsoft Edge** and go to the GitHub Enterprise sign-in page.
+1. [] Check that the desktop appears, then tick the boxes for the steps you've done. Ticking boxes tracks our progress.
+
+    <!-- IMAGE: 00-start-01-desktop.png | The VM desktop after sign-in, with the first two steps checked off in the instructions -->
+
+## Sign in to GitHub
+
+1. [] Open **Microsoft Edge** and go to the GitHub Enterprise sign-in page. Select **Continue**.
 
     +++https://github.com/enterprises/skillable-events/sso+++
 
-1. [] Sign in with your lab credentials. We use the same ones for GitHub and Azure.
+    <!-- IMAGE: 00-start-01-sso-continue.png | The Single sign-on to Skillable Events page with the Continue button -->
+
+1. [] At the Microsoft sign-in, use these lab credentials, **not** your own account.
 
     | Credential | Value |
     |:-----------|:------|
     | Username | +++@lab.CloudPortalCredential(User1).Username+++ |
     | TAP | +++@lab.CloudPortalCredential(User1).AccessToken+++ |
 
-    <!-- TODO screenshot: 00-start-01-github-signed-in.png | GitHub showing the signed-in lab account after SSO -->
+    <!-- IMAGE: 00-start-01-microsoft-signin.png | The Microsoft Sign in page asking for an email -->
 
-1. [] Leave Edge open. We'll come back to it.
+1. [] Check that you see the **Skillable Events** enterprise page. Leave this tab open.
 
-> [!Alert] Use the lab credentials, **not** a personal GitHub or Azure account. If sign-in fails, raise your hand.
+    <!-- IMAGE: 00-start-01-github-signed-in.png | The Skillable Events GitHub Enterprise overview page after sign-in -->
+
+> [+Hint] I see an error instead
+>
+> The GitHub license may still be registering. Wait a few minutes and try again. If it still fails, raise your hand to ask a proctor for help.
+
+## Sign in to the Foundry portal
+
+1. [] Open a new tab, go to the Foundry portal, and select **Sign in**. It reuses the lab credentials.
+
+    +++https://ai.azure.com+++
+
+    <!-- IMAGE: 00-start-01-foundry-signin.png | The Microsoft Foundry home page with the Sign in button, and tab groups in Edge -->
+
+    > [!Hint] Edge may already have tab groups such as **GitHub Login**, **Foundry Portal**, and **Azure Portal**. Use them to keep your tabs tidy.
+
+1. [] Check that **All resources** lists one project, **trailmate**. Leave this tab open.
+
+    <!-- IMAGE: 00-start-01-foundry-trailmate.png | The Foundry portal All resources list showing the trailmate project -->
+
+## Sign in to the Azure portal
+
+1. [] Open a new tab and go to the Azure portal. If it doesn't sign you in, select **Sign in** or refresh the page.
+
+    +++https://portal.azure.com+++
+
+    <!-- IMAGE: 00-start-01-azure-home.png | The Azure portal home page after automatic sign-in -->
+
+1. [] Select **Resource groups** and check that **LAB663** is the only one listed. Leave this tab open.
+
+    <!-- IMAGE: 00-start-01-azure-resource-groups.png | Resource groups in the Azure portal listing LAB663 -->
 
 ---
 
-> [!Note] **Success:** We just signed in to the virtual machine and to GitHub with our lab identity.
+> [!Note] **Success:** We just signed in to the virtual machine, GitHub, Foundry, and Azure with the lab credentials. Next, we set up our development environment.
 
 ===
 
@@ -67,71 +107,113 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 1. [] Text shown ++like this++ is **copy text**: click it to copy, then paste it yourself.
 1. [] Each step has a checkbox. Checking the last box on a page checks the ones above it.
 
-> [!Hint] **Stuck? Ask Copilot first.** Many pages have a **Copilot prompt** to paste into Copilot Chat. It can explain an error or a result faster than waiting for help.
+> [!Hint] **Stuck? Ask Copilot first.** Many pages have a **Copilot prompt** to paste into Copilot Chat. It can explain an error or a result faster than waiting for help. We set up Copilot Chat in the next stage, on page 1.2.
 
 ---
 
-> [!Note] **Success:** We just learned the route up the hill and how to say exactly where we are.
+> [!Note] **Success:** We just learned the route up the hill and how to say exactly where we are. Next, we set up our development environment and GitHub Copilot Chat.
 
 ===
 
 # 1.1 Set up the local environment
 
-**What we'll do:** Confirm the lab prepared our Azure resources, open the lab in VS Code, and sign in to Azure.
+**What we'll do:** Confirm the lab deployed our Azure resources and set up our local `.env` file, open the lab in VS Code, and sign in to Azure.
 
 ## Check the environment status
 
-1. [] On the virtual machine desktop, open **LAB663-03-environment-status.txt**.
-1. [] Confirm it says **Result: SUCCEEDED** and names a Foundry account and project.
+The desktop has two text files: one starting with **LAB663** and one with **lab663**. Double-click each to open it in an editor.
 
-    <!-- TODO screenshot: 01-setup-01-status-file.png | The status file showing Result: SUCCEEDED -->
+1. [] Open **LAB663-deployment-output.txt**, the deployment summary. Check that it says **Result: SUCCEEDED**.
+
+    <!-- IMAGE: 01-setup-01-status-file.png | The deployment summary showing Result: SUCCEEDED and the Foundry project details -->
+
+1. [] Open the **lab663-deploy-...** file, the run log. Find the line **Populated .env with the deployment settings**.
+
+    <!-- IMAGE: 01-setup-01-run-log.png | The run log with the Populated .env line highlighted -->
 
 > [+Hint] It says RUNNING or FAILED
 >
-> **RUNNING:** the lab is still preparing. Wait a few minutes and open the file again. **FAILED:** don't continue. Raise your hand and share the **Stage** and **Error** lines.
+> **RUNNING:** the lab is still preparing. Wait a few minutes and open the file again. **FAILED:** don't continue. Raise your hand and share the **Stage** line.
 
 ## Open the lab in VS Code
 
-1. [] On the desktop, open the **LAB663** folder in VS Code. If asked, select **Yes, I trust the authors**.
-1. [] Open a terminal with **Terminal > New Terminal**.
+1. [] Open **Visual Studio Code** from the desktop and check that the Explorer shows the **LAB663** folder. If a pop-up offers to install the **Dev Containers** extension, close it. If asked whether you trust the authors, select **Yes**.
+
+    <!-- IMAGE: 01-setup-01-vscode-open.png | VS Code open on the LAB663 folder, with the Dev Containers pop-up at the bottom right -->
+
+1. [] Open a terminal with **Terminal > New Terminal**, or press **Ctrl+Shift+backtick**. If you don't see the **Terminal** menu, it's under **...** in the menu bar.
 
 ## Sign in to Azure
 
-1. [] In the terminal, run this command.
+1. [] In the terminal, run this command. It prints a link and a code.
 
     ++az login --tenant @lab.CloudSubscription.TenantId --use-device-code++
 
-1. [] Follow the prompt: open the link in Edge, paste the code, and pick the lab account you used on page 0.1.
-1. [] Back in the terminal, confirm it shows the lab tenant and subscription.
+    <!-- IMAGE: 01-setup-01-az-login-code.png | The terminal showing the device login link and code -->
 
-    <!-- TODO screenshot: 01-setup-01-az-login.png | Terminal after az login showing the lab subscription -->
+1. [] Copy the code, then open the link in Edge and paste it. Pick the lab account you used on page 0.1.
+1. [] When asked to approve the sign-in, select **Approve**. Then close the browser tab and return to VS Code.
+
+    <!-- IMAGE: 01-setup-01-az-login-approve.png | The Approve sign-in on another device page, with the Approve button -->
+
+1. [] In the terminal, type **1**, or press **Enter**, to keep the default subscription marked with **\***.
+
+    <!-- IMAGE: 01-setup-01-az-login.png | The terminal listing the lab subscription, marked as the default -->
 
 ---
 
-> [!Note] **Success:** We just confirmed our resources are ready, opened the lab, and signed in to Azure.
+> [!Note] **Success:** We just confirmed our resources and `.env` are ready, opened the lab, and signed in to Azure.
 
 ===
 
 # 1.2 Set up GitHub Copilot Chat
 
-**What we'll do:** Sign in to GitHub Copilot in VS Code and check it can reach our Foundry project.
+**What we'll do:** Sign in to GitHub Copilot in VS Code, connect it to Foundry, and check it can see our project.
 
-1. [] In VS Code, click the **Sign in** button in the top bar, next to the Copilot Chat icon.
-1. [] Select **Continue with GitHub** and finish sign-in with the same lab credentials. Approve the browser prompts to authorize and return to VS Code.
+## Sign in to GitHub Copilot
 
-    <!-- TODO screenshot: 01-setup-02-continue-with-github.png | The Sign in to use GitHub Copilot menu with Continue with GitHub highlighted -->
+1. [] In VS Code, click the blue **Sign in** button in the top bar, then select **Continue with GitHub**.
 
-1. [] Open Copilot Chat and send this message.
+    <!-- IMAGE: 01-setup-02-continue-with-github.png | The Sign in to use GitHub Copilot dialog with Continue with GitHub -->
 
-    ++Hello! In two sentences, what is this repository about?++
+1. [] In the browser, select **Continue**, then authorize **Visual Studio Code**.
+1. [] When the browser offers to open VS Code, select **Open**, or just switch back to VS Code.
+1. [] Check that the profile icon at the bottom left shows your GitHub sign-in.
 
-1. [] Check that Copilot answers. If it asks to sign in to Azure, use the lab account.
-1. [] Now check Copilot can reach Foundry. Send this message and wait for a list of agents.
+## Get Copilot Chat ready
+
+1. [] In the Copilot Chat window, send just this message and wait for a reply.
+
+    ++Hello++
+
+1. [] In the chat box, switch the model to **Claude Opus 5.5**.
+1. [] Switch **Default permissions** to **Allow all**, so Copilot doesn't stop to ask before each tool call. Select **Enable** when asked to confirm.
+
+    <!-- IMAGE: 01-setup-02-allow-all.png | The permissions menu with Allow all selected -->
+
+## Connect Copilot to Foundry
+
+1. [] Above Copilot's reply, click **Completed 2 steps** to expand it, then click **Start it now?** next to **Foundry MCP**.
+
+    <!-- IMAGE: 01-setup-02-start-foundry-mcp.png | The expanded steps with the Start it now link for the Foundry MCP server -->
+
+1. [] Select **Allow**, then **Work or school account**.
+1. [] Sign in with the lab credentials. Select **Yes** to stay signed in, and wait until the device is confirmed.
+
+    | Credential | Value |
+    |:-----------|:------|
+    | Username | +++@lab.CloudPortalCredential(User1).Username+++ |
+    | TAP | +++@lab.CloudPortalCredential(User1).AccessToken+++ |
+
+## Check Copilot can reach Foundry
+
+1. [] Send this message. It takes up to a minute while Copilot installs anything missing.
 
     ++/microsoft-foundry List the agents in my Foundry project. Do not change anything.++
 
-    <!-- TODO screenshot: 01-setup-02-copilot-agents.png | Copilot Chat listing the trailmate agent from the Foundry project -->
-    <!-- VERIFY: the Foundry skill and Azure MCP sign-in work on the VM with this prompt -->
+1. [] Check that the reply lists the **trailmate** agent.
+
+    <!-- IMAGE: 01-setup-02-copilot-agents.png | Copilot Chat listing the trailmate agent in the Foundry project -->
 
 > [+Hint] Copilot shows an error
 >
@@ -147,15 +229,18 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 **What we'll do:** Run one notebook that checks every part of the setup, so any failure points at exactly one fix.
 
-1. [] In VS Code, press **Ctrl+P**, paste this name, and press **Enter**.
+1. [] In the VS Code **Explorer**, open **labs > core** and select **01-setup-and-validate.ipynb**.
+1. [] Expand **Outline** at the bottom of the Explorer. It lists the notebook's numbered sections, so we can jump between them.
+1. [] Click **Select Kernel** at the top right, then **Python Environments**, and pick **.venv (3.13.14)**. We do this for every notebook we open.
 
-    ++01-setup-and-validate.ipynb++
+    <!-- IMAGE: 01-setup-03-select-kernel.png | The notebook open with the kernel picker showing .venv (3.13.14) and the Outline listing sections 1.1 to 1.10 -->
 
-1. [] Click **Select Kernel** at the top right and select **.venv(3.13.14)(Python3.13.14)**.
-1. [] Click **Run All** at the top of the notebook. It takes a minute or two.
-1. [] Scroll to section **1.10 So, is my camp ready?** and confirm it prints **Overall: PASS. Our camp is ready.** The "Error we expected" line in section 1.11 is there on purpose.
+1. [] Click **Run All** at the top of the notebook.
+1. [] In the Outline, click **1.10 So, is my camp ready?** and wait there until it prints **Overall: PASS. Our camp is ready.** This takes a minute or two.
 
-    <!-- TODO screenshot: 01-setup-03-scorecard.png | The section 1.10 scorecard with every check passing -->
+    <!-- IMAGE: 01-setup-03-scorecard.png | Section 1.10 showing 27 of 27 checks passed and Overall: PASS -->
+
+> [!Knowledge] The "Error we expected" line in section 1.11 is there on purpose. It shows what a failure looks like.
 
 > [+Hint] Copilot prompt: a check failed
 >
@@ -175,11 +260,8 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 > [!Knowledge] **Why now?** The agent optimizer takes several minutes. On these two pages we get it started, so it works while we explore the Foundry portal.
 
-1. [] In VS Code, press **Ctrl+P**, open this notebook, and select the **.venv(3.13.14)(Python3.13.14)** kernel.
-
-    ++04-make-it-work.ipynb++
-
-1. [] Open the **Outline** view in the Explorer sidebar. We use it to jump between numbered sections.
+1. [] In the Explorer, open **labs > core > 04-make-it-work.ipynb**.
+1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3. We use the **Outline** to jump to each section below.
 1. [] Run the first code cell (click it, then **Shift+Enter**). Confirm it prints **Connected. 12 practice questions ready.**
 1. [] Jump to section **4.3** and run its code cell to create the insights monitor.
 1. [] Jump to section **4.4** and run its code cell. Confirm it prints **Saved. TrailMate v1 is Foundry version** followed by a number.
@@ -222,9 +304,8 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 ## Start the optimizer
 
-1. [] Press **Ctrl+P**, open this notebook, and select the **.venv(3.13.14)(Python3.13.14)** kernel.
-
-    ++05-make-it-better.ipynb++
+1. [] In the Explorer, open **labs > core > 05-make-it-better.ipynb**.
+1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 
 1. [] Run the first code cell. Confirm it prints the v0 and v1 version numbers.
 1. [] Jump to section **5.2** and run its code cell. Wait for **Rubric created**.
@@ -248,11 +329,7 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 **What we'll do:** Send the same two questions to a big and a small model, and see how model choice changes speed, tokens, and quality.
 
-1. [] In Edge, open the Foundry portal and sign in with the lab account if asked.
-
-    ++https://ai.azure.com++
-
-1. [] Open the project named in **LAB663-03-environment-status.txt**.
+1. [] In Edge, switch to the **Foundry portal** tab we opened on page 0.1 and select the **trailmate** project.
 1. [] Open the model playground for **gpt-5.4** and turn on **Compare** with **gpt-5.4-mini**.
 
     <!-- TODO screenshot: 03-concepts-01-compare-setup.png | The model playground in compare view with gpt-5.4 and gpt-5.4-mini -->
@@ -519,9 +596,8 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 **What we'll do:** Keep v2's instructions and change only the model, to the **mr-default** router. Then score it with the same rubric and questions.
 
-1. [] Press **Ctrl+P**, open this notebook, and select the **.venv(3.13.14)(Python3.13.14)** kernel.
-
-    ++06-make-it-optimal.ipynb++
+1. [] In the Explorer, open **labs > core > 06-make-it-optimal.ipynb**.
+1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 
 1. [] In the first code cell, leave `RUN_ALL_EDITIONS = False` and `TOLERANCE` as they are, then run it.
 1. [] Run section **6.2** and note how many test questions are tagged easy.
@@ -592,9 +668,8 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 **What we'll do:** Use one model to look at a product photo and another to answer from the manuals, then build a tiny router by hand. This lab is optional.
 
-1. [] Press **Ctrl+P**, open this notebook, and select the **.venv(3.13.14)(Python3.13.14)** kernel.
-
-    ++03-multi-model-vs-multimodal.ipynb++
+1. [] In the Explorer, open **labs > core > 03-multi-model-vs-multimodal.ipynb**.
+1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 
 1. [] In section **3.2**, leave `COMPARE_ALL_PHOTOS = False` to keep it to one photo, then run the section.
 1. [] Run sections **3.3** to **3.5** and compare your homemade router's labels with the tagged ones.
@@ -611,10 +686,7 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 **What we'll do:** Read how Microsoft AI (MAI) models handle a product launch: pictures, a voice, transcripts, and a website. This lab is optional.
 
-1. [] Press **Ctrl+P** and open the More labs guide.
-
-    ++labs/more/README.md++
-
+1. [] In the Explorer, open **labs > more > README.md**.
 1. [] Open **00-set-the-stage.ipynb** from the **labs/more** folder and read the story.
 1. [] Open any of notebooks **01** to **04** and read the saved results.
 
@@ -645,6 +717,7 @@ Click the first column to type a value into the virtual machine where the cursor
 | **GitHub sign-in** | | |
 | Sign in with SSO | +++https://github.com/enterprises/skillable-events/sso+++ | ++https://github.com/enterprises/skillable-events/sso++ |
 | **Foundry portal** | +++https://ai.azure.com+++ | ++https://ai.azure.com++ |
+| **Azure portal** | +++https://portal.azure.com+++ | ++https://portal.azure.com++ |
 
 !IMAGE[eu2xtqsr.png](instructions359314/eu2xtqsr.png)
 

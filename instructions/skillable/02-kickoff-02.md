@@ -21,9 +21,8 @@
 
 ## Start the optimizer
 
-1. [] Press **Ctrl+P**, open this notebook, and select the **.venv(3.13.14)(Python3.13.14)** kernel.
-
-    ++05-make-it-better.ipynb++
+1. [] In the Explorer, open **labs > core > 05-make-it-better.ipynb**.
+1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 
 1. [] Run the first code cell. Confirm it prints the v0 and v1 version numbers.
 1. [] Jump to section **5.2** and run its code cell. Wait for **Rubric created**.

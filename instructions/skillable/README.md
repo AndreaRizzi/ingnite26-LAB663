@@ -27,7 +27,7 @@ The kick-off is the key design choice. The agent optimizer is the slowest step, 
 
 | Stage | Pages | Where | What learners do | Version | Target |
 |:------|:------|:------|:-----------------|:--------|:-------|
-| 0 Start | 0.1–0.2 | Skillable, VM | Sign in; learn the page conventions | | 3 min |
+| 0 Start | 0.1–0.2 | Skillable, VM, Edge | Sign in to the VM, GitHub, Foundry, and Azure portals; learn the page conventions | | 5 min |
 | 1 Setup | 1.1–1.3 | VS Code | Check status file, `az login`, Copilot Chat, run notebook 01 | v0 | 8 min |
 | 2 Kick-off | 2.1–2.2 | VS Code | Create v1, send practice questions, save a starting gap list, start the optimizer | v1 | 8 min |
 | 3 Know the concepts | 3.1–3.3 | Foundry portal | Compare `gpt-5.4` and `gpt-5.4-mini`; watch `mr-default`, `mr-cost` and `mr-quality` choose models | | 8 min |
@@ -59,8 +59,8 @@ The lab profile must give every learner these before the lab starts. Learners do
 
 | Learner needs | Provided by |
 |:--------------|:------------|
-| A Windows 11 VM (`Win11-Pro-Base`) with VS Code, the LAB663 folder on the desktop, and a prepared `.venv` kernel (`.venv(3.13.14)(Python3.13.14)`) | The VM image |
-| A Foundry project with `gpt-5.4`, `gpt-5.4-mini`, the four `mr-` router editions, tracing, the v0 TrailMate agent, and `.env` | [Lifecycle scripts](../../skillable_lifecycles/README.md), which write `LAB663-03-environment-status.txt` to the desktop |
+| A Windows 11 VM (`Win11-Pro-Base`) with VS Code, the LAB663 folder on the desktop, and a prepared `.venv` kernel (`.venv (3.13.14) (Python 3.13.14)`, selected via Select Kernel > Python Environments) | The VM image |
+| A Foundry project with `gpt-5.4`, `gpt-5.4-mini`, the four `mr-` router editions, tracing, the v0 TrailMate agent, and `.env` | [Lifecycle scripts](../../skillable_lifecycles/README.md), which write `LAB663-deployment-output.txt` (summary) and `lab663-deploy-<timestamp>.txt` (run log) to the desktop |
 | GitHub Enterprise sign-in at `https://github.com/enterprises/skillable-events/sso` with the learner's Azure credentials | The Skillable GitHub/Copilot lifecycle |
 | `@lab.CloudPortalCredential(User1)` Username, Password and AccessToken, and `@lab.CloudSubscription.TenantId` | The lab profile |
 

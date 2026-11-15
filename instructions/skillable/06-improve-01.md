@@ -2,9 +2,8 @@
 
 **What we'll do:** Keep v2's instructions and change only the model, to the **mr-default** router. Then score it with the same rubric and questions.
 
-1. [] Press **Ctrl+P**, open this notebook, and select the **.venv(3.13.14)(Python3.13.14)** kernel.
-
-    ++06-make-it-optimal.ipynb++
+1. [] In the Explorer, open **labs > core > 06-make-it-optimal.ipynb**.
+1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 
 1. [] In the first code cell, leave `RUN_ALL_EDITIONS = False` and `TOLERANCE` as they are, then run it.
 1. [] Run section **6.2** and note how many test questions are tagged easy.

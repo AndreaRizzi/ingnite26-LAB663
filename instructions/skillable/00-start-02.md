@@ -23,8 +23,8 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 1. [] Text shown ++like this++ is **copy text**: click it to copy, then paste it yourself.
 1. [] Each step has a checkbox. Checking the last box on a page checks the ones above it.
 
-> [!Hint] **Stuck? Ask Copilot first.** Many pages have a **Copilot prompt** to paste into Copilot Chat. It can explain an error or a result faster than waiting for help.
+> [!Hint] **Stuck? Ask Copilot first.** Many pages have a **Copilot prompt** to paste into Copilot Chat. It can explain an error or a result faster than waiting for help. We set up Copilot Chat in the next stage, on page 1.2.
 
 ---
 
-> [!Note] **Success:** We just learned the route up the hill and how to say exactly where we are.
+> [!Note] **Success:** We just learned the route up the hill and how to say exactly where we are. Next, we set up our development environment and GitHub Copilot Chat.

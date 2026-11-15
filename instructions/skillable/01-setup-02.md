@@ -1,23 +1,51 @@
 # 1.2 Set up GitHub Copilot Chat
 
-**What we'll do:** Sign in to GitHub Copilot in VS Code and check it can reach our Foundry project.
+**What we'll do:** Sign in to GitHub Copilot in VS Code, connect it to Foundry, and check it can see our project.
 
-1. [] In VS Code, click the **Sign in** button in the top bar, next to the Copilot Chat icon.
-1. [] Select **Continue with GitHub** and finish sign-in with the same lab credentials. Approve the browser prompts to authorize and return to VS Code.
+## Sign in to GitHub Copilot
 
-    <!-- TODO screenshot: 01-setup-02-continue-with-github.png | The Sign in to use GitHub Copilot menu with Continue with GitHub highlighted -->
+1. [] In VS Code, click the blue **Sign in** button in the top bar, then select **Continue with GitHub**.
 
-1. [] Open Copilot Chat and send this message.
+    ![The Sign in to use GitHub Copilot dialog with Continue with GitHub](screenshots/01-setup-02-continue-with-github.png)
 
-    ++Hello! In two sentences, what is this repository about?++
+1. [] In the browser, select **Continue**, then authorize **Visual Studio Code**.
+1. [] When the browser offers to open VS Code, select **Open**, or just switch back to VS Code.
+1. [] Check that the profile icon at the bottom left shows your GitHub sign-in.
 
-1. [] Check that Copilot answers. If it asks to sign in to Azure, use the lab account.
-1. [] Now check Copilot can reach Foundry. Send this message and wait for a list of agents.
+## Get Copilot Chat ready
+
+1. [] In the Copilot Chat window, send just this message and wait for a reply.
+
+    ++Hello++
+
+1. [] In the chat box, switch the model to **Claude Opus 5.5**.
+1. [] Switch **Default permissions** to **Allow all**, so Copilot doesn't stop to ask before each tool call. Select **Enable** when asked to confirm.
+
+    ![The permissions menu with Allow all selected](screenshots/01-setup-02-allow-all.png)
+
+## Connect Copilot to Foundry
+
+1. [] Above Copilot's reply, click **Completed 2 steps** to expand it, then click **Start it now?** next to **Foundry MCP**.
+
+    ![The expanded steps with the Start it now link for the Foundry MCP server](screenshots/01-setup-02-start-foundry-mcp.png)
+
+1. [] Select **Allow**, then **Work or school account**.
+1. [] Sign in with the lab credentials. Select **Yes** to stay signed in, and wait until the device is confirmed.
+
+    | Credential | Value |
+    |:-----------|:------|
+    | Username | +++@lab.CloudPortalCredential(User1).Username+++ |
+    | TAP | +++@lab.CloudPortalCredential(User1).AccessToken+++ |
+
+## Check Copilot can reach Foundry
+
+1. [] Send this message. It takes up to a minute while Copilot installs anything missing.
 
     ++/microsoft-foundry List the agents in my Foundry project. Do not change anything.++
 
-    <!-- TODO screenshot: 01-setup-02-copilot-agents.png | Copilot Chat listing the trailmate agent from the Foundry project -->
-    <!-- VERIFY: the Foundry skill and Azure MCP sign-in work on the VM with this prompt -->
+1. [] Check that the reply lists the **trailmate** agent.
+
+    ![Copilot Chat listing the trailmate agent in the Foundry project](screenshots/01-setup-02-copilot-agents.png)
 
 > [+Hint] Copilot shows an error
 >

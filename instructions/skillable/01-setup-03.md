@@ -2,15 +2,18 @@
 
 **What we'll do:** Run one notebook that checks every part of the setup, so any failure points at exactly one fix.
 
-1. [] In VS Code, press **Ctrl+P**, paste this name, and press **Enter**.
+1. [] In the VS Code **Explorer**, open **labs > core** and select **01-setup-and-validate.ipynb**.
+1. [] Expand **Outline** at the bottom of the Explorer. It lists the notebook's numbered sections, so we can jump between them.
+1. [] Click **Select Kernel** at the top right, then **Python Environments**, and pick **.venv (3.13.14)**. We do this for every notebook we open.
 
-    ++01-setup-and-validate.ipynb++
+    ![The notebook open with the kernel picker showing .venv (3.13.14) and the Outline listing sections 1.1 to 1.10](screenshots/01-setup-03-select-kernel.png)
 
-1. [] Click **Select Kernel** at the top right and select **.venv(3.13.14)(Python3.13.14)**.
-1. [] Click **Run All** at the top of the notebook. It takes a minute or two.
-1. [] Scroll to section **1.10 So, is my camp ready?** and confirm it prints **Overall: PASS. Our camp is ready.** The "Error we expected" line in section 1.11 is there on purpose.
+1. [] Click **Run All** at the top of the notebook.
+1. [] In the Outline, click **1.10 So, is my camp ready?** and wait there until it prints **Overall: PASS. Our camp is ready.** This takes a minute or two.
 
-    <!-- TODO screenshot: 01-setup-03-scorecard.png | The section 1.10 scorecard with every check passing -->
+    ![Section 1.10 showing 27 of 27 checks passed and Overall: PASS](screenshots/01-setup-03-scorecard.png)
+
+> [!Knowledge] The "Error we expected" line in section 1.11 is there on purpose. It shows what a failure looks like.
 
 > [+Hint] Copilot prompt: a check failed
 >
