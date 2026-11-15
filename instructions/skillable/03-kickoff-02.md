@@ -1,4 +1,4 @@
-# 2.2 Start the optimizer
+# 3.2 Start the optimizer
 
 **What we'll do:** Give Foundry a starting gap list, build a rubric from it, and start the **agent optimizer** so it can work on **v2** while we explore.
 
@@ -17,7 +17,7 @@
 
 1. [] Run the cell and confirm it prints the three gaps.
 
-> [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 5.1 we'll check them against what Foundry actually finds.
+> [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 6.1 we'll check them against what Foundry actually finds.
 
 ## Start the optimizer
 
@@ -30,11 +30,15 @@
 1. [] Jump to section **5.6** and run the estimate cell. It shows call counts and a cost range.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
 
-    <!-- TODO screenshot: 02-kickoff-02-optimizer-running.png | Section 5.6 printing the optimization job ID and running status lines -->
+    <!-- TODO screenshot: 03-kickoff-02-optimizer-running.png | Section 5.6 printing the optimization job ID and running status lines -->
 
 > [+Hint] Rubric generation fails or finds no traces
 >
 > The traces may still be arriving. Wait one minute, then run the section 5.2 cell again. Don't rerun section 4.5.
+
+> [+Hint] Ask Copilot: what is a rubric?
+>
+> ++What is a rubric evaluator in Microsoft Foundry, and how does the agent optimizer use it? Explain in two sentences.++
 
 ---
 

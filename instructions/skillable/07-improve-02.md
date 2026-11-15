@@ -1,4 +1,4 @@
-# 6.2 Decide on the router
+# 7.2 Decide on the router
 
 **What we'll do:** Find where the router slips, apply the decision rule we wrote before seeing any score, and decide on **v3**.
 
@@ -9,9 +9,9 @@
 
 > [!Knowledge] Invalid coverage, a category that got worse, an unknown cost, or a pending review all mean we keep the baseline. That's a legitimate result, not a failed lab.
 
-> [+Hint] Copilot prompt: help me decide
+> [+Hint] Ask Copilot: explain the router decision
 >
-> ++Based on the outputs of sections 6.5 to 6.7 in notebook 06, explain the quality and cost trade-off of the router candidate in plain language.++
+> ++Explain the router decision in section 6.7 of labs/core/06-make-it-optimal.ipynb in two sentences. Don't change any files.++
 
 ---
 

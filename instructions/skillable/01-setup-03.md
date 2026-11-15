@@ -15,11 +15,15 @@
 
 > [!Knowledge] The "Error we expected" line in section 1.11 is there on purpose. It shows what a failure looks like.
 
-> [+Hint] Copilot prompt: a check failed
+> [+Hint] A check failed
 >
 > New role assignments can take up to 10 minutes. Wait, then rerun the failed cell. To understand the error, paste this into Copilot Chat with the message:
 >
 > ++In notebook 01, this check failed with the message below. What does it mean, and what should I try? Don't change any files.++
+
+> [+Hint] Ask Copilot: what did we check?
+>
+> ++Summarize what labs/core/01-setup-and-validate.ipynb checked, in three bullets. Don't change any files.++
 
 ---
 

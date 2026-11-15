@@ -1,4 +1,4 @@
-# 3.3 Turn the cost-quality dial
+# 4.3 Turn the cost-quality dial
 
 **What we'll do:** Send the hard question to a router in **cost** mode and one in **quality** mode, and compare their choices.
 
@@ -10,10 +10,14 @@
 1. [] Note which model each router picked.
 1. [] Check that both recommend one Alpine Explorer.
 
-    <!-- TODO screenshot: 03-concepts-03-cost-vs-quality.png | mr-cost and mr-quality answering side by side, with the model each one chose -->
+    <!-- TODO screenshot: 04-concepts-03-cost-vs-quality.png | mr-cost and mr-quality answering side by side, with the model each one chose -->
     <!-- VERIFY: mr-cost and mr-quality pick different models for this prompt -->
 
-> [!Knowledge] The routing mode is a dial between cost and quality. If both picked the same model, that's a real result too. A cheaper pick only wins if the answer stays right, and that's exactly what we'll measure on page 6.1.
+> [!Knowledge] The routing mode is a dial between cost and quality. If both picked the same model, that's a real result too. A cheaper pick only wins if the answer stays right, and that's exactly what we'll measure on page 7.1.
+
+> [+Hint] Ask Copilot: cost or quality mode?
+>
+> ++What is the difference between the cost and quality routing modes in Microsoft Foundry model router? Explain in one sentence.++
 
 ---
 

@@ -19,21 +19,21 @@ Voice and structure come from [workshop-content.instructions.md](../../instructi
 ```text
 instructions/skillable/
   README.md                          facilitator guide: overview, stages, hero products, risks, page index
-  NN-stage-NN.md                     one Skillable page each, e.g. 03-concepts-02.md; name order = page order
-  screenshots/                       dry-run captures, named after their page (03-concepts-02-router-easy.png)
+  NN-stage-NN.md                     one Skillable page each, e.g. 04-concepts-02.md; name order = page order
+  screenshots/                       dry-run captures, named after their page (04-concepts-02-router-easy.png)
   scripts/generate-skillable-copy.sh joins the pages into the two generated files
   skillable-copy-images.md           generated; images as <!-- IMAGE: file | alt --> comments (paste now)
   skillable-copy.md                  generated; images as raw GitHub URLs on main (after the repo is public)
 ```
 
-Stages: `00-start`, `01-setup`, `02-kickoff`, `03-concepts`, `04-work`, `05-better`, `06-improve`, `07-wrap`, `08-more`, `09-ref`. Each page file is one Skillable page, so it contains no `===`; the generator adds the breaks and the leading `@lab.Title`.
+Stages: `00-start`, `01-setup`, `02-meet`, `03-kickoff`, `04-concepts`, `05-work`, `06-better`, `07-improve`, `08-wrap`, `09-more`, `10-ref`. Each page file is one Skillable page, so it contains no `===`; the generator adds the breaks and the leading `@lab.Title`.
 
 ## Page shape
 
 Every page is one small task, modeled on the LAB540 Skillable pages.
 
 ```markdown
-# 3.2 Let a router choose
+# 4.2 Let a router choose
 
 **What we'll do:** Send the same two questions to a model router and see which model it picks for each.
 
@@ -42,7 +42,7 @@ Every page is one small task, modeled on the LAB540 Skillable pages.
 
     ++question text++
 
-    <!-- TODO screenshot: 03-concepts-02-router-easy.png | Router response details showing the chosen model -->
+    <!-- TODO screenshot: 04-concepts-02-router-easy.png | Router response details showing the chosen model -->
 
 > [+Hint] Copilot prompt: how does routing decide?
 >
@@ -58,13 +58,14 @@ Rules:
 - First line after the title is always `**What we'll do:** ...`. The last line is always `> [!Note] **Success:** We just ...`. These bookends state the value of the page.
 - Keep pages small: one task, a handful of `1. []` steps, and at most one or two blocks. Don't stack alerts and notes.
 - One sentence per step, ordered where, what, why. Name notebook sections explicitly ("jump to section **4.8**"), because page numbers and notebook section numbers differ.
-- Put help in collapsible `> [+Hint]` blocks. Label Copilot help `Copilot prompt: ...` and make the prompt copy text. Prompts that touch Azure must say "Do not change anything."
+- Put help in collapsible `> [+Hint]` blocks. Each page ends with one optional `> [+Hint] Ask Copilot: <label>` block whose copy-text prompt explains or summarizes that page in one to three sentences or bullets. Troubleshooting hints are separate. Prompts that touch Azure must say "Do not change anything."
 - Indent blocks and comments under the step they belong to (four spaces).
 - Never give away a decision the learner must make (for example `REVIEW_APPROVED`). Never invent results, timings, links, or scores.
 
 ## LAB663 specifics
 
-- Story: Setup → Kick-off (create v1, start the optimizer early) → Know the concepts (portal) → Make it work (portal) → Make it better (notebooks 04–05) → Keep improving (notebook 06) → Wrap. Versions climb v0 → v1 → v2 → v3, one lever at a time, measured with a frozen eval set and rubric.
+- Story: Setup → Meet TrailMate (try v0 in the portal, plan the climb) → Kick-off (create v1, start the optimizer early) → Know the concepts (portal) → Make it work (portal: v0 vs v1) → Make it better (notebooks 04–05) → Keep improving (notebook 06) → Wrap.
+- Version names: notebooks say v0–v3; Foundry numbers each agent's versions from 1 (v0 = `trailmate` Version 1, v1 = Version 2). Portal steps name both. Candidates live in separate agents (`trailmate-optimizer-candidate`, `trailmate-mr-default-candidate`). Versions climb v0 → v1 → v2 → v3, one lever at a time, measured with a frozen eval set and rubric.
 - Steps must match the notebook cells in `labs/core/`. Check section numbers and printed output in the `.ipynb` files before writing a step.
 - Skillable learners never run `infra/deploy.sh` or `infra/cleanup.sh`, and never delete resources. Keep `instructions/self-guided/` separate; when shared setup changes, update both.
 - Kernel: `.venv (3.13.14) (Python 3.13.14)`, selected via Select Kernel > Python Environments. Status files on the desktop: `LAB663-deployment-output.txt` (look for `Result: SUCCEEDED`) and `lab663-deploy-<timestamp>.txt` (look for `Populated .env`). Agent: `trailmate`. Deployments: `gpt-5.4`, `gpt-5.4-mini`, `mr-default`, `mr-cost`, `mr-quality`, `mr-subset`.
