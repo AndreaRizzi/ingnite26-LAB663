@@ -2,8 +2,9 @@
 #
 # A prompt agent with a file-search tool is created, managed, evaluated and
 # optimized with the Foundry projects SDK. Version 2.8.0 is the first we found
-# with the agent optimization job API.
-azure-ai-projects>=2.8.0
+# with the agent optimization job API. 2.11.0 removed beta.agent_insight_monitors,
+# which notebook 04 uses, so we stay below it.
+azure-ai-projects>=2.8.0,<2.11.0
 azure-identity>=1.25.0
 python-dotenv>=1.1.0
 openai>=1.40.0
