@@ -2,20 +2,25 @@
 
 **What we'll do:** Pick up the optimizer job, read the instructions it proposed, and check that the winner isn't just more cautious.
 
-1. [] In the Foundry portal, open **trailmate**, select the **Optimize** tab, and open our run. The details show the goal, the baseline score, and each candidate as it's scored.
+1. [] In the Foundry portal, open **trailmate**, select the **Optimize** tab, and open our run. When it finishes, the **Candidate results** show each candidate's score next to the v1 baseline, with its average tokens and latency.
 
-    ![The optimizer run details with its goal, run overview, and candidate results table](screenshots/06-better-02-optimizer-run-details.png)
-
-1. [] Back in VS Code, jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
-
-    <!-- TODO screenshot: 06-better-02-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
+    ![Final optimizer results: baseline 0.759, candidate_1 0.822 marked Best, candidate_2 0.802, and candidate_3 0.76](screenshots/06-better-02-candidates.png)
 
     > [+Hint] Still running? Read our test run
     >
-    > In our test, two candidates beat the v1 baseline of 0.759: candidate_1 scored 0.822 and candidate_2 scored 0.802. Each row also shows average tokens and latency, so we can see quality, cost, and speed together. Select **View changes** to see what a candidate rewrote.
-    >
-    > ![Optimizer candidate results with the baseline at 0.759, candidate_1 at 0.822 marked Best, and candidate_2 at 0.802](screenshots/06-better-02-candidates.png)
+    > Ours took about 10 minutes. All three candidates beat the v1 baseline of 0.759, and candidate_1 scored best at 0.822, with slightly fewer tokens and lower latency too. Follow along with the screenshots on this page while yours finishes.
 
+1. [] On the best candidate, select **View changes**. The one-line v1 instructions became a detailed set of rules, for example to only make claims the product files support.
+
+    ![The changes for candidate_1, comparing the short baseline prompt with the much longer candidate prompt](screenshots/06-better-02-view-changes.png)
+
+1. [] Scroll up to **Run overview** and select **View details** next to **Total tokens**. It shows what the run itself cost, by phase.
+
+    ![Token usage for the run: about 1.9 million tokens and an estimated $5.37, mostly from running the agent and scoring responses](screenshots/06-better-02-token-usage.png)
+
+    > [!Note] Our run used about 1.9 million tokens, an estimated $5.37. That's above the $4.88 ceiling the notebook estimated on page 3.2. Optimizing costs real money, so we check the measured cost, not just the estimate.
+
+1. [] Back in VS Code, in **05-make-it-better.ipynb**, jump to section **5.6** and run the job cell again. It resumes the saved job and prints **Finished** with the best and baseline scores.
 1. [] Jump to section **5.7** and run its two code cells. Read each candidate's score, then read the winning instructions in full.
 1. [] Jump to section **5.8** and run its code cell. It stages the winner as a separate candidate agent. Nothing is promoted yet.
 1. [] Jump to section **5.9** and run its code cell. Check the guard-case answers against the manual.

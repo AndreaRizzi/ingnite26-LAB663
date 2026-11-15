@@ -556,28 +556,26 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 # 4.3 Let a router choose
 
-**What we'll do:** Send the same two questions to a **model router** and see which model it picks for each.
+**What we'll do:** Send the same two questions to **gpt-5.4** and to a **model router**, and see which model the router picks for each.
 
 > [!Knowledge] A **model router** is one deployment that looks at each request and sends it to a model from a pool. Easy work can go to a small model, and hard work to a bigger one.
 
-1. [] Close the gpt-5.4-mini pane with its **X**. In the remaining pane, open the **Model** menu and select **mr-default**.
-
-    <!-- VERIFY: how to switch deployments in the playground -->
-
+1. [] In the right pane, open the **Model** menu and switch **gpt-5.4-mini** to **mr-default**. Keep **gpt-5.4** on the left.
 1. [] Send the easy daypack question again.
 
     ++TrailLite Daypack specs: Weight 1.5 lbs, Dimensions 20in x 12in x 6in, Water-resistant fabric. How much does the TrailLite Daypack weigh?++
 
-1. [] Find which model answered. Look in the response details for the **model** name.
+1. [] Look at the row under the router's answer. It names the model the router chose, here **DeepSeek-V4.1-Flash**, a small, fast model.
 
-    <!-- TODO screenshot: 04-concepts-03-router-easy.png | Router response details showing the model chosen for the easy question -->
-    <!-- VERIFY: where the playground shows the routed model -->
+    ![gpt-5.4 and mr-default both answering 1.5 lbs, with the router's answer from DeepSeek-V4.1-Flash using 61 tokens](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-03-router-easy.png)
 
-1. [] Send the harder tent question and find which model answered it.
+1. [] Send the harder tent question and compare the two answers, times, and tokens.
 
     ++TrailMaster X4 Tent: 4-person, 12 lbs, $250, rainfly rated 2000mm. Alpine Explorer Tent: 8-person, 17 lbs, $350, rainfly rated 3000mm. A family of six is camping in heavy rain, wants the lightest setup possible, and has a tight budget. Weigh the trade-offs and recommend one.++
 
-    <!-- TODO screenshot: 04-concepts-03-router-hard.png | Router response details showing the model chosen for the hard question -->
+    ![Both recommending the Alpine Explorer, with gpt-5.4 taking 4 seconds and about 4,600 tokens and the router's model under a second and about 660](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-03-router-hard.png)
+
+> [!Note] Routers pick per request, so yours may choose a different model. In our test, the default router sent both questions to the small model and still got both right.
 
 > [+Hint] Ask Copilot: how does a router choose?
 >
@@ -585,7 +583,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 ---
 
-> [!Note] **Success:** We just watched one deployment pick a model per question, without us choosing.
+> [!Note] **Success:** We just watched one deployment pick a model per question, and match gpt-5.4's answers for a fraction of the tokens.
 
 ===
 
@@ -593,18 +591,16 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 **What we'll do:** Send the hard question to a router in **cost** mode and one in **quality** mode, and compare their choices.
 
-1. [] In the **Model** menu, select **mr-cost**. Then open **Compare models** and select **mr-quality**.
+1. [] In the left pane, open the **Model** menu and select **mr-cost**. In the right pane, select **mr-quality**.
 1. [] Send the tent question.
 
     ++TrailMaster X4 Tent: 4-person, 12 lbs, $250, rainfly rated 2000mm. Alpine Explorer Tent: 8-person, 17 lbs, $350, rainfly rated 3000mm. A family of six is camping in heavy rain, wants the lightest setup possible, and has a tight budget. Weigh the trade-offs and recommend one.++
 
-1. [] Note which model each router picked.
-1. [] Check that both recommend one Alpine Explorer.
+1. [] Scroll to the end of both answers. Note which model each router picked, and check that both recommend the Alpine Explorer.
 
-    <!-- TODO screenshot: 04-concepts-04-cost-vs-quality.png | mr-cost and mr-quality answering side by side, with the model each one chose -->
-    <!-- VERIFY: mr-cost and mr-quality pick different models for this prompt -->
+    ![mr-cost answering with DeepSeek-V4.1-Flash in 0.3 seconds and mr-quality with gpt-5.4 in 3.1 seconds, both recommending the Alpine Explorer](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-04-cost-vs-quality.png)
 
-> [!Knowledge] The routing mode is a dial between cost and quality. If both picked the same model, that's a real result too. A cheaper pick only wins if the answer stays right, and that's exactly what we'll measure on page 7.1.
+> [!Knowledge] In our test, cost mode picked a small model and quality mode picked gpt-5.4, and both got it right. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.1.
 
 > [+Hint] Ask Copilot: cost or quality mode?
 >
@@ -747,20 +743,25 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 **What we'll do:** Pick up the optimizer job, read the instructions it proposed, and check that the winner isn't just more cautious.
 
-1. [] In the Foundry portal, open **trailmate**, select the **Optimize** tab, and open our run. The details show the goal, the baseline score, and each candidate as it's scored.
+1. [] In the Foundry portal, open **trailmate**, select the **Optimize** tab, and open our run. When it finishes, the **Candidate results** show each candidate's score next to the v1 baseline, with its average tokens and latency.
 
-    ![The optimizer run details with its goal, run overview, and candidate results table](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-optimizer-run-details.png)
-
-1. [] Back in VS Code, jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
-
-    <!-- TODO screenshot: 06-better-02-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
+    ![Final optimizer results: baseline 0.759, candidate_1 0.822 marked Best, candidate_2 0.802, and candidate_3 0.76](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-candidates.png)
 
     > [+Hint] Still running? Read our test run
     >
-    > In our test, two candidates beat the v1 baseline of 0.759: candidate_1 scored 0.822 and candidate_2 scored 0.802. Each row also shows average tokens and latency, so we can see quality, cost, and speed together. Select **View changes** to see what a candidate rewrote.
-    >
-    > ![Optimizer candidate results with the baseline at 0.759, candidate_1 at 0.822 marked Best, and candidate_2 at 0.802](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-candidates.png)
+    > Ours took about 10 minutes. All three candidates beat the v1 baseline of 0.759, and candidate_1 scored best at 0.822, with slightly fewer tokens and lower latency too. Follow along with the screenshots on this page while yours finishes.
 
+1. [] On the best candidate, select **View changes**. The one-line v1 instructions became a detailed set of rules, for example to only make claims the product files support.
+
+    ![The changes for candidate_1, comparing the short baseline prompt with the much longer candidate prompt](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-view-changes.png)
+
+1. [] Scroll up to **Run overview** and select **View details** next to **Total tokens**. It shows what the run itself cost, by phase.
+
+    ![Token usage for the run: about 1.9 million tokens and an estimated $5.37, mostly from running the agent and scoring responses](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-token-usage.png)
+
+    > [!Note] Our run used about 1.9 million tokens, an estimated $5.37. That's above the $4.88 ceiling the notebook estimated on page 3.2. Optimizing costs real money, so we check the measured cost, not just the estimate.
+
+1. [] Back in VS Code, in **05-make-it-better.ipynb**, jump to section **5.6** and run the job cell again. It resumes the saved job and prints **Finished** with the best and baseline scores.
 1. [] Jump to section **5.7** and run its two code cells. Read each candidate's score, then read the winning instructions in full.
 1. [] Jump to section **5.8** and run its code cell. It stages the winner as a separate candidate agent. Nothing is promoted yet.
 1. [] Jump to section **5.9** and run its code cell. Check the guard-case answers against the manual.
