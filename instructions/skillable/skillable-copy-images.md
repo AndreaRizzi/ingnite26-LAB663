@@ -481,7 +481,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 # 4.1 Start an insights run
 
-**What we'll do:** Ask Foundry to read all of TrailMate's traces and find what's going wrong. It takes a few minutes, so we start it now and read the results on page 5.3.
+**What we'll do:** Ask Foundry to read all of TrailMate's traces and find what's going wrong. It takes 2 to 5 minutes, so we start it now and read the results on page 5.3.
 
 > [!Knowledge] A trace records one answer. **Insights** read many traces at once and group the problems they find, with evidence. It's how we spot patterns no single answer shows.
 
@@ -489,9 +489,10 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] Select **Run now** to scan the agent's recent traces for problems with failures, performance, cost, and quality.
 
     <!-- IMAGE: 04-concepts-01-start-insights.png | The trailmate Insights tab with no insights yet and the Run now button -->
-    <!-- VERIFY: the learner role can start a run, and how long it takes. Fallback: run notebook 04 section 4.8. -->
 
-1. [] Check that the analysis shows as running, then move on. We don't need to wait.
+1. [] Check that it shows **Run in progress** and **Finding insights...**. It typically takes 2 to 5 minutes, so move on. We don't need to wait.
+
+    <!-- IMAGE: 04-concepts-01-insights-running.png | The Insights tab showing Run in progress and Finding insights, collecting and analyzing traces -->
 
 > [+Hint] Ask Copilot: what are insights?
 >
