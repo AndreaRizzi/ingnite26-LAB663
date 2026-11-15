@@ -447,6 +447,8 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 
 1. [] Run the cell and confirm it prints the three gaps.
 
+    <!-- IMAGE: 03-kickoff-02-gaps-saved.png | The section 4.9 cell with our three gaps and its output listing them -->
+
 > [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 5.3 we'll check them against what Foundry actually finds.
 
 ## Start the optimizer
