@@ -5,6 +5,8 @@
 1. [] In Edge, switch to the **Foundry portal** tab and select the **trailmate** project.
 1. [] Open the model playground for **gpt-5.4** and turn on **Compare** with **gpt-5.4-mini**.
 
+    > [!Note] Here we test the **models** directly, not the TrailMate agent. There's no file search, so each question includes the product facts it needs.
+
     <!-- TODO screenshot: 04-concepts-02-compare-setup.png | The model playground in compare view with gpt-5.4 and gpt-5.4-mini -->
     <!-- VERIFY: exact navigation to the model playground and the Compare button -->
 

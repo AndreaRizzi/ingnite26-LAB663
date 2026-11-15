@@ -521,6 +521,8 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] In Edge, switch to the **Foundry portal** tab and select the **trailmate** project.
 1. [] Open the model playground for **gpt-5.4** and turn on **Compare** with **gpt-5.4-mini**.
 
+    > [!Note] Here we test the **models** directly, not the TrailMate agent. There's no file search, so each question includes the product facts it needs.
+
     <!-- TODO screenshot: 04-concepts-02-compare-setup.png | The model playground in compare view with gpt-5.4 and gpt-5.4-mini -->
     <!-- VERIFY: exact navigation to the model playground and the Compare button -->
 
@@ -653,9 +655,9 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
     <!-- TODO screenshot: 05-work-02-monitor.png | The Monitor tab with agent runs and token usage -->
     <!-- VERIFY: Monitor tab location and whether data appears within a few minutes -->
 
-1. [] Switch to VS Code and look at the running cell in **05-make-it-better.ipynb**. Its latest line shows the optimizer's status.
+1. [] Check on the optimizer. Select the **Optimize** tab and open our run. It first scores the baseline, our v1, then generates and scores candidates one at a time.
 
-    <!-- VERIFY: add a periodic status check here if the dry run shows it's useful -->
+    <!-- IMAGE: 05-work-02-optimizer-baseline.png | The optimizer run with the baseline scored at 0.759, candidate 1 generating, and candidates 2 and 3 queued -->
 
 > [!Knowledge] Our agent works, but "works" isn't the same as "reliable". From here on we stop judging answers one at a time and start measuring them all.
 
