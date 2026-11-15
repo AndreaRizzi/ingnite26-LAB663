@@ -669,23 +669,22 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 **What we'll do:** Read what Foundry found across TrailMate's traces, and check it against the three gaps we expected on page 3.2.
 
-1. [] On the **trailmate** agent, open the **Insights** tab and select the analysis we started on page 4.1.
+1. [] On the **trailmate** agent, open the **Insights** tab. The run we started on page 4.1 lists its findings, each with a category, a severity, and the agent version it was found in.
 
-    <!-- TODO screenshot: 05-work-03-insights-list.png | The Insights tab listing findings with severity and trace counts -->
+    <!-- IMAGE: 05-work-03-insights-list.png | The Insights tab listing five findings in the Hallucinations and Cost and tokens categories, with the first one open -->
 
-1. [] Open a finding and read its description, its evidence, and the traces behind it.
+1. [] Select a **Hallucinations** finding and read its description. It explains the pattern and links to the traces that show it.
+1. [] Select the finding about the **recipe request** and scroll down. Under **Highlighted traces** is the hot chocolate conversation, and under **Proposed fix** is a suggested change to the instructions.
 
-    <!-- TODO screenshot: 05-work-03-insight-detail.png | One insight opened, with its description, evidence, and linked traces -->
+    <!-- IMAGE: 05-work-03-proposed-fix.png | The recipe finding with its highlighted trace and a proposed fix that edits the agent instructions -->
 
-1. [] Compare the findings with our three gaps: overclaiming, making things up, and out of lane. Which did Foundry confirm? What did it find that we didn't expect?
+1. [] Compare the findings with our three gaps: overclaiming, making things up, and out of lane. Which did Foundry confirm? What did it see differently?
 
-> [+Hint] Still running? Read a finished analysis
+> [!Knowledge] Foundry flagged the recipe as a **cost** problem: an unneeded file search. It didn't call it out of lane, because it doesn't know TrailMate's job. Insights give us evidence and a starting fix, and we still decide what "good" means. That's what our rubric in stage 6 is for.
+
+> [+Hint] Still running? Read ours
 >
-> Here's what a completed analysis looked like in our test run. Read it while ours finishes.
->
-> <!-- TODO screenshot: 05-work-03-insights-complete.png | A completed insights analysis from a test run -->
-
-> [!Knowledge] Evidence before opinion. We guessed three gaps, and the insights show which ones the traces actually support. Our rubric and optimizer already use our gaps, and stage 6 measures whether fixing them helped.
+> The screenshots on this page come from a completed run in our test. Read them now, and check yours again on page 6.1.
 
 > [+Hint] Ask Copilot: which finding first?
 >
@@ -693,7 +692,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 ---
 
-> [!Note] **Success:** We just read Foundry's findings across every trace and checked our guesses against its evidence.
+> [!Note] **Success:** We just read Foundry's findings across every trace, saw a proposed fix, and checked our guesses against the evidence.
 
 ===
 
