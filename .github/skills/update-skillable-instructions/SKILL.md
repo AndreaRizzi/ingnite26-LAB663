@@ -64,8 +64,9 @@ Rules:
 
 ## LAB663 specifics
 
-- Story: Setup → Meet TrailMate (try v0 in the portal, plan the climb) → Kick-off (create v1, start the optimizer early) → Know the concepts (portal) → Make it work (portal: v0 vs v1) → Make it better (notebooks 04–05) → Keep improving (notebook 06) → Wrap.
-- Version names: notebooks say v0–v3; Foundry numbers each agent's versions from 1 (v0 = `trailmate` Version 1, v1 = Version 2). Portal steps name both. Candidates live in separate agents (`trailmate-optimizer-candidate`, `trailmate-mr-default-candidate`). Versions climb v0 → v1 → v2 → v3, one lever at a time, measured with a frozen eval set and rubric.
+- Wording: frame the lab as **continuous improvement**. "Climb" means a positive trend toward a goal across measured versions. Never write "hill climbing" or "up the hill".
+- Story: Setup → Meet TrailMate (try v0 in the portal, plan the climb) → Kick-off (create v1, start the optimizer early) → Know the concepts (portal: start insights, models, router) → Make it work (portal: v0 vs v1, monitor, insights) → Make it better (notebook 05) → Keep improving (notebook 06) → Wrap.
+- Version names: "climb versions" (v0–v3) are the lab's steps and appear in the notebooks; "agent versions" are Foundry's deployed versions, numbered from 1 (v0 = `trailmate` Version 1, v1 = Version 2). Portal steps name both. Candidates live in separate agents (`trailmate-optimizer-candidate`, `trailmate-mr-default-candidate`). Versions climb v0 → v1 → v2 → v3, one lever at a time, measured with a frozen eval set and rubric.
 - Steps must match the notebook cells in `labs/core/`. Check section numbers and printed output in the `.ipynb` files before writing a step.
 - Skillable learners never run `infra/deploy.sh` or `infra/cleanup.sh`, and never delete resources. Keep `instructions/self-guided/` separate; when shared setup changes, update both.
 - Kernel: `.venv (3.13.14) (Python 3.13.14)`, selected via Select Kernel > Python Environments. Status files on the desktop: `LAB663-deployment-output.txt` (look for `Result: SUCCEEDED`) and `lab663-deploy-<timestamp>.txt` (look for `Populated .env`). Agent: `trailmate`. Deployments: `gpt-5.4`, `gpt-5.4-mini`, `mr-default`, `mr-cost`, `mr-quality`, `mr-subset`.

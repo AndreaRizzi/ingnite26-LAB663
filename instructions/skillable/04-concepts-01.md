@@ -1,31 +1,21 @@
-# 4.1 Compare a big and a small model
+# 4.1 Start an insights run
 
-**What we'll do:** While the optimizer works, let's learn the ideas behind the climb. First, send the same two questions to a big and a small model, and see how model choice changes speed, tokens, and quality.
+**What we'll do:** Ask Foundry to read all of TrailMate's traces and find what's going wrong. It takes a few minutes, so we start it now and read the results on page 5.3.
 
-1. [] In Edge, switch to the **Foundry portal** tab and select the **trailmate** project.
-1. [] Open the model playground for **gpt-5.4** and turn on **Compare** with **gpt-5.4-mini**.
+> [!Knowledge] A trace records one answer. **Insights** read many traces at once and group the problems they find, with evidence. It's how we spot patterns no single answer shows.
 
-    <!-- TODO screenshot: 04-concepts-01-compare-setup.png | The model playground in compare view with gpt-5.4 and gpt-5.4-mini -->
-    <!-- VERIFY: exact navigation to the model playground and the Compare button -->
+1. [] In the Foundry portal, open **Agents** and select **trailmate**. It now uses **Version 2**, the v1 we created on page 3.1, marked **Active** in the **Version** menu. If the page was already open, it may still show Version 1 until you pick Version 2. Select the **Insights** tab.
+1. [] Select **Run now** to scan the agent's recent traces for problems with failures, performance, cost, and quality.
 
-1. [] Send this easy question.
+    ![The trailmate Insights tab with no insights yet and the Run now button](screenshots/04-concepts-01-start-insights.png)
+    <!-- VERIFY: the learner role can start a run, and how long it takes. Fallback: run notebook 04 section 4.8. -->
 
-    ++TrailLite Daypack specs: Weight 1.5 lbs, Dimensions 20in x 12in x 6in, Water-resistant fabric. How much does the TrailLite Daypack weigh?++
+1. [] Check that the analysis shows as running, then move on. We don't need to wait.
 
-1. [] Send this harder question. Watch for the trap: one TrailMaster X4 can't sleep six.
-
-    ++TrailMaster X4 Tent: 4-person, 12 lbs, $250, rainfly rated 2000mm. Alpine Explorer Tent: 8-person, 17 lbs, $350, rainfly rated 3000mm. A family of six is camping in heavy rain, wants the lightest setup possible, and has a tight budget. Weigh the trade-offs and recommend one.++
-
-1. [] Compare the two answers, response times, and token counts.
-
-    <!-- TODO screenshot: 04-concepts-01-compare-answers.png | Both models answering the tent question, with time and tokens visible -->
-
-> [!Knowledge] The best answer is one Alpine Explorer: two X4s weigh 24 lbs and cost $500. Did the small model catch that? The real question isn't "which model is best?" but "which questions need the big one?"
-
-> [+Hint] Ask Copilot: big or small model?
+> [+Hint] Ask Copilot: what are insights?
 >
-> ++When should I pick gpt-5.4-mini over gpt-5.4? Answer in two sentences.++
+> ++What do agent insights in Microsoft Foundry do? Explain in one sentence.++
 
 ---
 
-> [!Note] **Success:** We just saw that a small model can be faster and cheaper, and where it can fall short.
+> [!Note] **Success:** We just asked Foundry to look for problems across every TrailMate trace, while we keep learning.

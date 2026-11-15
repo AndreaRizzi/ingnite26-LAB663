@@ -17,18 +17,21 @@
 
 1. [] Run the cell and confirm it prints the three gaps.
 
-> [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 6.1 we'll check them against what Foundry actually finds.
+> [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 5.3 we'll check them against what Foundry actually finds.
 
 ## Start the optimizer
 
+Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook 05 is **Make it better**: we let the optimizer improve v1's instructions to find v2.
+
+> [!Knowledge] We're starting the optimizer now because it takes a while, often longer than any other step in this lab. It keeps running in Foundry on its own. While it works, we explore the concepts behind the climb in the portal, then come back for its results on page 6.2.
+
 1. [] In the Explorer, open **labs > core > 05-make-it-better.ipynb**.
 1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
-
 1. [] Run the first code cell. Confirm it prints the v0 and v1 version numbers.
 1. [] Jump to section **5.2** and run its code cell. Wait for **Rubric created**.
 1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows call counts and a cost range.
-1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
+1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running** and go on to page 4.1.
 
     <!-- TODO screenshot: 03-kickoff-02-optimizer-running.png | Section 5.6 printing the optimization job ID and running status lines -->
 
@@ -42,4 +45,4 @@
 
 ---
 
-> [!Note] **Success:** We just started the agent optimizer. It keeps working in Foundry while we head to the portal.
+> [!Note] **Success:** We just started **Make it better**: the agent optimizer is working on v2 in Foundry while we head to the portal.

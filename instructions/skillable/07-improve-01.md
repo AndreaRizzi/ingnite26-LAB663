@@ -7,7 +7,7 @@
 
 1. [] In the first code cell, leave `RUN_ALL_EDITIONS = False` and `TOLERANCE` as they are, then run it.
 1. [] Run section **6.2** and note how many test questions are tagged easy.
-1. [] Run section **6.3** and compare the models it shows with what you saw in the playground on pages 4.2 and 4.3. It mentions a hand-built router from Module 3. That's an optional More lab (page 9.1), so skip that line.
+1. [] Run section **6.3** and compare the models it shows with what you saw in the playground on pages 4.3 and 4.4. It mentions a hand-built router from Module 3. That's an optional More lab (page 9.1), so skip that line.
 1. [] Run section **6.4** to create the router candidate, then section **6.5** to score it. Scoring takes a few minutes.
 
     > [+Hint] While you wait: all four router editions

@@ -1,25 +1,24 @@
-# 6.1 Read the insights
+# 6.1 Turn good into a number
 
-**What we'll do:** Ask Foundry what's wrong across all of TrailMate's traces, and compare its findings with our starting gap list.
+**What we'll do:** Read the rubric Foundry drafted from our traces and gaps, then use it to score **v0** and **v1** on the same questions.
 
-1. [] In VS Code, switch to **04-make-it-work.ipynb**.
-1. [] Jump to section **4.8** and run its first code cell. The analysis usually takes a few minutes.
+1. [] Switch to **05-make-it-better.ipynb**. If the optimizer cell in section 5.6 is still running, click the **stop** button next to it.
 
-    <!-- TODO screenshot: 06-better-01-insights-complete.png | A completed insights run, to read while yours finishes -->
+    > [!Note] Stopping the cell only stops the notebook from waiting. The optimizer job keeps running in Foundry, and we'll pick it up again on page 6.2.
 
-1. [] Run the next two code cells to see the findings table and Foundry's descriptions.
+    <!-- VERIFY: interrupting the wait doesn't cancel the optimizer job -->
 
-    <!-- TODO screenshot: 06-better-01-insights-table.png | The findings table with severity, category, and trace counts -->
+1. [] Jump to section **5.3** and run its two code cells. Read the generated rubric next to our reference rubric.
+1. [] Ask yourself: would it catch "water-resistant" becoming "waterproof"?
+1. [] Jump to section **5.5** and run its two code cells to score v0 and v1 twice each. It takes a few minutes.
+1. [] Confirm the scoreboard has two rows, each with a score, a spread, and **errored** at 0.
 
-1. [] Compare the findings with the three gaps we saved on page 3.2. Which did Foundry confirm? What did it find that we missed?
-1. [] Jump to section **4.10** and run its code cell.
+    <!-- TODO screenshot: 06-better-01-scoreboard.png | The v0 and v1 scoreboard and the per-category table -->
 
-> [!Alert] Don't rerun the section 4.9 cell. Our rubric and optimizer already use the gaps saved there.
-
-> [+Hint] Ask Copilot: summarize the insights
+> [+Hint] Ask Copilot: summarize the scores
 >
-> ++Summarize the insights in section 4.8 of labs/core/04-make-it-work.ipynb in three bullets. Which should we fix first? Don't change any files.++
+> ++In three bullets, summarize what the rubric in section 5.3 of labs/core/05-make-it-better.ipynb checks and how v0 and v1 scored in section 5.5. Don't change any files.++
 
 ---
 
-> [!Note] **Success:** We just let Foundry find patterns across every trace, and checked our guesses against its evidence.
+> [!Note] **Success:** We just turned "good" into a number, using a ruler we checked ourselves.

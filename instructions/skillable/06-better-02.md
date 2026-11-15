@@ -1,24 +1,27 @@
-# 6.2 Turn good into a number
+# 6.2 Let the optimizer climb
 
-**What we'll do:** Read the rubric Foundry drafted from our traces and gaps, then use it to score **v0** and **v1** on the same questions.
+**What we'll do:** Pick up the optimizer job, read the instructions it proposed, and check that the winner isn't just more cautious.
 
-1. [] Switch to **05-make-it-better.ipynb**. If the optimizer cell in section 5.6 is still running, click the **stop** button next to it.
+1. [] Jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
 
-    > [!Note] Stopping the cell only stops the notebook from waiting. The optimizer job keeps running in Foundry, and we'll pick it up again on page 6.3.
+    <!-- TODO screenshot: 06-better-02-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
 
-    <!-- VERIFY: interrupting the wait doesn't cancel the optimizer job -->
+    > [+Hint] Still running? Read a finished run
+    >
+    > Here's what a completed run looks like. Read it while ours finishes.
+    >
+    > <!-- TODO screenshot: 06-better-02-completed-candidates.png | A completed optimizer run in the portal, listing its candidates and scores -->
 
-1. [] Jump to section **5.3** and run its two code cells. Read the generated rubric next to our reference rubric.
-1. [] Ask yourself: would it catch "water-resistant" becoming "waterproof"?
-1. [] Jump to section **5.5** and run its two code cells to score v0 and v1 twice each. It takes a few minutes.
-1. [] Confirm the scoreboard has two rows, each with a score, a spread, and **errored** at 0.
+1. [] Jump to section **5.7** and run its two code cells. Read each candidate's score, then read the winning instructions in full.
+1. [] Jump to section **5.8** and run its code cell. It stages the winner as a separate candidate agent. Nothing is promoted yet.
+1. [] Jump to section **5.9** and run its code cell. Check the guard-case answers against the manual.
 
-    <!-- TODO screenshot: 06-better-02-scoreboard.png | The v0 and v1 scoreboard and the per-category table -->
+> [!Knowledge] A timid agent never invents anything, but it's also useless. Guard cases are questions the manuals *do* answer, so a candidate that just refuses fails them.
 
-> [+Hint] Ask Copilot: summarize the scores
+> [+Hint] Ask Copilot: what did the optimizer change?
 >
-> ++In three bullets, summarize what the rubric in section 5.3 of labs/core/05-make-it-better.ipynb checks and how v0 and v1 scored in section 5.5. Don't change any files.++
+> ++Summarize what the winning candidate changed in section 5.7 of labs/core/05-make-it-better.ipynb, in three bullets. Don't change any files.++
 
 ---
 
-> [!Note] **Success:** We just turned "good" into a number, using a ruler we checked ourselves.
+> [!Note] **Success:** We just read what the optimizer changed and checked it still answers what it should.

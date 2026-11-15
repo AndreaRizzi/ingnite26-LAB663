@@ -9,18 +9,24 @@
 
     ![The first section 4.8 code cell with the Execute Above Cells icon highlighted in its toolbar](screenshots/03-kickoff-01-execute-above.png)
 
-1. [] Wait for the cells to finish. It takes a couple of minutes, including a one-minute pause in section 4.7 so the traces can arrive.
-1. [] Check the results in the Outline:
-    - The first cell prints **Connected. 12 practice questions ready.**
-    - Section **4.4** prints **Saved. TrailMate v1 is Foundry version** followed by a number.
-    - Section **4.5** shows all 12 questions marked **done**.
+1. [] Use the Outline to follow along. The first cell prints **Connected. 12 practice questions ready.**, and section **4.4** prints **Saved. TrailMate v1 is Foundry version 2**.
 
-    <!-- TODO screenshot: 03-kickoff-01-practice-done.png | Section 4.5 output with all 12 practice questions marked done -->
+    > [!Note] This is the moment **trailmate** moves to agent **Version 2** in Foundry. From here on, the portal opens trailmate at Version 2, our climb version **v1**. Version 1, our baseline **v0**, is still there in the **Version** menu.
 
-> [+Hint] Ask Copilot: what are traces?
+    ![The first cell printing Connected. 12 practice questions ready.](screenshots/03-kickoff-01-connected.png)
+
+1. [] Wait for section **4.7** to count down. It pauses one minute so the traces can arrive. The whole run takes a couple of minutes.
+
+    ![Section 4.7 counting down Waiting for traces](screenshots/03-kickoff-01-waiting.png)
+
+1. [] While it waits, switch to the Foundry portal. Expand the left menu with its toggle at the bottom left, then select **Traces**. The 12 practice conversations appear one by one, each with its duration and tokens.
+
+    ![The Foundry Traces list filling with trailmate traces, with duration and tokens](screenshots/03-kickoff-01-portal-traces.png)
+
+> [+Hint] Ask Copilot: what just ran?
 >
-> ++What are agent traces in Microsoft Foundry? Explain in one sentence.++
+> ++Summarize what sections 4.1 to 4.7 of labs/core/04-make-it-work.ipynb did, in three bullets. Don't change any files.++
 
 ---
 
-> [!Note] **Success:** We just created TrailMate v1 and gave Foundry 12 conversations' worth of traces to learn from.
+> [!Note] **Success:** We just finished **Make it work** (notebook 04): TrailMate v1 is created, and Foundry has 12 conversations' worth of traces to learn from.

@@ -88,22 +88,22 @@
 
 ## The climb
 
-Building the first agent is easy. Keeping it reliable and cost-effective takes continuous improvement. Today we take **TrailMate**, an outdoor-gear support agent, up the hill one change at a time.
+Building the first agent is easy. Keeping it reliable and cost-effective takes continuous improvement. Today we practise continuous improvement on **TrailMate**, an outdoor-gear support agent. We change one thing at a time and measure each change. Each step that moves us toward our goal is part of the **climb**.
 
 | Stage | Where | What we do | Version |
 |:------|:------|:-----------|:--------|
 | 1 Setup | VS Code | Get ready, check everything works | |
 | 2 Meet TrailMate | Foundry portal | Try the starting agent and plan the climb | v0 |
 | 3 Kick-off | VS Code | Create v1 and start the optimizer, so it works while we explore | v1 |
-| 4 Know the concepts | Foundry portal | Compare models, try the model router | |
-| 5 Make it work | Foundry portal | Compare v0 and v1, read a trace | v1 |
-| 6 Make it better | VS Code | Insights, a rubric, the agent optimizer | v2 |
+| 4 Know the concepts | Foundry portal | Start insights, compare models, try the model router | |
+| 5 Make it work | Foundry portal | Compare v0 and v1, check the monitor, read the insights | v1 |
+| 6 Make it better | VS Code | A rubric, the agent optimizer, promote or keep | v2 |
 | 7 Keep improving | VS Code | Right-size models with the model router | v3 |
 | 8 Wrap | | Look back at the climb | |
 
 ## How to use these pages
 
-1. [] Note the page number in each title, like **3.2**. If we get stuck, we raise a hand and say "page 4.2, step 4".
+1. [] Note the page number in each title, like **3.2**. If we get stuck, we raise a hand and say "page 4.3, step 4".
 1. [] Text shown +++like this+++ is **type text**: click it to type it into the virtual machine where the cursor is.
 1. [] Text shown ++like this++ is **copy text**: click it to copy, then paste it yourself.
 1. [] Each step has a checkbox. Checking the last box on a page checks the ones above it.
@@ -112,7 +112,7 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 
 ---
 
-> [!Note] **Success:** We just learned the route up the hill and how to say exactly where we are. Next, we set up our development environment and GitHub Copilot Chat.
+> [!Note] **Success:** We just learned the route of our climb and how to say exactly where we are. Next, we set up our development environment and GitHub Copilot Chat.
 
 ===
 
@@ -261,33 +261,25 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 # 2.1 Meet TrailMate v0
 
-**What we'll do:** Meet the agent we'll improve today. TrailMate is already deployed in Foundry. Let's see what it's made of and how it answers.
+**What we'll do:** Meet the agent we'll improve today. TrailMate is already deployed in Foundry. Let's see what it's made of.
 
 1. [] In Edge, switch to the **Foundry portal** tab. In the left menu, select **Agents**. You see one agent, **trailmate**.
 
     <!-- IMAGE: 02-meet-01-agents-list.png | The Agents list in the Foundry portal showing the trailmate agent at version 1 -->
 
 1. [] Select **trailmate** to open its playground, then look at the left side:
-    - **Version 1** is selected. That's our starting point, which we call **v0**.
+    - **Version 1** is selected. That's the agent version deployed in Foundry, which we call **v0**, the baseline for our climb.
     - The **Model** is **gpt-5.4**, a large frontier model.
     - The **Instructions** are just one line: "You are a helpful agent."
     - **File search** under **Tools** lets it search ten product manuals.
 
-    <!-- IMAGE: 02-meet-01-version-1.png | The trailmate playground with Version 1 selected, the model, the one-line instructions, and the file search tool -->
+1. [] To make room for the chat, collapse the left menu with the button at its bottom left, highlighted in red.
 
-1. [] In **Message the agent**, ask a question about the manuals.
+    <!-- IMAGE: 02-meet-01-version-1.png | The trailmate playground with Version 1 selected, the model, the one-line instructions, the file search tool, and the collapse-menu button highlighted -->
 
-    ++Which tent sleeps 8 people, the TrailMaster X4 or the Alpine Explorer?++
+1. [] Open **Metrics** at the top right of the chat and turn on the evaluators you want. The playground now scores every answer for us.
 
-1. [] Now ask one where agents often overclaim. The manual says **water-resistant**, not waterproof.
-
-    ++Is the Summit Breeze Jacket waterproof?++
-
-    <!-- TODO screenshot: 02-meet-01-v0-answers.png | The trailmate v0 playground with its answers to both questions -->
-
-1. [] Decide for yourself: did TrailMate keep the word "water-resistant", or upgrade the claim?
-
-> [!Knowledge] Building this agent was easy: one model, one tool, one line of instructions. Trusting it is harder. A customer who hears "waterproof" and gets soaked won't come back.
+    <!-- IMAGE: 02-meet-01-metrics.png | The Metrics menu with evaluators such as Intent resolution, Coherence, and Relevance -->
 
 > [+Hint] Ask Copilot: what is this agent?
 >
@@ -295,33 +287,101 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 ---
 
-> [!Note] **Success:** We just met TrailMate v0 and saw why "it answers" isn't the same as "it's reliable".
+> [!Note] **Success:** We just met TrailMate v0: one model, one tool, and one line of instructions, with live evaluation turned on.
 
 ===
 
-# 2.2 Plan the climb
+# 2.2 Test-drive TrailMate v0
 
-**What we'll do:** See how we'll improve TrailMate one change at a time, and why we start the slowest step first.
+**What we'll do:** Ask v0 two questions, then look behind an answer at its sources, its scores, and its trace.
+
+## Ask two questions
+
+1. [] In **Message the agent**, ask a question about the manuals.
+
+    ++Which tent sleeps 8 people, the TrailMaster X4 or the Alpine Explorer?++
+
+1. [] Look under the answer. The numbered **citations** show the manual files it used, so the answer is grounded in our data. The row below shows the model, time, tokens, tools used, and evaluation scores.
+
+    <!-- IMAGE: 02-meet-02-tent-answer.png | TrailMate's answer about the tents, with citations to product files and a row showing time, tokens, AI Quality, and Safety -->
+
+1. [] Click a citation to read the manual passage behind it, then close it.
+1. [] Now ask something a gear-support agent shouldn't answer.
+
+    ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
+
+    <!-- IMAGE: 02-meet-02-off-topic.png | TrailMate v0 answering the hot chocolate request with a full recipe -->
+
+1. [] Scroll to the end of the answer. It even adds a safety tip, citing the manual's warning to keep the bag away from open flames. Grounded, but it still answered a question that isn't TrailMate's job.
+
+## Look behind an answer
+
+1. [] Hover over **AI Quality** in the row under the answer. Every built-in evaluator passed the recipe.
+
+    <!-- IMAGE: 02-meet-02-quick-scores.png | The hover card for AI Quality showing Coherence, Fluency, Relevance, and Task adherence all Pass -->
+
+1. [] Select **AI Quality** to open the details. On the left, see each step with its time and tokens. On the right, read why each evaluator passed it.
+
+    <!-- IMAGE: 02-meet-02-evaluations.png | The details for the hot chocolate answer, with the file_search and message steps and evaluator reasons -->
+
+1. [] Close the details. Select **Traces**, then **User view**. Open the **Span tree** with its toggle on the left, then select **Play** at the bottom. It replays what the user saw next to the calls the agent made.
+
+    <!-- IMAGE: 02-meet-02-trace.png | The trace user view with the span tree, the agent response, and the replay bar -->
+
+> [!Knowledge] A **trace** is the step-by-step record of one answer. Its **tokens** tell us what the answer cost, and its **duration** how long it took. The built-in evaluators judge general quality, so a well-written recipe passes. They don't know TrailMate's job. In stage 6 we build our own rubric that does.
+
+> [+Hint] Ask Copilot: what are traces?
+>
+> ++What are agent traces in Microsoft Foundry? Explain in one sentence.++
+
+---
+
+> [!Note] **Success:** We just saw that v0 answers with citations, gets scored live, and leaves a trace. We also saw that "it answers" isn't the same as "it's reliable".
+
+===
+
+# 2.3 Plan the climb
+
+**What we'll do:** Decide what "better" means for TrailMate, see how we'll improve it one change at a time, and why we start the slowest step first.
+
+## What can we improve?
+
+On page 2.2, every answer came with three kinds of numbers. These are the dials we'll turn:
+
+| Dial | What we saw on 2.2 | Why it matters | How we improve it |
+|:-----|:-------------------|:---------------|:------------------|
+| **Quality** | AI Quality and Safety scores | Wrong or off-topic answers lose customers | Better instructions (v1, v2) |
+| **Cost** | Tokens per answer | Every token is billed, on every question | A smaller or routed model (v3) |
+| **Latency** | Seconds per answer | Slow answers frustrate customers | A faster model where it's good enough (v3) |
+
+Foundry's observability features keep these numbers visible as we climb:
+
+- **Evaluations** score answers for quality, live in the playground or on a whole question set.
+- **Traces** record each step of an answer, with its tokens and duration.
+- **Insights** read many traces at once and point to the biggest problems.
+- **Monitor** tracks runs, tokens, and failures over time.
+
+1. [] Read the two lists. Quality, cost, and latency often pull against each other, so we measure all three every time we change something.
 
 ## One lever at a time
 
-We climb from **v0** to **v3**. Each version changes just one thing, and we measure each one with the same questions, so we always know what moved the score.
+Continuous improvement means we keep measuring and keep changing one thing at a time. The **climb** is the trend toward our goal across those changes, from **v0** to **v3**. We call these **climb versions**. Each one changes just one thing, and we measure each with the same questions, so we always know what moved the score. Foundry has its own **agent versions** (Version 1, Version 2, ...) for what's deployed.
 
-| Version | What changes | Who makes it | In Foundry |
+| Climb version | What changes | Who makes it | Agent version in Foundry |
 |:--------|:-------------|:-------------|:-----------|
 | **v0** | Nothing, it's our starting point | Already deployed | **trailmate**, Version 1 |
 | **v1** | Better instructions, written by hand | Notebook 04 | **trailmate**, Version 2 |
 | **v2** | Instructions rewritten by the **agent optimizer** | Notebook 05 | Tested as **trailmate-optimizer-candidate** first |
 | **v3** | The model, swapped for a **model router** | Notebook 06 | Tested as **trailmate-mr-default-candidate** first |
 
-1. [] Read the table. Our names (v0 to v3) appear in the notebooks. Foundry numbers versions from 1, so our v0 is Foundry **Version 1**.
+1. [] Read the table. The notebooks use climb versions (v0 to v3). The portal shows agent versions, numbered from 1, so v0 is **Version 1**.
 1. [] Note that v2 and v3 start as separate **candidate** agents. Only a promotion, after we check the evidence, changes **trailmate** itself.
 
 ## Why we start the optimizer now
 
 > [!Knowledge] The **agent optimizer** rewrites an agent's instructions, tries several versions, and scores each one with an AI judge on our test questions. It's thorough, so it takes a while, often longer than any other step in this lab.
 
-1. [] Next, on pages 3.1 and 3.2, we create v1 and start the optimizer. Then, while it works, we explore the concepts behind the climb in the portal, and come back to its results on page 6.3.
+1. [] Next, on pages 3.1 and 3.2, we create v1 and start the optimizer. Then, while it works, we explore the concepts behind the climb in the portal, and come back to its results on page 6.2.
 
 > [+Hint] Ask Copilot: what is the agent optimizer?
 >
@@ -329,7 +389,7 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ---
 
-> [!Note] **Success:** We just mapped the climb from v0 to v3 and know why the optimizer goes first.
+> [!Note] **Success:** We just named the three dials we'll improve, the Foundry features that track them, and the climb from v0 to v3.
 
 ===
 
@@ -344,21 +404,27 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
     <!-- IMAGE: 03-kickoff-01-execute-above.png | The first section 4.8 code cell with the Execute Above Cells icon highlighted in its toolbar -->
 
-1. [] Wait for the cells to finish. It takes a couple of minutes, including a one-minute pause in section 4.7 so the traces can arrive.
-1. [] Check the results in the Outline:
-    - The first cell prints **Connected. 12 practice questions ready.**
-    - Section **4.4** prints **Saved. TrailMate v1 is Foundry version** followed by a number.
-    - Section **4.5** shows all 12 questions marked **done**.
+1. [] Use the Outline to follow along. The first cell prints **Connected. 12 practice questions ready.**, and section **4.4** prints **Saved. TrailMate v1 is Foundry version 2**.
 
-    <!-- TODO screenshot: 03-kickoff-01-practice-done.png | Section 4.5 output with all 12 practice questions marked done -->
+    > [!Note] This is the moment **trailmate** moves to agent **Version 2** in Foundry. From here on, the portal opens trailmate at Version 2, our climb version **v1**. Version 1, our baseline **v0**, is still there in the **Version** menu.
 
-> [+Hint] Ask Copilot: what are traces?
+    <!-- IMAGE: 03-kickoff-01-connected.png | The first cell printing Connected. 12 practice questions ready. -->
+
+1. [] Wait for section **4.7** to count down. It pauses one minute so the traces can arrive. The whole run takes a couple of minutes.
+
+    <!-- IMAGE: 03-kickoff-01-waiting.png | Section 4.7 counting down Waiting for traces -->
+
+1. [] While it waits, switch to the Foundry portal. Expand the left menu with its toggle at the bottom left, then select **Traces**. The 12 practice conversations appear one by one, each with its duration and tokens.
+
+    <!-- IMAGE: 03-kickoff-01-portal-traces.png | The Foundry Traces list filling with trailmate traces, with duration and tokens -->
+
+> [+Hint] Ask Copilot: what just ran?
 >
-> ++What are agent traces in Microsoft Foundry? Explain in one sentence.++
+> ++Summarize what sections 4.1 to 4.7 of labs/core/04-make-it-work.ipynb did, in three bullets. Don't change any files.++
 
 ---
 
-> [!Note] **Success:** We just created TrailMate v1 and gave Foundry 12 conversations' worth of traces to learn from.
+> [!Note] **Success:** We just finished **Make it work** (notebook 04): TrailMate v1 is created, and Foundry has 12 conversations' worth of traces to learn from.
 
 ===
 
@@ -381,18 +447,21 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 1. [] Run the cell and confirm it prints the three gaps.
 
-> [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 6.1 we'll check them against what Foundry actually finds.
+> [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 5.3 we'll check them against what Foundry actually finds.
 
 ## Start the optimizer
 
+Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook 05 is **Make it better**: we let the optimizer improve v1's instructions to find v2.
+
+> [!Knowledge] We're starting the optimizer now because it takes a while, often longer than any other step in this lab. It keeps running in Foundry on its own. While it works, we explore the concepts behind the climb in the portal, then come back for its results on page 6.2.
+
 1. [] In the Explorer, open **labs > core > 05-make-it-better.ipynb**.
 1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
-
 1. [] Run the first code cell. Confirm it prints the v0 and v1 version numbers.
 1. [] Jump to section **5.2** and run its code cell. Wait for **Rubric created**.
 1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows call counts and a cost range.
-1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
+1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running** and go on to page 4.1.
 
     <!-- TODO screenshot: 03-kickoff-02-optimizer-running.png | Section 5.6 printing the optimization job ID and running status lines -->
 
@@ -406,18 +475,42 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ---
 
-> [!Note] **Success:** We just started the agent optimizer. It keeps working in Foundry while we head to the portal.
+> [!Note] **Success:** We just started **Make it better**: the agent optimizer is working on v2 in Foundry while we head to the portal.
 
 ===
 
-# 4.1 Compare a big and a small model
+# 4.1 Start an insights run
 
-**What we'll do:** While the optimizer works, let's learn the ideas behind the climb. First, send the same two questions to a big and a small model, and see how model choice changes speed, tokens, and quality.
+**What we'll do:** Ask Foundry to read all of TrailMate's traces and find what's going wrong. It takes a few minutes, so we start it now and read the results on page 5.3.
+
+> [!Knowledge] A trace records one answer. **Insights** read many traces at once and group the problems they find, with evidence. It's how we spot patterns no single answer shows.
+
+1. [] In the Foundry portal, open **Agents** and select **trailmate**. It now uses **Version 2**, the v1 we created on page 3.1, marked **Active** in the **Version** menu. If the page was already open, it may still show Version 1 until you pick Version 2. Select the **Insights** tab.
+1. [] Select **Run now** to scan the agent's recent traces for problems with failures, performance, cost, and quality.
+
+    <!-- IMAGE: 04-concepts-01-start-insights.png | The trailmate Insights tab with no insights yet and the Run now button -->
+    <!-- VERIFY: the learner role can start a run, and how long it takes. Fallback: run notebook 04 section 4.8. -->
+
+1. [] Check that the analysis shows as running, then move on. We don't need to wait.
+
+> [+Hint] Ask Copilot: what are insights?
+>
+> ++What do agent insights in Microsoft Foundry do? Explain in one sentence.++
+
+---
+
+> [!Note] **Success:** We just asked Foundry to look for problems across every TrailMate trace, while we keep learning.
+
+===
+
+# 4.2 Compare a big and a small model
+
+**What we'll do:** While the optimizer and insights work, let's learn the ideas behind the climb. First, send the same two questions to a big and a small model, and see how model choice changes speed, tokens, and quality.
 
 1. [] In Edge, switch to the **Foundry portal** tab and select the **trailmate** project.
 1. [] Open the model playground for **gpt-5.4** and turn on **Compare** with **gpt-5.4-mini**.
 
-    <!-- TODO screenshot: 04-concepts-01-compare-setup.png | The model playground in compare view with gpt-5.4 and gpt-5.4-mini -->
+    <!-- TODO screenshot: 04-concepts-02-compare-setup.png | The model playground in compare view with gpt-5.4 and gpt-5.4-mini -->
     <!-- VERIFY: exact navigation to the model playground and the Compare button -->
 
 1. [] Send this easy question.
@@ -430,7 +523,7 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 1. [] Compare the two answers, response times, and token counts.
 
-    <!-- TODO screenshot: 04-concepts-01-compare-answers.png | Both models answering the tent question, with time and tokens visible -->
+    <!-- TODO screenshot: 04-concepts-02-compare-answers.png | Both models answering the tent question, with time and tokens visible -->
 
 > [!Knowledge] The best answer is one Alpine Explorer: two X4s weigh 24 lbs and cost $500. Did the small model catch that? The real question isn't "which model is best?" but "which questions need the big one?"
 
@@ -444,7 +537,7 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ===
 
-# 4.2 Let a router choose
+# 4.3 Let a router choose
 
 **What we'll do:** Send the same two questions to a **model router** and see which model it picks for each.
 
@@ -460,14 +553,14 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 1. [] Find which model answered. Look in the response details for the **model** name.
 
-    <!-- TODO screenshot: 04-concepts-02-router-easy.png | Router response details showing the model chosen for the easy question -->
+    <!-- TODO screenshot: 04-concepts-03-router-easy.png | Router response details showing the model chosen for the easy question -->
     <!-- VERIFY: where the playground shows the routed model -->
 
 1. [] Send the harder tent question and find which model answered it.
 
     ++TrailMaster X4 Tent: 4-person, 12 lbs, $250, rainfly rated 2000mm. Alpine Explorer Tent: 8-person, 17 lbs, $350, rainfly rated 3000mm. A family of six is camping in heavy rain, wants the lightest setup possible, and has a tight budget. Weigh the trade-offs and recommend one.++
 
-    <!-- TODO screenshot: 04-concepts-02-router-hard.png | Router response details showing the model chosen for the hard question -->
+    <!-- TODO screenshot: 04-concepts-03-router-hard.png | Router response details showing the model chosen for the hard question -->
 
 > [+Hint] Ask Copilot: how does a router choose?
 >
@@ -479,7 +572,7 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ===
 
-# 4.3 Turn the cost-quality dial
+# 4.4 Turn the cost-quality dial
 
 **What we'll do:** Send the hard question to a router in **cost** mode and one in **quality** mode, and compare their choices.
 
@@ -491,7 +584,7 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 1. [] Note which model each router picked.
 1. [] Check that both recommend one Alpine Explorer.
 
-    <!-- TODO screenshot: 04-concepts-03-cost-vs-quality.png | mr-cost and mr-quality answering side by side, with the model each one chose -->
+    <!-- TODO screenshot: 04-concepts-04-cost-vs-quality.png | mr-cost and mr-quality answering side by side, with the model each one chose -->
     <!-- VERIFY: mr-cost and mr-quality pick different models for this prompt -->
 
 > [!Knowledge] The routing mode is a dial between cost and quality. If both picked the same model, that's a real result too. A cheaper pick only wins if the answer stays right, and that's exactly what we'll measure on page 7.1.
@@ -511,21 +604,21 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 **What we'll do:** Put TrailMate v0 and v1 side by side in the playground, and see what better instructions changed.
 
 1. [] In the Foundry portal, open **Agents** and select **trailmate**.
-1. [] Open the **Version** menu at the top. You now see **Version 2**, the v1 we created on page 3.1, next to **Version 1**, our v0.
+1. [] Open the **Version** menu at the top. You now see agent **Version 2**, our climb version **v1** from page 3.1, next to **Version 1**, our baseline **v0**.
 
-    <!-- TODO screenshot: 05-work-01-version-menu.png | The trailmate Version menu listing Version 2 and Version 1 -->
+    <!-- IMAGE: 05-work-01-version-menu.png | The trailmate Version menu listing Version 2, marked Active, above Version 1 -->
 
 1. [] In the same menu, select **Compare versions** and pick **Version 1** and **Version 2**.
 
     <!-- VERIFY: Compare versions lets us chat with both versions side by side -->
 
-1. [] Send the jacket question to both.
+1. [] Send the off-topic question from page 2.2 to both.
 
-    ++Is the Summit Breeze Jacket waterproof?++
+    ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
 
-1. [] Compare the two answers. Which one keeps "water-resistant"? Which says what the manual doesn't cover?
+1. [] Compare the two answers. Did v1 stay closer to TrailMate's job? One question is just a hint, so in stage 6 we measure all of them.
 
-    <!-- TODO screenshot: 05-work-01-compare-versions.png | Version 1 and Version 2 answering the jacket question side by side -->
+    <!-- TODO screenshot: 05-work-01-compare-versions.png | Version 1 and Version 2 answering the hot chocolate request side by side -->
 
 > [!Knowledge] Later, the Agents list also shows **trailmate-optimizer-candidate** and **trailmate-mr-default-candidate**. They're test copies. Only a promotion changes **trailmate** itself.
 
@@ -539,39 +632,14 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ===
 
-# 5.2 Read a trace
-
-**What we'll do:** Open the trace behind an answer to see how TrailMate produced it: what it searched, what it found, and what it cost.
-
-1. [] In the agent playground, open the trace for the jacket answer.
-
-    <!-- VERIFY: where to open the trace from a playground response -->
-
-1. [] Find the **file search** step and read which manual passages it retrieved.
-1. [] Note the token count and latency for the response.
-
-    <!-- TODO screenshot: 05-work-02-trace.png | The trace for the jacket answer, with the file search step, tokens, and latency -->
-
-> [!Knowledge] A **trace** is the step-by-step record of one answer. If an answer is wrong, the trace tells us whether the search missed the right passage or the model misread it. Those are two different fixes.
-
-> [+Hint] Ask Copilot: read the trace with me
->
-> ++/microsoft-foundry Find the latest trace for my trailmate agent and explain how it answered, in three bullets. Do not change anything.++
-
----
-
-> [!Note] **Success:** We just traced one answer back to the manual passages it came from.
-
-===
-
-# 5.3 Check the monitor
+# 5.2 Check the monitor
 
 **What we'll do:** Zoom out from one answer to all of them, then check on the optimizer.
 
 1. [] On the trailmate agent page, open the **Monitor** tab.
 1. [] Look at runs, token usage, and any failures. The 12 practice questions from page 3.1 are in here too.
 
-    <!-- TODO screenshot: 05-work-03-monitor.png | The Monitor tab with agent runs and token usage -->
+    <!-- TODO screenshot: 05-work-02-monitor.png | The Monitor tab with agent runs and token usage -->
     <!-- VERIFY: Monitor tab location and whether data appears within a few minutes -->
 
 1. [] Switch to VS Code and look at the running cell in **05-make-it-better.ipynb**. Its latest line shows the optimizer's status.
@@ -590,41 +658,45 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ===
 
-# 6.1 Read the insights
+# 5.3 Read the insights
 
-**What we'll do:** Ask Foundry what's wrong across all of TrailMate's traces, and compare its findings with our starting gap list.
+**What we'll do:** Read what Foundry found across TrailMate's traces, and check it against the three gaps we expected on page 3.2.
 
-1. [] In VS Code, switch to **04-make-it-work.ipynb**.
-1. [] Jump to section **4.8** and run its first code cell. The analysis usually takes a few minutes.
+1. [] On the **trailmate** agent, open the **Insights** tab and select the analysis we started on page 4.1.
 
-    <!-- TODO screenshot: 06-better-01-insights-complete.png | A completed insights run, to read while yours finishes -->
+    <!-- TODO screenshot: 05-work-03-insights-list.png | The Insights tab listing findings with severity and trace counts -->
 
-1. [] Run the next two code cells to see the findings table and Foundry's descriptions.
+1. [] Open a finding and read its description, its evidence, and the traces behind it.
 
-    <!-- TODO screenshot: 06-better-01-insights-table.png | The findings table with severity, category, and trace counts -->
+    <!-- TODO screenshot: 05-work-03-insight-detail.png | One insight opened, with its description, evidence, and linked traces -->
 
-1. [] Compare the findings with the three gaps we saved on page 3.2. Which did Foundry confirm? What did it find that we missed?
-1. [] Jump to section **4.10** and run its code cell.
+1. [] Compare the findings with our three gaps: overclaiming, making things up, and out of lane. Which did Foundry confirm? What did it find that we didn't expect?
 
-> [!Alert] Don't rerun the section 4.9 cell. Our rubric and optimizer already use the gaps saved there.
-
-> [+Hint] Ask Copilot: summarize the insights
+> [+Hint] Still running? Read a finished analysis
 >
-> ++Summarize the insights in section 4.8 of labs/core/04-make-it-work.ipynb in three bullets. Which should we fix first? Don't change any files.++
+> Here's what a completed analysis looked like in our test run. Read it while ours finishes.
+>
+> <!-- TODO screenshot: 05-work-03-insights-complete.png | A completed insights analysis from a test run -->
+
+> [!Knowledge] Evidence before opinion. We guessed three gaps, and the insights show which ones the traces actually support. Our rubric and optimizer already use our gaps, and stage 6 measures whether fixing them helped.
+
+> [+Hint] Ask Copilot: which finding first?
+>
+> ++/microsoft-foundry Summarize the latest insights for my trailmate agent in three bullets. Which should we fix first? Do not change anything.++
 
 ---
 
-> [!Note] **Success:** We just let Foundry find patterns across every trace, and checked our guesses against its evidence.
+> [!Note] **Success:** We just read Foundry's findings across every trace and checked our guesses against its evidence.
 
 ===
 
-# 6.2 Turn good into a number
+# 6.1 Turn good into a number
 
 **What we'll do:** Read the rubric Foundry drafted from our traces and gaps, then use it to score **v0** and **v1** on the same questions.
 
 1. [] Switch to **05-make-it-better.ipynb**. If the optimizer cell in section 5.6 is still running, click the **stop** button next to it.
 
-    > [!Note] Stopping the cell only stops the notebook from waiting. The optimizer job keeps running in Foundry, and we'll pick it up again on page 6.3.
+    > [!Note] Stopping the cell only stops the notebook from waiting. The optimizer job keeps running in Foundry, and we'll pick it up again on page 6.2.
 
     <!-- VERIFY: interrupting the wait doesn't cancel the optimizer job -->
 
@@ -633,7 +705,7 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 1. [] Jump to section **5.5** and run its two code cells to score v0 and v1 twice each. It takes a few minutes.
 1. [] Confirm the scoreboard has two rows, each with a score, a spread, and **errored** at 0.
 
-    <!-- TODO screenshot: 06-better-02-scoreboard.png | The v0 and v1 scoreboard and the per-category table -->
+    <!-- TODO screenshot: 06-better-01-scoreboard.png | The v0 and v1 scoreboard and the per-category table -->
 
 > [+Hint] Ask Copilot: summarize the scores
 >
@@ -645,19 +717,19 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ===
 
-# 6.3 Let the optimizer climb
+# 6.2 Let the optimizer climb
 
 **What we'll do:** Pick up the optimizer job, read the instructions it proposed, and check that the winner isn't just more cautious.
 
 1. [] Jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
 
-    <!-- TODO screenshot: 06-better-03-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
+    <!-- TODO screenshot: 06-better-02-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
 
     > [+Hint] Still running? Read a finished run
     >
     > Here's what a completed run looks like. Read it while ours finishes.
     >
-    > <!-- TODO screenshot: 06-better-03-completed-candidates.png | A completed optimizer run in the portal, listing its candidates and scores -->
+    > <!-- TODO screenshot: 06-better-02-completed-candidates.png | A completed optimizer run in the portal, listing its candidates and scores -->
 
 1. [] Jump to section **5.7** and run its two code cells. Read each candidate's score, then read the winning instructions in full.
 1. [] Jump to section **5.8** and run its code cell. It stages the winner as a separate candidate agent. Nothing is promoted yet.
@@ -675,14 +747,14 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 ===
 
-# 6.4 Decide whether to promote
+# 6.3 Decide whether to promote
 
 **What we'll do:** Test v0, v1, and the candidate on questions the optimizer never saw, then make an explicit promote-or-retain decision for **v2**.
 
 1. [] Jump to section **5.10** and run its two code cells. It takes a few minutes. Confirm the board has rows for v0, v1, and the v2 candidate.
 1. [] Run section **5.11** and compare the gain on questions the optimizer trained on with the gain on questions it never saw.
 
-    <!-- TODO screenshot: 06-better-04-heldout.png | Section 5.11 comparing dev gain with test gain -->
+    <!-- TODO screenshot: 06-better-03-heldout.png | Section 5.11 comparing dev gain with test gain -->
 
 1. [] In section **5.12**, set `REVIEW_APPROVED = True` only if the instructions, guard answers, and scores hold up. Then run the cell and read the decision.
 
@@ -707,7 +779,7 @@ We climb from **v0** to **v3**. Each version changes just one thing, and we meas
 
 1. [] In the first code cell, leave `RUN_ALL_EDITIONS = False` and `TOLERANCE` as they are, then run it.
 1. [] Run section **6.2** and note how many test questions are tagged easy.
-1. [] Run section **6.3** and compare the models it shows with what you saw in the playground on pages 4.2 and 4.3. It mentions a hand-built router from Module 3. That's an optional More lab (page 9.1), so skip that line.
+1. [] Run section **6.3** and compare the models it shows with what you saw in the playground on pages 4.3 and 4.4. It mentions a hand-built router from Module 3. That's an optional More lab (page 9.1), so skip that line.
 1. [] Run section **6.4** to create the router candidate, then section **6.5** to score it. Scoring takes a few minutes.
 
     > [+Hint] While you wait: all four router editions

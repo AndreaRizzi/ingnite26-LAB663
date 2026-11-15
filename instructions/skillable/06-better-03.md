@@ -1,27 +1,20 @@
-# 6.3 Let the optimizer climb
+# 6.3 Decide whether to promote
 
-**What we'll do:** Pick up the optimizer job, read the instructions it proposed, and check that the winner isn't just more cautious.
+**What we'll do:** Test v0, v1, and the candidate on questions the optimizer never saw, then make an explicit promote-or-retain decision for **v2**.
 
-1. [] Jump to section **5.6** and run the job cell again. It resumes the saved job without starting a new one, and prints **Finished** with the best and baseline scores.
+1. [] Jump to section **5.10** and run its two code cells. It takes a few minutes. Confirm the board has rows for v0, v1, and the v2 candidate.
+1. [] Run section **5.11** and compare the gain on questions the optimizer trained on with the gain on questions it never saw.
 
-    <!-- TODO screenshot: 06-better-03-optimizer-finished.png | The optimizer cell printing Finished with best and baseline scores -->
+    <!-- TODO screenshot: 06-better-03-heldout.png | Section 5.11 comparing dev gain with test gain -->
 
-    > [+Hint] Still running? Read a finished run
-    >
-    > Here's what a completed run looks like. Read it while ours finishes.
-    >
-    > <!-- TODO screenshot: 06-better-03-completed-candidates.png | A completed optimizer run in the portal, listing its candidates and scores -->
+1. [] In section **5.12**, set `REVIEW_APPROVED = True` only if the instructions, guard answers, and scores hold up. Then run the cell and read the decision.
 
-1. [] Jump to section **5.7** and run its two code cells. Read each candidate's score, then read the winning instructions in full.
-1. [] Jump to section **5.8** and run its code cell. It stages the winner as a separate candidate agent. Nothing is promoted yet.
-1. [] Jump to section **5.9** and run its code cell. Check the guard-case answers against the manual.
+> [!Knowledge] The gain on trained questions is the gain the optimizer wanted. The gain on unseen questions is the gain we can trust. If the candidate doesn't pass, keeping v1 as our v2 checkpoint is a correct result.
 
-> [!Knowledge] A timid agent never invents anything, but it's also useless. Guard cases are questions the manuals *do* answer, so a candidate that just refuses fails them.
-
-> [+Hint] Ask Copilot: what did the optimizer change?
+> [+Hint] Ask Copilot: explain the decision
 >
-> ++Summarize what the winning candidate changed in section 5.7 of labs/core/05-make-it-better.ipynb, in three bullets. Don't change any files.++
+> ++Explain the decision printed in section 5.12 of labs/core/05-make-it-better.ipynb in two sentences: was the candidate promoted, and why? Don't change any files.++
 
 ---
 
-> [!Note] **Success:** We just read what the optimizer changed and checked it still answers what it should.
+> [!Note] **Success:** We just made a promote-or-retain decision backed by evidence, not by a single score.
