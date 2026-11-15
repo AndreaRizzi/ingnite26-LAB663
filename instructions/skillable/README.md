@@ -1,71 +1,158 @@
-# Guided Skillable walkthrough
+# LAB663 Skillable facilitator guide
 
-Our environment is prepared before the session: GitHub Copilot access, a Foundry project, two chat models, four router editions, tracing and the starting TrailMate agent. We use the same code-first notebooks as the self-guided lab, but **we do not deploy or delete infrastructure ourselves**.
+This folder holds the in-venue version of LAB663. Learners follow a paged manual inside a Skillable lab. Their Foundry project, models, router editions, tracing and the starting TrailMate agent are prepared before they arrive. They never deploy or delete anything themselves.
 
-Basic Python is helpful; previous agent or evaluation experience is not required. Run one cell at a time, read the expected result, and keep the notebook outline open. Business decision makers can concentrate on the customer failure, the evidence and the promotion decision; developers and AI engineers can inspect the SDK calls and saved results.
+This guide is for facilitators and maintainers. The learner manual is generated into [skillable-copy.md](skillable-copy.md) from the page files listed below.
 
-## Step 1: Sign in and check our environment
+## Overview
 
-Let's start with `LAB663-03-environment-status.txt` on the VM desktop. Skillable writes it while it prepares our environment, so it tells us whether everything finished.
+Building the first agent is easy. Keeping it reliable and cost-effective takes continuous improvement. In this lab we take **TrailMate**, an outdoor-gear support agent that answers from ten product manuals, up the hill one change at a time. We change one lever per version and measure every version with the same frozen questions and rubric.
 
-**Expected:** the file says `Result: SUCCEEDED` and names our Foundry account and project. If it says `RUNNING`, preparation is still going: wait a few minutes and reopen it. If it says `FAILED`, don't start the lab. Tell the facilitator and share the `Stage` and `Error` lines.
+### The workflow
 
-Open the prepared LAB663 folder in VS Code and sign into GitHub using the **assigned enterprise learner identity**, not a personal account. Open Copilot Chat and ask it to explain a Python list comprehension.
-
-**Expected:** Copilot answers under the assigned GitHub account without a missing-license or access-denied message. If it does not, ask the facilitator to check the GitHub/Copilot lifecycle; do not switch to a personal subscription. Azure sign-in below is a separate check.
-
-In the VM terminal, sign in to Azure with the **assigned Skillable learner account**, not a personal account or the lifecycle service principal:
-
-```powershell
-az login --tenant '<tenant ID supplied by the lab>' --use-device-code
-az account show --query "{subscription:name, tenant:tenantId, user:user.name}"
+```mermaid
+flowchart LR
+    S["1 Setup<br/>VS Code<br/>v0"] --> K["2 Kick-off<br/>create v1,<br/>start optimizer"]
+    K --> C["3 Know the concepts<br/>portal: compare models,<br/>try the router"]
+    C --> W["4 Make it work<br/>portal: playground,<br/>trace, monitor"]
+    W --> B["5 Make it better<br/>notebooks 04-05:<br/>insights, rubric, v2"]
+    B --> I["6 Keep improving<br/>notebook 06:<br/>router, v3"]
+    I --> R["7 Wrap<br/>the whole climb"]
+    K -. "optimizer runs in Foundry<br/>while learners are in the portal" .-> B
 ```
 
-Select the subscription supplied by the lab if the displayed one differs. Never paste a password, client secret or access token into a notebook.
+The kick-off is the key design choice. The agent optimizer is the slowest step, so learners start it early (pages 2.1 and 2.2), then spend that wait in the Foundry portal learning the concepts. When they return to the notebooks, the job is likely finished. Every slow step also has a "while you wait" screenshot of a completed run, so a learner who runs out of time still sees the result.
 
-**Expected:** the assigned learner identity and subscription are shown, and a local `.env` already exists in the repository root. If not, ask the facilitator to repair the lifecycle. Do not run `infra/deploy.sh`.
+### Stages at a glance
 
-If we open the [Foundry portal](https://ai.azure.com) during the lab, let's use the `trailmate` project named in the status file. Creating a new project doesn't help: it has none of our models, router editions or starting agent.
+| Stage | Pages | Where | What learners do | Version | Target |
+|:------|:------|:------|:-----------------|:--------|:-------|
+| 0 Start | 0.1–0.2 | Skillable, VM | Sign in; learn the page conventions | | 3 min |
+| 1 Setup | 1.1–1.3 | VS Code | Check status file, `az login`, Copilot Chat, run notebook 01 | v0 | 8 min |
+| 2 Kick-off | 2.1–2.2 | VS Code | Create v1, send practice questions, save a starting gap list, start the optimizer | v1 | 8 min |
+| 3 Know the concepts | 3.1–3.3 | Foundry portal | Compare `gpt-5.4` and `gpt-5.4-mini`; watch `mr-default`, `mr-cost` and `mr-quality` choose models | | 8 min |
+| 4 Make it work | 4.1–4.3 | Foundry portal | Try TrailMate v1, read a trace, check the monitor | v1 | 7 min |
+| 5 Make it better | 5.1–5.4 | Notebooks 04, 05 | Insights, rubric, v0/v1 scores, optimizer candidates, promote or retain | v2 | 16 min |
+| 6 Keep improving | 6.1–6.2 | Notebook 06 | Score `mr-default` against v2, then decide | v3 | 10 min |
+| 7 Wrap | 7.1 | Notebook 06 | Read the whole-climb heatmap, end the lab | | 2 min |
+| 8 More | 8.1–8.2 | Notebooks | Optional: multi-model vs multi-modal, MAI models | | |
+| 9 Reference | 9.1 | | Credentials and links | | |
 
-**Expected:** the `trailmate` project opens without a permission message. If it says we don't have permission to build agents, wait a few minutes and refresh, because new role assignments can take up to 10 minutes. If the message stays, tell the facilitator.
+The targets add up to about 60 minutes. They are planning targets, not measured times. The first dry run will tell us where they're wrong.
 
-Open [01 · Set up and validate](../../labs/core/01-setup-and-validate.ipynb), select **Python (LAB663)**, and run its checks.
+### Hero products
 
-**Expected:** every check passes under our learner identity, including the SDK version, model calls and indexed manuals. If a check fails, keep its exact message and ask the facilitator; do not install packages or change the deployment during the session.
+| Product | What it does in this lab | Learn more |
+|:--------|:-------------------------|:-----------|
+| **Microsoft Foundry** | Hosts our project, models, the TrailMate agent, evaluations and traces | [What is Microsoft Foundry?](https://learn.microsoft.com/azure/foundry/what-is-foundry) |
+| **Foundry playgrounds** | Compare mode sends one prompt to several models side by side, showing answers, latency and tokens (pages 3.1–3.3) | [Microsoft Foundry playgrounds](https://learn.microsoft.com/azure/foundry/concepts/concept-playgrounds) |
+| **Model router** | One deployment that picks a model per request. Its routing mode (balanced, cost, quality) sets the cost/quality dial (pages 3.2, 3.3, 6.1) | [Model router](https://learn.microsoft.com/azure/foundry/openai/concepts/model-router), [Model router with agents](https://learn.microsoft.com/azure/foundry/openai/how-to/model-router-agents) |
+| **Tracing** | Records each step of an answer: file search, retrieved passages, tokens, latency (page 4.2) | [Set up tracing](https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-setup) |
+| **Insights** | Analyzes many traces at once and groups problems into findings with evidence (page 5.1) | [Use Insights in Foundry](https://learn.microsoft.com/azure/foundry/observability/how-to/agent-insights) |
+| **Rubric evaluators** | An AI judge with a checklist, drafted from our traces and gap list (page 5.2) | [Rubric evaluators](https://learn.microsoft.com/azure/foundry/concepts/evaluation-evaluators/rubric-evaluators) |
+| **Agent optimizer** | Rewrites the agent's instructions, scores candidates with our rubric, and reports the best (pages 2.2, 5.3) | [What is the agent optimizer?](https://learn.microsoft.com/azure/foundry/agents/concepts/agent-optimizer-overview) |
+| **GitHub Copilot with the Microsoft Foundry skill** | Explains errors and results, and can query our Foundry project from chat (Copilot prompts throughout) | [Use the Microsoft Foundry skill](https://learn.microsoft.com/azure/foundry/how-to/develop/use-microsoft-foundry-skill) |
 
-Notebook 01 prints its Python interpreter before connecting. It should be the prepared `.venv` used by **Python (LAB663)**, not a system interpreter left selected in VS Code.
+## Before the session
 
-## Step 2: Follow the climb
+The lab profile must give every learner these before the lab starts. Learners don't install or clone anything.
 
-Read [00 · What are we building?](../../labs/core/00-set-the-stage.ipynb) before the timed session. It explains our six failure categories, separate practice/dev/test sets, and the rule that a candidate must earn promotion.
+| Learner needs | Provided by |
+|:--------------|:------------|
+| A Windows 11 VM (`Win11-Pro-Base`) with VS Code, the LAB663 folder on the desktop, and a prepared `.venv` kernel (`.venv(3.13.14)(Python3.13.14)`) | The VM image |
+| A Foundry project with `gpt-5.4`, `gpt-5.4-mini`, the four `mr-` router editions, tracing, the v0 TrailMate agent, and `.env` | [Lifecycle scripts](../../skillable_lifecycles/README.md), which write `LAB663-03-environment-status.txt` to the desktop |
+| GitHub Enterprise sign-in at `https://github.com/enterprises/skillable-events/sso` with the learner's Azure credentials | The Skillable GitHub/Copilot lifecycle |
+| `@lab.CloudPortalCredential(User1)` Username, Password and AccessToken, and `@lab.CloudSubscription.TenantId` | The lab profile |
 
-Then follow the notebooks in order. The times below are planning targets, not measured service guarantees.
+## Running the session
 
-| Notebook | Our question | Core target |
-|---|---|---|
-| [01 · Set up and validate](../../labs/core/01-setup-and-validate.ipynb) | Can we trust the setup? | 4 minutes |
-| [02 · Choosing a model](../../labs/core/02-model-selection.ipynb) | What changes with model choice? | 8 minutes; reasoning-effort experiment optional |
-| [03 · Multi-model vs multi-modal](../../labs/core/03-multi-model-vs-multimodal.ipynb) | Can we trust each step in the pipeline? | 8 minutes; full photo/router experiments optional |
-| [04 · Make it work](../../labs/core/04-make-it-work.ipynb) | Which failures do the traces show? | 12 minutes |
-| [05 · Make it better](../../labs/core/05-make-it-better.ipynb) | Did the rewrite earn promotion? | 14 minutes |
-| [06 · Make it optimal](../../labs/core/06-make-it-optimal.ipynb) | Did routing improve an acceptable trade-off? | 14 minutes; one router edition |
+- **Support model.** Learners ask Copilot first, using the **Copilot prompt** on the page, then raise a hand and say the page and step, for example "page 5.2, step 4". Page 1.2 checks that Copilot and the Foundry skill work before anyone needs them.
+- **Notebook sections vs page numbers.** Page numbers (like **5.2**) are the manual's. Notebook sections (like **section 4.8**) belong to the notebook. Pages always name both.
+- **Kick-off gap list.** Page 2.2 supplies three gaps as copy text so the optimizer can start early. They're written as risks to check, not observed results. Page 5.1 has learners compare them with Foundry's insights.
+- **Stopping the optimizer wait.** On page 5.2, learners stop the waiting cell if the optimizer is still running, so they can score v0 and v1. The job keeps running in Foundry, and page 5.3 resumes it from the saved ID.
+- **Retaining is a valid outcome.** At 5.4 and 6.2 the notebooks may keep the earlier version. That's a correct result, not a failure.
+- **Never deploy or clean up.** Learners never run `infra/deploy.sh` or `infra/cleanup.sh`. Skillable removes the resources when the lab ends.
 
-**Expected:** pinned agent IDs, a frozen rubric, complete evaluation results and an explicit promote-or-retain decision. A lower score, pending job, invalid batch or unknown cost is not a success to hide.
+### Known risks to watch in the dry run
 
-**Facilitator note:** the [isolated rehearsal](../../docs/narrative.md#what-the-isolated-rehearsal-tells-us) found router/file-search failures, and one complete evaluation pair took 213 seconds. Resolve the service issue and rehearse the whole schedule on the actual Skillable image; the 60-minute plan has not yet been demonstrated.
+| Risk | Where | What to check |
+|:-----|:------|:--------------|
+| Rubric generation runs before traces have landed | 2.2 | Whether section 5.2 succeeds after the 60-second pause in section 4.7 |
+| Version confusion in the portal | 4.1 | The agent shows v1 as newest, and the optimizer's candidate agent doesn't confuse learners |
+| Router picks don't differ | 3.3 | Whether `mr-cost` and `mr-quality` choose different models for the tent prompt |
+| Evaluation runs are slow | 5.2, 5.4, 6.1 | Real durations. An isolated rehearsal measured 213 seconds for one evaluation pair. |
+| Optimizer duration | 2.2, 5.3 | Whether it finishes before learners return from the portal |
 
-## Step 3: Use the waits
+Each page also carries `<!-- VERIFY: ... -->` comments for these checks. They don't render in Skillable.
 
-Open [the wait-time challenges](../../labs/bonus/wait-time-challenges.ipynb) in a **separate kernel** while a service job runs. They use local files only and do not spend model quota or change the measuring stick.
+## Page files
 
-The core helpers print progress and save evaluation/optimizer IDs. If a bounded wait expires, resume the existing job as the cell explains. Do not click the submit cell repeatedly, restart its kernel unnecessarily, or launch all notebooks at once.
+Each file is one Skillable page holding one small task. Files are named `NN-stage-NN.md`, and the name order sets the page order.
 
-**Expected:** we can discuss an answer-key contradiction, judge evidence, unknown pricing or missing evaluation cases while the core job continues. If the service runs past the session, retain its ID and record the decision as pending.
+| File | Page title |
+|:-----|:-----------|
+| [00-start-01.md](00-start-01.md) | 0.1 Sign in to your lab |
+| [00-start-02.md](00-start-02.md) | 0.2 How this lab works |
+| [01-setup-01.md](01-setup-01.md) | 1.1 Set up the local environment |
+| [01-setup-02.md](01-setup-02.md) | 1.2 Set up GitHub Copilot Chat |
+| [01-setup-03.md](01-setup-03.md) | 1.3 Validate the Azure environment |
+| [02-kickoff-01.md](02-kickoff-01.md) | 2.1 Create v1 and leave traces |
+| [02-kickoff-02.md](02-kickoff-02.md) | 2.2 Start the optimizer |
+| [03-concepts-01.md](03-concepts-01.md) | 3.1 Compare a big and a small model |
+| [03-concepts-02.md](03-concepts-02.md) | 3.2 Let a router choose |
+| [03-concepts-03.md](03-concepts-03.md) | 3.3 Turn the cost-quality dial |
+| [04-work-01.md](04-work-01.md) | 4.1 Take TrailMate for a spin |
+| [04-work-02.md](04-work-02.md) | 4.2 Read a trace |
+| [04-work-03.md](04-work-03.md) | 4.3 Check the monitor |
+| [05-better-01.md](05-better-01.md) | 5.1 Read the insights |
+| [05-better-02.md](05-better-02.md) | 5.2 Turn good into a number |
+| [05-better-03.md](05-better-03.md) | 5.3 Let the optimizer climb |
+| [05-better-04.md](05-better-04.md) | 5.4 Decide whether to promote |
+| [06-improve-01.md](06-improve-01.md) | 6.1 Try a model router |
+| [06-improve-02.md](06-improve-02.md) | 6.2 Decide on the router |
+| [07-wrap-01.md](07-wrap-01.md) | 7.1 Finish the lab |
+| [08-more-01.md](08-more-01.md) | 8.1 More: multi-model vs multi-modal |
+| [08-more-02.md](08-more-02.md) | 8.2 More: explore MAI models |
+| [09-ref-01.md](09-ref-01.md) | 9.1 Lab credentials and links |
 
-## Step 4: Finish safely
+The core path skips notebook 00 (its story is on page 0.2) and notebook 02 (pages 3.1–3.3 cover it in the portal). Notebook 03 is in the More labs.
 
-Read the final scoreboard together. We may retain the original baseline; that is the correct outcome when the evidence does not support a change. Twelve teaching cases and two repeats are not a production release guarantee.
+## Maintaining the manual
 
-End the Skillable lab when instructed. The platform's teardown action removes this instance's tagged resources. Learners must not run the self-guided cleanup script, purge accounts, or delete the allocated resource group.
+### Page conventions
 
-**Expected:** the facilitator has our observed timings and any failed check messages, and the lab ends through the normal Skillable controls.
+- Title: `# N.N Title`, 40 characters or fewer. It labels the **Next** button.
+- First line: `**What we'll do:** ...`. Last line: `> [!Note] **Success:** We just ...`.
+- One small task per page, `1. []` checkbox steps, and few blocks. Help goes in collapsible `> [+Hint]` blocks, including **Copilot prompt** blocks.
+- Syntax follows [Creating instructions with Markdown syntax](https://docs.skillable.com/docs/creating-instructions-with-markdown-syntax).
+
+### Screenshots
+
+Pages mark each needed screenshot with a comment:
+
+```markdown
+<!-- TODO screenshot: 03-concepts-01-compare-setup.png | The model playground in compare view -->
+```
+
+After a dry run, save the capture under [screenshots/](screenshots/) with that file name and replace the comment with an image line that uses the same alt text:
+
+```markdown
+![The model playground in compare view](screenshots/03-concepts-01-compare-setup.png)
+```
+
+### Build the manual
+
+After any page change, run:
+
+```bash
+bash instructions/skillable/scripts/generate-skillable-copy.sh
+```
+
+It writes two files, both starting with `@lab.Title` and joined by `===` page breaks:
+
+| File | Images | Use it |
+|:-----|:-------|:-------|
+| [skillable-copy-images.md](skillable-copy-images.md) | Each image becomes `<!-- IMAGE: file \| alt -->` | **Now.** Paste into **Edit Instructions**, then upload each named screenshot to the profile and insert it where its comment is |
+| [skillable-copy.md](skillable-copy.md) | Raw GitHub URLs on `main` | **After the repo is public.** Paste as is, or run with `MODE=include` to pull each page live from GitHub |
+
+Once screenshots are uploaded to the Skillable profile, add each one to the `SKILLABLE_MEDIA` table in the [generator](scripts/generate-skillable-copy.sh). Both files then use the uploaded `!IMAGE[...]` path automatically, so you don't have to re-insert them after every regeneration.
