@@ -462,9 +462,9 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] Run the first code cell. It prints **v0 = Foundry version 1   v1 = Foundry version 2**, linking our climb versions to the agent versions.
 
     <!-- IMAGE: 03-kickoff-02-versions.png | The first notebook 05 cell printing v0 = Foundry version 1 and v1 = Foundry version 2 -->
-1. [] Jump to section **5.2** and run its code cell. It drafts a rubric from our traces and gap list, printing **Rubric generation: queued** and then progress. Wait for **Rubric created**.
+1. [] Jump to section **5.2** and run its code cell. It drafts a rubric from our traces and gap list, printing **Rubric generation: queued** every 15 seconds. Wait for **Rubric created**, which takes about two minutes.
 
-    <!-- IMAGE: 03-kickoff-02-rubric-started.png | Section 5.2 running, with Rubric generation: queued in its output -->
+    <!-- IMAGE: 03-kickoff-02-rubric-created.png | Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1 -->
 1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows call counts and a cost range.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running** and go on to page 4.1.
@@ -698,7 +698,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 # 6.1 Turn good into a number
 
-**What we'll do:** Read the rubric Foundry drafted from our traces and gaps, then use it to score **v0** and **v1** on the same questions.
+**What we'll do:** Read the rubric Foundry drafted from our traces and gaps, see how it connects to the insights, then use it to score **v0** and **v1** on the same questions.
 
 1. [] Switch to **05-make-it-better.ipynb**. If the optimizer cell in section 5.6 is still running, click the **stop** button next to it.
 
@@ -706,8 +706,18 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     <!-- VERIFY: interrupting the wait doesn't cancel the optimizer job -->
 
-1. [] Jump to section **5.3** and run its two code cells. Read the generated rubric next to our reference rubric.
-1. [] Ask yourself: would it catch "water-resistant" becoming "waterproof"?
+1. [] In the Foundry portal, open **Evaluations**, then the **Evaluator catalog** tab. **Our TrailMate rubric** is listed as a custom rubric, next to Microsoft's built-in evaluators.
+
+    <!-- IMAGE: 06-better-01-evaluator-catalog.png | The Evaluator catalog listing Our TrailMate rubric as a custom rubric above the built-in evaluators -->
+
+1. [] Select **Our TrailMate rubric** and scroll to **Dimensions**. Each one is a weighted check the judge scores from 1 to 5.
+
+    <!-- IMAGE: 06-better-01-rubric-dimensions.png | The rubric's seven weighted dimensions, from source_grounded_answer to general_quality -->
+
+1. [] Match the dimensions to what we've seen:
+    - **source_grounded_answer** and **missing_or_conflicting_evidence_handling** cover the hallucination insights and our "making things up" gap.
+    - **semantic_claim_precision** names our overclaiming gap: "water-resistant" becoming "waterproof".
+    - **scope_and_role_adherence** says off-topic requests should be declined. The built-in evaluators and insights missed that the hot chocolate recipe was out of lane. Our rubric knows TrailMate's job.
 1. [] Jump to section **5.5** and run its two code cells to score v0 and v1 twice each. It takes a few minutes.
 1. [] Confirm the scoreboard has two rows, each with a score, a spread, and **errored** at 0.
 

@@ -32,9 +32,9 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] Run the first code cell. It prints **v0 = Foundry version 1   v1 = Foundry version 2**, linking our climb versions to the agent versions.
 
     ![The first notebook 05 cell printing v0 = Foundry version 1 and v1 = Foundry version 2](screenshots/03-kickoff-02-versions.png)
-1. [] Jump to section **5.2** and run its code cell. It drafts a rubric from our traces and gap list, printing **Rubric generation: queued** and then progress. Wait for **Rubric created**.
+1. [] Jump to section **5.2** and run its code cell. It drafts a rubric from our traces and gap list, printing **Rubric generation: queued** every 15 seconds. Wait for **Rubric created**, which takes about two minutes.
 
-    ![Section 5.2 running, with Rubric generation: queued in its output](screenshots/03-kickoff-02-rubric-started.png)
+    ![Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1](screenshots/03-kickoff-02-rubric-created.png)
 1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows call counts and a cost range.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running** and go on to page 4.1.
