@@ -38,7 +38,6 @@ Learners meet the agent before they change it. Stage 2 shows TrailMate Version 1
 | 7 Keep improving | 7.1–7.3 | Foundry portal | Switch to the model router, compare Versions 3 and 4, score Version 4 with our rubric, read the router's cost | Version 4 | 10 min |
 | 8 Wrap | 8.1 | Foundry portal | Review Versions 1 to 4, end the lab | | 2 min |
 | 9 More | 9.1–9.2 | Notebooks | Optional: MAI models, measure in code | | |
-| 10 Reference | 10.1 | | Credentials and links | | |
 
 The targets add up to about 64 minutes. They are planning targets, not measured times. The second dry run measures them.
 
@@ -132,7 +131,6 @@ Each file is one Skillable page holding one small task. Files are named `NN-stag
 | [08-wrap-01.md](08-wrap-01.md) | 8.1 Finish the lab |
 | [09-more-01.md](09-more-01.md) | 9.1 More: explore MAI models |
 | [09-more-02.md](09-more-02.md) | 9.2 More: measure the climb in code |
-| [10-ref-01.md](10-ref-01.md) | 10.1 Lab credentials and links |
 
 The core path uses notebooks only for setup (01) and the kick-off (04 sections 4.1–4.9, 05 sections 5.1–5.6). It skips notebook 00 (its story is on page 0.2), notebook 02 (pages 4.2–4.4 cover it in the portal) and notebook 04 sections 4.8 and 4.10, because insights run from the portal. Notebook 05 sections 5.5 and 5.7–5.12, notebook 06 and notebook 03 are More labs.
 

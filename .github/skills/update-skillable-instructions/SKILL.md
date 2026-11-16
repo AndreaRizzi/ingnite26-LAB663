@@ -27,7 +27,7 @@ instructions/skillable/
   skillable-copy-images.md           generated; full text, images as <!-- IMAGE: file | alt --> comments
 ```
 
-Stages: `00-start`, `01-setup`, `02-meet`, `03-kickoff`, `04-concepts`, `05-work`, `06-better`, `07-improve`, `08-wrap`, `09-more`, `10-ref`. Each page file is one Skillable page, so it contains no `===`; the generator adds the breaks and the leading `@lab.Title`.
+Stages: `00-start`, `01-setup`, `02-meet`, `03-kickoff`, `04-concepts`, `05-work`, `06-better`, `07-improve`, `08-wrap`, `09-more`. Each page file is one Skillable page, so it contains no `===`; the generator adds the breaks and the leading `@lab.Title`.
 
 ## Page shape
 
