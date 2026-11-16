@@ -1,6 +1,6 @@
-# 3.1 Create v1 and leave traces
+# 3.1 Create Version 2
 
-**What we'll do:** Change one lever, the instructions, to create TrailMate **v1**, then ask it 12 practice questions so it leaves traces for Foundry to analyze. The optimizer on the next page learns from these.
+**What we'll do:** Change one lever, the instructions, to create TrailMate agent **Version 2**, then ask it 12 practice questions so it leaves traces for Foundry to analyze. The optimizer on the next page learns from these.
 
 1. [] Close the Copilot Chat pane to make room for the notebook: click the **chat icon** in the top bar, next to the search box. Click it again any time to reopen the chat.
 1. [] In the Explorer, open **labs > core > 04-make-it-work.ipynb**.
@@ -10,11 +10,11 @@
 
     ![The first section 4.8 code cell with the Execute Above Cells icon highlighted in its toolbar](screenshots/03-kickoff-01-execute-above.png)
 
-1. [] Use the Outline to follow along. The first cell prints **Connected. 12 practice questions ready.**, and section **4.4** prints **Saved. TrailMate v1 is Foundry version 2**.
+1. [] Use the Outline to follow along. The first cell prints **Connected. 12 practice questions ready.**, and section **4.4** prints **Saved. TrailMate v1 is Foundry version 2**. The notebook calls it v1; in the portal it's **Version 2**.
 
     ![The first cell printing Connected. 12 practice questions ready.](screenshots/03-kickoff-01-connected.png)
 
-1. [] This is the moment **trailmate** moves to agent **Version 2**. Switch to the Foundry portal tab and refresh the page (**F5**) so it loads the new version. Then open the **Version** menu at the top of the trailmate playground. **Version 2**, our climb version **v1**, is now **Active**. Version 1, our baseline **v0**, is still listed below it.
+1. [] This is the moment **trailmate** moves to agent **Version 2**. Switch to the Foundry portal tab and refresh the page (**F5**) so it loads the new version. Then open the **Version** menu at the top of the trailmate playground. **Version 2** is now **Active**, and Version 1, our baseline, is still listed below it.
 
     ![The trailmate Version menu with Version 2 active above Version 1](screenshots/03-kickoff-01-version-2.png)
 
@@ -32,4 +32,4 @@
 
 ---
 
-> [!Note] **Success:** We just finished **Make it work** (notebook 04): TrailMate v1 is created, and Foundry has 12 conversations' worth of traces to learn from.
+> [!Note] **Success:** We just finished **Make it work** (notebook 04): agent Version 2 is created, and Foundry has 12 conversations' worth of traces to learn from.

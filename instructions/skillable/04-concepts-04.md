@@ -11,7 +11,7 @@
 
     ![mr-cost answering with DeepSeek-V4.1-Flash in 0.3 seconds and mr-quality with gpt-5.4 in 3.1 seconds, both recommending the Alpine Explorer](screenshots/04-concepts-04-cost-vs-quality.png)
 
-> [!Knowledge] In our test, cost mode picked **DeepSeek-V4.1-Flash**, a small, fast, and cheap model, and quality mode picked **gpt-5.4**, a frontier model. Both gave the same recommendation. With gpt-5.4, we paid more and waited longer for frontier quality this question didn't need. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.1.
+> [!Knowledge] In our test, cost mode picked **DeepSeek-V4.1-Flash**, a small, fast, and cheap model, and quality mode picked **gpt-5.4**, a frontier model. Both gave the same recommendation. With gpt-5.4, we paid more and waited longer for frontier quality this question didn't need. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.3.
 
 > [+Hint] OPTIONAL - Ask Copilot: cost or quality mode?
 >

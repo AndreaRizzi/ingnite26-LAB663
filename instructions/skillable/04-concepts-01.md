@@ -15,7 +15,7 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
 
 > [!Knowledge] A trace records one answer. **Insights** read many traces at once and group the problems they find, with evidence. It's how we spot patterns no single answer shows.
 
-1. [] In the Foundry portal, open **Agents** and select **trailmate**. It now uses **Version 2**, the v1 we created on page 3.1, marked **Active** in the **Version** menu. If the page was already open, it may still show Version 1 until you pick Version 2. Select the **Insights** tab.
+1. [] In the Foundry portal, open **Agents** and select **trailmate**. It now uses **Version 2**, which we created on page 3.1, marked **Active** in the **Version** menu. If the page was already open, it may still show Version 1 until you pick Version 2. Select the **Insights** tab.
 1. [] Select **Run now** to scan the agent's recent traces for problems with failures, performance, cost, and quality.
 
     ![The trailmate Insights tab with no insights yet and the Run now button](screenshots/04-concepts-01-start-insights.png)
