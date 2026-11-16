@@ -409,7 +409,7 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 
 **What we'll do:** Change one lever, the instructions, to create TrailMate **v1**, then ask it 12 practice questions so it leaves traces for Foundry to analyze. The optimizer on the next page learns from these.
 
-1. [] Close the Copilot Chat pane to make room for the notebook. You can reopen it any time from the chat icon at the top.
+1. [] Close the Copilot Chat pane to make room for the notebook: click the **chat icon** in the top bar, next to the search box. Click it again any time to reopen the chat.
 1. [] In the Explorer, open **labs > core > 04-make-it-work.ipynb**.
 1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 1. [] In the **Outline**, click **4.8 What does Foundry think is wrong?**, then click the first code cell below that heading.
