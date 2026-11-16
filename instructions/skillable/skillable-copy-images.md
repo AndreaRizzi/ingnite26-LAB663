@@ -1024,6 +1024,8 @@ Every More notebook comes pre-run. The setting `DEMO_MODE` defaults to `replay`,
 
     <!-- IMAGE: 09-more-01-banner-01.svg | One tent, one launch: How can MAI-Image-2.6 models support a real product launch? -->
 
+    > [!Alert] Reading the pre-run notebook 01 is quick: about 2 to 3 minutes to skim the sections below. Running it live yourself takes much longer, 15 to 45 minutes, mostly waiting on rate limits (see 9.1.4).
+
 1. [] Jump to section **1.5**, a launch poster made from one prompt.
 
     <!-- IMAGE: 09-more-01-launch-poster.png | A TrailMaster X4 launch poster with a headline, product name, price badge, feature lines, and footer -->
