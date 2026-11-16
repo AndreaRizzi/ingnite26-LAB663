@@ -673,14 +673,15 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
     <!-- IMAGE: 05-work-01-version-menu.png | The trailmate Version menu listing Version 2, marked Active, above Version 1 -->
 
 1. [] In the same menu, select **Compare versions** and pick **Version 1** and **Version 2**.
-
 1. [] Send the off-topic question from page 2.2 to both.
 
     ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
 
-1. [] Compare the two answers. Did v1 stay closer to TrailMate's job? One question is just a hint, so in stage 6 we measure all of them.
+1. [] Compare the two answers. Did v1 stay closer to TrailMate's job?
 
-    <!-- TODO screenshot: 05-work-01-compare-versions.png | Version 1 and Version 2 answering the hot chocolate request side by side -->
+    <!-- IMAGE: 05-work-01-compare-versions.png | Version 1 and Version 2 both giving a hot chocolate recipe; Version 2 adds file-grounded care tips with citations and uses about 18,500 tokens -->
+
+    > [!Note] In our test, both versions still gave a recipe. v1 added grounded care tips from the manual, but it also searched the files and used about ten times the tokens. v1's instructions say to be helpful, not to stay in lane. Better instructions alone didn't fix this, and that's what the optimizer and our rubric are for.
 
 > [!Knowledge] Later, the Agents list also shows **trailmate-optimizer-candidate** and **trailmate-mr-default-candidate**. They're test copies. Only a promotion changes **trailmate** itself.
 
