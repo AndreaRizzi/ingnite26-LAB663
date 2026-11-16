@@ -106,7 +106,7 @@ Each file is one Skillable page holding one small task. Files are named `NN-stag
 
 | File | Page title |
 |:-----|:-----------|
-| [00-start-01.md](00-start-01.md) | 0.1 Sign in to your lab |
+| [00-start-01.md](00-start-01.md) | 0.1 Welcome and sign in |
 | [00-start-02.md](00-start-02.md) | 0.2 How this lab works |
 | [01-setup-01.md](01-setup-01.md) | 1.1 Set up the local environment |
 | [01-setup-02.md](01-setup-02.md) | 1.2 Set up GitHub Copilot Chat |
