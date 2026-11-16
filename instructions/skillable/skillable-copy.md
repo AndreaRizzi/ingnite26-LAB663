@@ -278,7 +278,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
     - The **Instructions** are just one line: "You are a helpful agent."
     - **File search** under **Tools** lets it search ten product manuals.
 
-1. [] To make room for the chat, collapse the left menu with the button at its bottom left, highlighted in red.
+1. [] To make room for the chat, collapse the left menu with the button at its bottom left, highlighted in red. If a **Create toolbox** banner appears under **Tools**, close it with its **X**. We won't use it.
 
     ![The trailmate playground with Version 1 selected, the model, the one-line instructions, the file search tool, and the collapse-menu button highlighted](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-01-version-1.png)
 
