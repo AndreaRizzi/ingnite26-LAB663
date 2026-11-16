@@ -12,7 +12,7 @@ We need:
 - An Azure subscription where we can create resources and role assignments (Owner, or Contributor plus User Access Administrator).
 - Quota for `gpt-5.4`, `gpt-5.4-mini` and the model router in the region we pick. Quota for `MAI-Image-2.6` and `MAI-Image-2.6-Flash` is optional: the core lab doesn't use them.
 - This repo open in the dev container or a Codespace. It brings Python, the Azure CLI and Bicep.
-- The repository's Python requirements, including `azure-ai-projects>=2.8.0`, and access to the preview rubric, insights and optimizer APIs. Notebook 01 stops if the SDK is too old.
+- The repository's Python requirements, including `azure-ai-projects>=2.8.0,<2.11.0`, and access to the preview rubric, insights and optimizer APIs. Notebook 01 stops if the SDK is too old.
 
 Basic Python is helpful; previous agent or evaluation experience is not required. The required workflow stays in code. Portal views are optional.
 
