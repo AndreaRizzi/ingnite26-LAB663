@@ -677,11 +677,11 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
 
     ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
 
-1. [] Compare the two answers. Did v1 stay closer to TrailMate's job?
+1. [] Compare the two answers. Which one uses our product files?
 
     <!-- IMAGE: 05-work-01-compare-versions.png | Version 1 and Version 2 both giving a hot chocolate recipe; Version 2 adds file-grounded care tips with citations and uses about 18,500 tokens -->
 
-    > [!Note] In our test, both versions still gave a recipe. v1 added grounded care tips from the manual, but it also searched the files and used about ten times the tokens. v1's instructions say to be helpful, not to stay in lane. Better instructions alone didn't fix this, and that's what the optimizer and our rubric are for.
+    > [!Note] In our test, both versions still gave a recipe, so we still need to optimize. But look at the difference: **Version 2** (v1) used **file search** and grounded its answer in our product files, with citations and care tips for the CozyNights bag. Version 1 (v0) answered from general knowledge. The cost went up, about 18,500 tokens versus 1,800, but the agent now connects its answers to our products.
 
 > [!Knowledge] Later, the Agents list also shows **trailmate-optimizer-candidate** and **trailmate-mr-default-candidate**. They're test copies. Only a promotion changes **trailmate** itself.
 
