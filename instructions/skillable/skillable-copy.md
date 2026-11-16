@@ -488,7 +488,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     ![The rubric's seven weighted dimensions, from source_grounded_answer to general_quality](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-02-rubric-dimensions.png)
 
-    > [!Knowledge] A **rubric** is an AI judge with a checklist. Each **dimension** is one check, scored from 1 to 5, and its **weight** says how much it counts. The judge combines them into one score from 0 to 1, so "good" becomes a number we can compare across versions. Foundry drafted these from our traces and gaps:
+    > [!Knowledge] A **rubric** is an AI judge with a checklist. Each **dimension** is one check, scored from 1 to 5, and its **weight** says how much it counts. The judge combines them into one score from 0 to 1, so "good" becomes a number we can compare across versions. Foundry drafted these from our traces and gaps. Yours may differ, but you'll likely see similar ideas:
     >
     > - **source_grounded_answer** (weight 10): facts must come from the product files. It catches making things up.
     > - **semantic_claim_precision**: don't upgrade claims, like "water-resistant" to "waterproof". That's our overclaiming gap.
@@ -497,7 +497,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
     >
     > The optimizer uses this rubric to score every candidate it tries.
 
-1. [] Back in VS Code, jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
+1. [] Back in VS Code, jump to section **5.4** and run **both** of its code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows how many agent, evaluation, and optimization calls the job may make, and a cost range. In our test run, the typical estimate was about 62 agent calls and about $1.46, within a range of about $0.97 to $4.88. Yours may differ.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
 
@@ -737,13 +737,13 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
     ![The Insights tab listing five findings in the Hallucinations and Cost and tokens categories, with the first one open](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-03-insights-list.png)
 
 1. [] Select a **Hallucinations** finding and read its description. It explains the pattern and links to the traces that show it.
-1. [] Select the finding about the **recipe request** and scroll down. Under **Highlighted traces** is the hot chocolate conversation, and under **Proposed fix** is a suggested change to the instructions.
+1. [] Select the finding about the **recipe request**, if your run has one, and scroll down. Under **Highlighted traces** is the hot chocolate conversation, and under **Proposed fix** is a suggested change to the instructions.
 
     ![The recipe finding with its highlighted trace and a proposed fix that edits the agent instructions](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-03-proposed-fix.png)
 
 1. [] Compare the findings with our three gaps: overclaiming, making things up, and out of lane. Which did Foundry confirm? What did it see differently?
 
-> [!Knowledge] Foundry flagged the recipe as a **cost** problem: an unneeded file search. It didn't call it out of lane, because it doesn't know TrailMate's job. Insights give us evidence and a starting fix, and we still decide what "good" means. That's what our rubric in stage 6 is for.
+> [!Knowledge] In our test run, Foundry flagged the recipe as a **cost** problem: an unneeded file search. It didn't call it out of lane, because it doesn't know TrailMate's job. Your findings may differ. Insights give us evidence and a starting fix, and we still decide what "good" means. That's what our rubric in stage 6 is for.
 
 > [+Hint] Still running? Read ours
 >
@@ -767,13 +767,19 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
 
     > [!Note] Stopping the cell only stops the notebook from waiting. The optimizer job keeps running in Foundry, and we'll pick it up again on page 6.2.
 
-    <!-- VERIFY: interrupting the wait doesn't cancel the optimizer job -->
+    > [+Hint] I see "Ran into a deserialization error"
+    >
+    > This is a warning from the Azure SDK, not a failure. It tried to read a reply that had no body and ignored it. If the optimizer run still finished on the **Optimize** tab, it's safe to ignore. If something else looks wrong, paste the message into Copilot Chat and ask what it means.
 
-1. [] Recall the rubric dimensions from page 3.2, and match them to what we've seen since:
+1. [] Recall the rubric dimensions from page 3.2, and match them to what we've seen since. Your rubric may have different dimensions from ours, so look for the same ideas:
     - **source_grounded_answer** and **missing_or_conflicting_evidence_handling** cover the hallucination insights and our "making things up" gap.
     - **semantic_claim_precision** names our overclaiming gap: "water-resistant" becoming "waterproof".
     - **scope_and_role_adherence** says off-topic requests should be declined. The built-in evaluators and insights missed that the hot chocolate recipe was out of lane. Our rubric knows TrailMate's job.
 1. [] Jump to section **5.5** and run its two code cells to score v0 and v1 twice each. It takes a few minutes.
+
+    > [+Hint] Section 5.5 shows an error
+    >
+    > Section **5.4** has two code cells, and both must run first. Jump back to 5.4, run the cell you missed, then run 5.5 again.
 1. [] Confirm the scoreboard has two rows, each with a score, a spread, and **errored** at 0.
 
     <!-- TODO screenshot: 06-better-01-scoreboard.png | The v0 and v1 scoreboard and the per-category table -->

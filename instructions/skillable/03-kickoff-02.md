@@ -44,7 +44,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     ![The rubric's seven weighted dimensions, from source_grounded_answer to general_quality](screenshots/03-kickoff-02-rubric-dimensions.png)
 
-    > [!Knowledge] A **rubric** is an AI judge with a checklist. Each **dimension** is one check, scored from 1 to 5, and its **weight** says how much it counts. The judge combines them into one score from 0 to 1, so "good" becomes a number we can compare across versions. Foundry drafted these from our traces and gaps:
+    > [!Knowledge] A **rubric** is an AI judge with a checklist. Each **dimension** is one check, scored from 1 to 5, and its **weight** says how much it counts. The judge combines them into one score from 0 to 1, so "good" becomes a number we can compare across versions. Foundry drafted these from our traces and gaps. Yours may differ, but you'll likely see similar ideas:
     >
     > - **source_grounded_answer** (weight 10): facts must come from the product files. It catches making things up.
     > - **semantic_claim_precision**: don't upgrade claims, like "water-resistant" to "waterproof". That's our overclaiming gap.
@@ -53,7 +53,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
     >
     > The optimizer uses this rubric to score every candidate it tries.
 
-1. [] Back in VS Code, jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
+1. [] Back in VS Code, jump to section **5.4** and run **both** of its code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows how many agent, evaluation, and optimization calls the job may make, and a cost range. In our test run, the typical estimate was about 62 agent calls and about $1.46, within a range of about $0.97 to $4.88. Yours may differ.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
 
