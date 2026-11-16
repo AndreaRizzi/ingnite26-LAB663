@@ -4,6 +4,7 @@
 
 > [!Knowledge] A **model router** is one deployment that looks at each request and sends it to a model from a pool. Easy work can go to a small model, and hard work to a bigger one.
 
+1. [] Clear both panes to start fresh conversations: select the **+** (new chat) icon at the top of each pane.
 1. [] In the right pane, open the **Model** menu and switch **gpt-5.4-mini** to **mr-default**. Keep **gpt-5.4** on the left.
 1. [] Send the easy daypack question again.
 

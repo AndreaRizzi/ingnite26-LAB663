@@ -1,6 +1,6 @@
 # 6.1 Turn good into a number
 
-**What we'll do:** Read the rubric Foundry drafted from our traces and gaps, see how it connects to the insights, then use it to score **v0** and **v1** on the same questions.
+**What we'll do:** Connect our rubric to the insights, then use it to score **v0** and **v1** on the same questions.
 
 1. [] Switch to **05-make-it-better.ipynb**. If the optimizer cell in section 5.6 is still running, click the **stop** button next to it.
 
@@ -8,15 +8,7 @@
 
     <!-- VERIFY: interrupting the wait doesn't cancel the optimizer job -->
 
-1. [] In the Foundry portal, open **Evaluations**, then the **Evaluator catalog** tab. **Our TrailMate rubric** is listed as a custom rubric, next to Microsoft's built-in evaluators.
-
-    ![The Evaluator catalog listing Our TrailMate rubric as a custom rubric above the built-in evaluators](screenshots/06-better-01-evaluator-catalog.png)
-
-1. [] Select **Our TrailMate rubric** and scroll to **Dimensions**. Each one is a weighted check the judge scores from 1 to 5.
-
-    ![The rubric's seven weighted dimensions, from source_grounded_answer to general_quality](screenshots/06-better-01-rubric-dimensions.png)
-
-1. [] Match the dimensions to what we've seen:
+1. [] Recall the rubric dimensions from page 3.2, and match them to what we've seen since:
     - **source_grounded_answer** and **missing_or_conflicting_evidence_handling** cover the hallucination insights and our "making things up" gap.
     - **semantic_claim_precision** names our overclaiming gap: "water-resistant" becoming "waterproof".
     - **scope_and_role_adherence** says off-topic requests should be declined. The built-in evaluators and insights missed that the hot chocolate recipe was out of lane. Our rubric knows TrailMate's job.

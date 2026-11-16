@@ -118,7 +118,7 @@ Each file is one Skillable page holding one small task. Files are named `NN-stag
 | [03-kickoff-01.md](03-kickoff-01.md) | 3.1 Create v1 and leave traces |
 | [03-kickoff-02.md](03-kickoff-02.md) | 3.2 Start the optimizer |
 | [04-concepts-01.md](04-concepts-01.md) | 4.1 Start an insights run |
-| [04-concepts-02.md](04-concepts-02.md) | 4.2 Compare a big and a small model |
+| [04-concepts-02.md](04-concepts-02.md) | 4.2 Under the hood: model selection |
 | [04-concepts-03.md](04-concepts-03.md) | 4.3 Let a router choose |
 | [04-concepts-04.md](04-concepts-04.md) | 4.4 Turn the cost-quality dial |
 | [05-work-01.md](05-work-01.md) | 5.1 Compare v0 and v1 |

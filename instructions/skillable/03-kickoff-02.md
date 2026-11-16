@@ -35,7 +35,25 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] Jump to section **5.2** and run its code cell. It drafts a rubric from our traces and gap list, printing **Rubric generation: queued** every 15 seconds. Wait for **Rubric created**, which takes about two minutes.
 
     ![Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1](screenshots/03-kickoff-02-rubric-created.png)
-1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
+
+1. [] Switch to the Foundry portal. Select **Evaluations** in the left menu, then the **Evaluator catalog** tab. **Our TrailMate rubric** is listed as a **Custom** rubric, above Microsoft's built-in evaluators.
+
+    ![The Evaluator catalog listing Our TrailMate rubric as a custom rubric above the built-in evaluators](screenshots/03-kickoff-02-evaluator-catalog.png)
+
+1. [] Select **Our TrailMate rubric** and scroll to **Dimensions**. This is our definition of a good TrailMate answer.
+
+    ![The rubric's seven weighted dimensions, from source_grounded_answer to general_quality](screenshots/03-kickoff-02-rubric-dimensions.png)
+
+    > [!Knowledge] A **rubric** is an AI judge with a checklist. Each **dimension** is one check, scored from 1 to 5, and its **weight** says how much it counts. The judge combines them into one score from 0 to 1, so "good" becomes a number we can compare across versions. Foundry drafted these from our traces and gaps:
+    >
+    > - **source_grounded_answer** (weight 10): facts must come from the product files. It catches making things up.
+    > - **semantic_claim_precision**: don't upgrade claims, like "water-resistant" to "waterproof". That's our overclaiming gap.
+    > - **missing_or_conflicting_evidence_handling**: say so when the files don't answer the question.
+    > - **scope_and_role_adherence**: decline off-topic requests and redirect to our products. That's our out-of-lane gap.
+    >
+    > The optimizer uses this rubric to score every candidate it tries.
+
+1. [] Back in VS Code, jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows how many agent, evaluation, and optimization calls the job may make, and a cost range. In our test run, the typical estimate was about 62 agent calls and about $1.46, within a range of about $0.97 to $4.88. Yours may differ.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
 

@@ -480,7 +480,25 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] Jump to section **5.2** and run its code cell. It drafts a rubric from our traces and gap list, printing **Rubric generation: queued** every 15 seconds. Wait for **Rubric created**, which takes about two minutes.
 
     <!-- IMAGE: 03-kickoff-02-rubric-created.png | Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1 -->
-1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
+
+1. [] Switch to the Foundry portal. Select **Evaluations** in the left menu, then the **Evaluator catalog** tab. **Our TrailMate rubric** is listed as a **Custom** rubric, above Microsoft's built-in evaluators.
+
+    <!-- IMAGE: 03-kickoff-02-evaluator-catalog.png | The Evaluator catalog listing Our TrailMate rubric as a custom rubric above the built-in evaluators -->
+
+1. [] Select **Our TrailMate rubric** and scroll to **Dimensions**. This is our definition of a good TrailMate answer.
+
+    <!-- IMAGE: 03-kickoff-02-rubric-dimensions.png | The rubric's seven weighted dimensions, from source_grounded_answer to general_quality -->
+
+    > [!Knowledge] A **rubric** is an AI judge with a checklist. Each **dimension** is one check, scored from 1 to 5, and its **weight** says how much it counts. The judge combines them into one score from 0 to 1, so "good" becomes a number we can compare across versions. Foundry drafted these from our traces and gaps:
+    >
+    > - **source_grounded_answer** (weight 10): facts must come from the product files. It catches making things up.
+    > - **semantic_claim_precision**: don't upgrade claims, like "water-resistant" to "waterproof". That's our overclaiming gap.
+    > - **missing_or_conflicting_evidence_handling**: say so when the files don't answer the question.
+    > - **scope_and_role_adherence**: decline off-topic requests and redirect to our products. That's our out-of-lane gap.
+    >
+    > The optimizer uses this rubric to score every candidate it tries.
+
+1. [] Back in VS Code, jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows how many agent, evaluation, and optimization calls the job may make, and a cost range. In our test run, the typical estimate was about 62 agent calls and about $1.46, within a range of about $0.97 to $4.88. Yours may differ.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
 
@@ -508,6 +526,17 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 **What we'll do:** Ask Foundry to read all of TrailMate's traces and find what's going wrong. It takes 2 to 5 minutes, so we start it now and read the results on page 5.3.
 
+## The loop so far
+
+- **Make it work:** we deployed an agent and asked it questions.
+- **Traces** showed how it answered, with the cost (tokens), quality (scores), and latency (time) of each answer.
+- From those traces, we built a **rubric** that defines what good looks like, as a score.
+- **Make it better:** we started the **agent optimizer** and gave it that rubric to score its candidates.
+
+While the optimizer works, let's look at another tool. **Insights** read our recent traces, find problematic patterns, and propose fixes.
+
+---
+
 > [!Knowledge] A trace records one answer. **Insights** read many traces at once and group the problems they find, with evidence. It's how we spot patterns no single answer shows.
 
 1. [] In the Foundry portal, open **Agents** and select **trailmate**. It now uses **Version 2**, the v1 we created on page 3.1, marked **Active** in the **Version** menu. If the page was already open, it may still show Version 1 until you pick Version 2. Select the **Insights** tab.
@@ -529,9 +558,9 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 ===
 
-# 4.2 Compare a big and a small model
+# 4.2 Under the hood: model selection
 
-**What we'll do:** While the optimizer and insights work, let's learn the ideas behind the climb. First, send the same two questions to a big and a small model, and see how model choice changes speed, tokens, and quality.
+**What we'll do:** While the optimizer and insights work, let's look under the hood. On the next few pages, we explore how model choice affects the three dials: cost, quality, and latency. First, we send the same two questions to a big and a small model.
 
 1. [] In the Foundry portal, select **Models** in the left menu, then **gpt-5.4**. Its playground opens.
 
@@ -575,6 +604,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] A **model router** is one deployment that looks at each request and sends it to a model from a pool. Easy work can go to a small model, and hard work to a bigger one.
 
+1. [] Clear both panes to start fresh conversations: select the **+** (new chat) icon at the top of each pane.
 1. [] In the right pane, open the **Model** menu and switch **gpt-5.4-mini** to **mr-default**. Keep **gpt-5.4** on the left.
 1. [] Send the easy daypack question again.
 
@@ -719,7 +749,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 # 6.1 Turn good into a number
 
-**What we'll do:** Read the rubric Foundry drafted from our traces and gaps, see how it connects to the insights, then use it to score **v0** and **v1** on the same questions.
+**What we'll do:** Connect our rubric to the insights, then use it to score **v0** and **v1** on the same questions.
 
 1. [] Switch to **05-make-it-better.ipynb**. If the optimizer cell in section 5.6 is still running, click the **stop** button next to it.
 
@@ -727,15 +757,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     <!-- VERIFY: interrupting the wait doesn't cancel the optimizer job -->
 
-1. [] In the Foundry portal, open **Evaluations**, then the **Evaluator catalog** tab. **Our TrailMate rubric** is listed as a custom rubric, next to Microsoft's built-in evaluators.
-
-    <!-- IMAGE: 06-better-01-evaluator-catalog.png | The Evaluator catalog listing Our TrailMate rubric as a custom rubric above the built-in evaluators -->
-
-1. [] Select **Our TrailMate rubric** and scroll to **Dimensions**. Each one is a weighted check the judge scores from 1 to 5.
-
-    <!-- IMAGE: 06-better-01-rubric-dimensions.png | The rubric's seven weighted dimensions, from source_grounded_answer to general_quality -->
-
-1. [] Match the dimensions to what we've seen:
+1. [] Recall the rubric dimensions from page 3.2, and match them to what we've seen since:
     - **source_grounded_answer** and **missing_or_conflicting_evidence_handling** cover the hallucination insights and our "making things up" gap.
     - **semantic_claim_precision** names our overclaiming gap: "water-resistant" becoming "waterproof".
     - **scope_and_role_adherence** says off-topic requests should be declined. The built-in evaluators and insights missed that the hot chocolate recipe was out of lane. Our rubric knows TrailMate's job.
