@@ -12,7 +12,7 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 | 2 Meet TrailMate | Foundry portal | Try the starting agent and plan the climb | v0 |
 | 3 Kick-off | VS Code | Create v1 and start the optimizer, so it works while we explore | v1 |
 | 4 Know the concepts | Foundry portal | Start insights, compare models, try the model router | |
-| 5 Make it work | Foundry portal | Compare v0 and v1, check the monitor, read the insights | v1 |
+| 5 See it work | Foundry portal | Compare v0 and v1, check the monitor, read the insights | v1 |
 | 6 Make it better | VS Code | A rubric, the agent optimizer, promote or keep | v2 |
 | 7 Keep improving | VS Code | Right-size models with the model router | v3 |
 | 8 Wrap | | Look back at the climb | |

@@ -15,7 +15,7 @@ flowchart LR
     S["1 Setup<br/>VS Code"] --> M["2 Meet TrailMate<br/>portal: test-drive v0,<br/>plan the climb"]
     M --> K["3 Kick-off<br/>create v1,<br/>start optimizer"]
     K --> C["4 Know the concepts<br/>portal: start insights,<br/>compare models, router"]
-    C --> W["5 Make it work<br/>portal: v0 vs v1,<br/>monitor, insights"]
+    C --> W["5 See it work<br/>portal: v0 vs v1,<br/>monitor, insights"]
     W --> B["6 Make it better<br/>notebook 05:<br/>rubric, optimizer, v2"]
     B --> I["7 Keep improving<br/>notebook 06:<br/>router, v3"]
     I --> R["8 Wrap<br/>the whole climb"]
@@ -33,7 +33,7 @@ Learners meet the agent before they change it. Stage 2 shows TrailMate v0 in the
 | 2 Meet TrailMate | 2.1–2.3 | Foundry portal | Inspect v0, turn on live metrics, ask two questions, read evaluations and a trace; read the plan and version map | v0 | 7 min |
 | 3 Kick-off | 3.1–3.2 | VS Code | Create v1, send practice questions, save a starting gap list, start the optimizer | v1 | 8 min |
 | 4 Know the concepts | 4.1–4.4 | Foundry portal | Start an insights run; compare `gpt-5.4` and `gpt-5.4-mini`; watch `mr-default`, `mr-cost` and `mr-quality` choose models | | 8 min |
-| 5 Make it work | 5.1–5.3 | Foundry portal | Compare v0 and v1 side by side, check the monitor, read the insights against our gaps | v1 | 7 min |
+| 5 See it work | 5.1–5.3 | Foundry portal | Compare v0 and v1 side by side, check the monitor, read the insights against our gaps | v1 | 7 min |
 | 6 Make it better | 6.1–6.3 | Notebook 05 | Rubric, v0/v1 scores, optimizer candidates, promote or retain | v2 | 12 min |
 | 7 Keep improving | 7.1–7.2 | Notebook 06 | Score `mr-default` against v2, then decide | v3 | 10 min |
 | 8 Wrap | 8.1 | Notebook 06 | Read the whole-climb heatmap, end the lab | | 2 min |
@@ -83,6 +83,8 @@ The lab profile must give every learner these before the lab starts. Learners do
 - **Notebook sections vs page numbers.** Page numbers (like **6.2**) are the manual's. Notebook sections (like **section 4.8**) belong to the notebook. Pages always name both.
 - **Kick-off gap list.** Page 3.2 supplies three gaps as copy text so the optimizer can start early. They're written as risks to check, not observed results. Page 5.3 has learners compare them with Foundry's insights.
 - **Stopping the optimizer wait.** On page 6.1, learners stop the waiting cell if the optimizer is still running, so they can score v0 and v1. The job keeps running in Foundry, and page 6.2 resumes it from the saved ID.
+- **Promote in the notebook only.** The portal's Optimize tab has a **Promote candidate** button. Learners don't use it: notebook section 5.12 promotes only after the held-out check, and notebook 06 reads the result. Page 6.2 says so. If someone promotes in the portal anyway, the agent gains an extra version, and 5.12 may promote again.
+- **Optimizer cost.** In our dry run the optimizer job used about 1.9 million tokens, an estimated $5.37, above the notebook's $4.88 ceiling estimate. It took about 10 minutes.
 - **Retaining is a valid outcome.** At 6.3 and 7.2 the notebooks may keep the earlier version. That's a correct result, not a failure.
 - **Never deploy or clean up.** Learners never run `infra/deploy.sh` or `infra/cleanup.sh`. Skillable removes the resources when the lab ends.
 

@@ -96,7 +96,7 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 | 2 Meet TrailMate | Foundry portal | Try the starting agent and plan the climb | v0 |
 | 3 Kick-off | VS Code | Create v1 and start the optimizer, so it works while we explore | v1 |
 | 4 Know the concepts | Foundry portal | Start insights, compare models, try the model router | |
-| 5 Make it work | Foundry portal | Compare v0 and v1, check the monitor, read the insights | v1 |
+| 5 See it work | Foundry portal | Compare v0 and v1, check the monitor, read the insights | v1 |
 | 6 Make it better | VS Code | A rubric, the agent optimizer, promote or keep | v2 |
 | 7 Keep improving | VS Code | Right-size models with the model router | v3 |
 | 8 Wrap | | Look back at the climb | |
@@ -761,6 +761,8 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     > [!Note] Our run used about 1.9 million tokens, an estimated $5.37. That's above the $4.88 ceiling the notebook estimated on page 3.2. Optimizing costs real money, so we check the measured cost, not just the estimate.
 
+    > [!Alert] Don't select **Promote candidate** in the portal. We decide on page 6.3, after checking the candidate on questions it never saw.
+
 1. [] Back in VS Code, in **05-make-it-better.ipynb**, jump to section **5.6** and run the job cell again. It resumes the saved job and prints **Finished** with the best and baseline scores.
 1. [] Jump to section **5.7** and run its two code cells. Read each candidate's score, then read the winning instructions in full.
 1. [] Jump to section **5.8** and run its code cell. It stages the winner as a separate candidate agent. Nothing is promoted yet.
@@ -789,7 +791,25 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] In section **5.12**, set `REVIEW_APPROVED = True` only if the instructions, guard answers, and scores hold up. Then run the cell and read the decision.
 
-> [!Knowledge] The gain on trained questions is the gain the optimizer wanted. The gain on unseen questions is the gain we can trust. If the candidate doesn't pass, keeping v1 as our v2 checkpoint is a correct result.
+    > [+Hint] What does promotion do?
+    >
+    > Promotion turns the candidate into a new **trailmate** agent version and makes it active. In our test, the candidate became **Version 3**, our climb version **v2**, and the portal confirmed it. The notebook promotes the same way, but only after the checks pass.
+    >
+    > ![The portal banner confirming candidate_1 is now Version 3, with Version 2 still available](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-03-promoted.png)
+
+1. [] If the candidate was promoted, open **trailmate** in the portal. The **Version** menu now shows the new version as **Active**.
+
+    ![The trailmate Version menu with Version 3 active above Versions 2 and 1](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-03-version-3.png)
+
+1. [] Select **Compare versions**, pick **Version 1** and the new version, and send the hot chocolate question to both.
+
+    ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
+
+    ![Version 1 handing out a recipe with AI Quality 100%, and Version 3 declining and redirecting to the sleeping bag with AI Quality 50%](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-03-compare-v0-v3.png)
+
+1. [] Notice the scores. In our test, the built-in **AI Quality** gave the recipe 100% and the correct refusal 50%. Built-in evaluators don't know TrailMate's job. Our rubric does, and that's why we measure with it.
+
+> [!Knowledge] The gain on trained questions is the gain the optimizer wanted. The gain on unseen questions is the gain we can trust. If the candidate doesn't pass, keeping v1 as our v2 checkpoint is a correct result, and the comparison steps above don't apply.
 
 > [+Hint] Ask Copilot: explain the decision
 >

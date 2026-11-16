@@ -9,7 +9,25 @@
 
 1. [] In section **5.12**, set `REVIEW_APPROVED = True` only if the instructions, guard answers, and scores hold up. Then run the cell and read the decision.
 
-> [!Knowledge] The gain on trained questions is the gain the optimizer wanted. The gain on unseen questions is the gain we can trust. If the candidate doesn't pass, keeping v1 as our v2 checkpoint is a correct result.
+    > [+Hint] What does promotion do?
+    >
+    > Promotion turns the candidate into a new **trailmate** agent version and makes it active. In our test, the candidate became **Version 3**, our climb version **v2**, and the portal confirmed it. The notebook promotes the same way, but only after the checks pass.
+    >
+    > ![The portal banner confirming candidate_1 is now Version 3, with Version 2 still available](screenshots/06-better-03-promoted.png)
+
+1. [] If the candidate was promoted, open **trailmate** in the portal. The **Version** menu now shows the new version as **Active**.
+
+    ![The trailmate Version menu with Version 3 active above Versions 2 and 1](screenshots/06-better-03-version-3.png)
+
+1. [] Select **Compare versions**, pick **Version 1** and the new version, and send the hot chocolate question to both.
+
+    ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
+
+    ![Version 1 handing out a recipe with AI Quality 100%, and Version 3 declining and redirecting to the sleeping bag with AI Quality 50%](screenshots/06-better-03-compare-v0-v3.png)
+
+1. [] Notice the scores. In our test, the built-in **AI Quality** gave the recipe 100% and the correct refusal 50%. Built-in evaluators don't know TrailMate's job. Our rubric does, and that's why we measure with it.
+
+> [!Knowledge] The gain on trained questions is the gain the optimizer wanted. The gain on unseen questions is the gain we can trust. If the candidate doesn't pass, keeping v1 as our v2 checkpoint is a correct result, and the comparison steps above don't apply.
 
 > [+Hint] Ask Copilot: explain the decision
 >
