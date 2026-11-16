@@ -419,9 +419,11 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 
 1. [] Use the Outline to follow along. The first cell prints **Connected. 12 practice questions ready.**, and section **4.4** prints **Saved. TrailMate v1 is Foundry version 2**.
 
-    > [!Note] This is the moment **trailmate** moves to agent **Version 2** in Foundry. From here on, the portal opens trailmate at Version 2, our climb version **v1**. Version 1, our baseline **v0**, is still there in the **Version** menu.
-
     <!-- IMAGE: 03-kickoff-01-connected.png | The first cell printing Connected. 12 practice questions ready. -->
+
+1. [] This is the moment **trailmate** moves to agent **Version 2**. Switch to the Foundry portal tab and refresh the page (**F5**) so it loads the new version. Then open the **Version** menu at the top of the trailmate playground. **Version 2**, our climb version **v1**, is now **Active**. Version 1, our baseline **v0**, is still listed below it.
+
+    <!-- IMAGE: 03-kickoff-01-version-2.png | The trailmate Version menu with Version 2 active above Version 1 -->
 
 1. [] Wait for section **4.7** to count down. It pauses one minute so the traces can arrive. The whole run takes a couple of minutes.
 
