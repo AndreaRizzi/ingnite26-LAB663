@@ -775,7 +775,7 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
     - **source_grounded_answer** and **missing_or_conflicting_evidence_handling** cover the hallucination insights and our "making things up" gap.
     - **semantic_claim_precision** names our overclaiming gap: "water-resistant" becoming "waterproof".
     - **scope_and_role_adherence** says off-topic requests should be declined. The built-in evaluators and insights missed that the hot chocolate recipe was out of lane. Our rubric knows TrailMate's job.
-1. [] Jump to section **5.5** and run its two code cells to score v0 and v1 twice each. It takes a few minutes.
+1. [] Jump to section **5.5** and run its two code cells to score v0 and v1 twice each. It takes a few minutes. While it runs, switch to the Foundry portal and select **Evaluations** in the left menu to watch the runs appear under **TrailMate rubric evaluation**.
 
     > [+Hint] Section 5.5 shows an error
     >
