@@ -268,7 +268,8 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 **What we'll do:** Meet the agent we'll improve today. TrailMate is already deployed in Foundry. Let's see what it's made of.
 
-1. [] In Edge, switch to the **Foundry portal** tab. In the left menu, select **Agents**. You see one agent, **trailmate**.
+1. [] In Edge, switch to the **Foundry portal** tab. Under **All resources**, select **trailmate** to open the project.
+1. [] In the left menu, select **Agents**. You see one agent, also called **trailmate**.
 
     <!-- IMAGE: 02-meet-01-agents-list.png | The Agents list in the Foundry portal showing the trailmate agent at version 1 -->
 
