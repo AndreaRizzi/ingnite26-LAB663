@@ -22,7 +22,7 @@ flowchart LR
     K -. "optimizer runs in Foundry<br/>while learners are in the portal" .-> B
 ```
 
-Learners meet the agent before they change it. Stage 2 shows TrailMate Version 1 in the portal, lets learners see citations, live evaluation scores and a trace, and try an off-topic request, then maps the climb from Version 1 to Version 4. The kick-off is the only notebook work in the core path: it creates Version 2 and starts the slowest step, the agent optimizer, so learners spend that wait in the portal learning the concepts. Everything after the kick-off happens in the portal: reading and promoting the optimizer's winner as Version 3, switching it to the model router as Version 4, and scoring Version 4 with our rubric. The deeper, notebook-driven measurement (held-out questions, repeated runs, all router editions) is the More lab on page 9.1.
+Learners meet the agent before they change it. Stage 2 shows TrailMate Version 1 in the portal, lets learners see citations, live evaluation scores and a trace, and try an off-topic request, then maps the climb from Version 1 to Version 4. The kick-off is the only notebook work in the core path: it creates Version 2 and starts the slowest step, the agent optimizer, so learners spend that wait in the portal learning the concepts. Everything after the kick-off happens in the portal: reading and promoting the optimizer's winner as Version 3, switching it to the model router as Version 4, and scoring Version 4 with our rubric. The deeper, notebook-driven measurement (held-out questions, repeated runs, all router editions) is the More lab on page 9.2.
 
 ### Stages at a glance
 
@@ -37,7 +37,7 @@ Learners meet the agent before they change it. Stage 2 shows TrailMate Version 1
 | 6 Make it better | 6.1–6.2 | Foundry portal | Read the optimizer results, promote the winner, compare Versions 1 and 3 | Version 3 | 6 min |
 | 7 Keep improving | 7.1–7.3 | Foundry portal | Switch to the model router, compare Versions 3 and 4, score Version 4 with our rubric, read the router's cost | Version 4 | 10 min |
 | 8 Wrap | 8.1 | Foundry portal | Review Versions 1 to 4, end the lab | | 2 min |
-| 9 More | 9.1–9.3 | Notebooks | Optional: measure in code, multi-model vs multi-modal, MAI models | | |
+| 9 More | 9.1–9.2 | Notebooks | Optional: MAI models, measure in code | | |
 | 10 Reference | 10.1 | | Credentials and links | | |
 
 The targets add up to about 64 minutes. They are planning targets, not measured times. The second dry run measures them.
@@ -97,7 +97,7 @@ The lab profile must give every learner these before the lab starts. Learners do
 | Saving a model change | 7.1 | Whether **Save** after changing the model creates Version 4 rather than overwriting Version 3 |
 | Router model shown in agent answers | 7.2 | Whether the row under a router agent's answer names the routed model |
 | Portal evaluation of Version 4 | 7.3 | Whether the agent version can be chosen, the custom rubric is listed, and how long the run takes |
-| Notebook 06 section 6.3 | 9.1 | It returned a 400 error in our dry run; the More page says to skip it |
+| Notebook 06 section 6.3 | 9.2 | It returned a 400 error in our dry run; the More page says to skip it |
 
 Each page also carries `<!-- VERIFY: ... -->` comments for these checks. They don't render in Skillable.
 
@@ -130,9 +130,8 @@ Each file is one Skillable page holding one small task. Files are named `NN-stag
 | [07-improve-02.md](07-improve-02.md) | 7.2 Compare with and without the router |
 | [07-improve-03.md](07-improve-03.md) | 7.3 Score the router and its cost |
 | [08-wrap-01.md](08-wrap-01.md) | 8.1 Finish the lab |
-| [09-more-01.md](09-more-01.md) | 9.1 More: measure the climb in code |
-| [09-more-02.md](09-more-02.md) | 9.2 More: multi-model vs multi-modal |
-| [09-more-03.md](09-more-03.md) | 9.3 More: explore MAI models |
+| [09-more-01.md](09-more-01.md) | 9.1 More: explore MAI models |
+| [09-more-02.md](09-more-02.md) | 9.2 More: measure the climb in code |
 | [10-ref-01.md](10-ref-01.md) | 10.1 Lab credentials and links |
 
 The core path uses notebooks only for setup (01) and the kick-off (04 sections 4.1–4.9, 05 sections 5.1–5.6). It skips notebook 00 (its story is on page 0.2), notebook 02 (pages 4.2–4.4 cover it in the portal) and notebook 04 sections 4.8 and 4.10, because insights run from the portal. Notebook 05 sections 5.5 and 5.7–5.12, notebook 06 and notebook 03 are More labs.

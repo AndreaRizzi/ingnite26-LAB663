@@ -66,7 +66,7 @@ Rules:
 ## LAB663 specifics
 
 - Wording: frame the lab as **continuous improvement**. "Climb" means a positive trend toward a goal across measured versions. Never write "hill climbing" or "up the hill".
-- Story: Setup → Meet TrailMate (try Version 1 in the portal, plan the climb) → Kick-off (create Version 2, start the optimizer early) → Know the concepts (portal: start insights, models, router) → See it work (portal: Versions 1 vs 2, monitor, insights) → Make it better (portal: optimizer results, promote Version 3) → Keep improving (portal: router Version 4, compare, evaluate) → Wrap. Notebook-driven measurement is the More lab 9.1.
+- Story: Setup → Meet TrailMate (try Version 1 in the portal, plan the climb) → Kick-off (create Version 2, start the optimizer early) → Know the concepts (portal: start insights, models, router) → See it work (portal: Versions 1 vs 2, monitor, insights) → Make it better (portal: optimizer results, promote Version 3) → Keep improving (portal: router Version 4, compare, evaluate) → Wrap. MAI models are More lab 9.1; notebook-driven measurement is More lab 9.2.
 - Version names: pages use Foundry agent versions of `trailmate`: Version 1 (start), 2 (hand-written instructions, notebook 04), 3 (optimizer candidate promoted in the portal), 4 (model changed to `mr-default` and saved in the playground). Notebook output says v0/v1 for Versions 1/2; pages that quote it say so.
 - Steps must match the notebook cells in `labs/core/`. Check section numbers and printed output in the `.ipynb` files before writing a step.
 - Skillable learners never run `infra/deploy.sh` or `infra/cleanup.sh`, and never delete resources. Keep `instructions/self-guided/` separate; when shared setup changes, update both.
