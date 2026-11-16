@@ -351,7 +351,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 **What we'll do:** Decide what "better" means for TrailMate, see how we'll improve it one change at a time, and why we start the slowest step first.
 
-## What can we improve?
+## 2.3.1 What can we improve?
 
 On page 2.2, every answer came with three kinds of numbers. These are the dials we'll turn:
 
@@ -370,7 +370,9 @@ Foundry's observability features keep these numbers visible as we climb:
 
 1. [] Read the two lists. Quality, cost, and latency often pull against each other, so we measure all three every time we change something.
 
-## One lever at a time
+---
+
+## 2.3.2 One lever at a time
 
 Continuous improvement means we keep measuring and keep changing one thing at a time. The **climb** is the trend toward our goal across those changes, from **v0** to **v3**. We call these **climb versions**. Each one changes just one thing, and we measure each with the same questions, so we always know what moved the score. Foundry has its own **agent versions** (Version 1, Version 2, ...) for what's deployed.
 
@@ -384,7 +386,9 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 1. [] Read the table. The notebooks use climb versions (v0 to v3). The portal shows agent versions, numbered from 1, so v0 is **Version 1**.
 1. [] Note that v2 and v3 start as separate **candidate** agents. Only a promotion, after we check the evidence, changes **trailmate** itself.
 
-## Why we start the optimizer now
+---
+
+## 2.3.3 Why we start the optimizer now
 
 > [!Knowledge] The **agent optimizer** rewrites an agent's instructions, tries several versions, and scores each one with an AI judge on our test questions. It's thorough, so it takes a while, often longer than any other step in this lab.
 
@@ -404,6 +408,7 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 
 **What we'll do:** Change one lever, the instructions, to create TrailMate **v1**, then ask it 12 practice questions so it leaves traces for Foundry to analyze. The optimizer on the next page learns from these.
 
+1. [] Close the Copilot Chat pane to make room for the notebook. You can reopen it any time from the chat icon at the top.
 1. [] In the Explorer, open **labs > core > 04-make-it-work.ipynb**.
 1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 1. [] In the **Outline**, click **4.8 What does Foundry think is wrong?**, then click the first code cell below that heading.
