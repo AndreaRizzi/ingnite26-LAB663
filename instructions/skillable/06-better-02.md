@@ -10,6 +10,8 @@
     >
     > Ours took about 10 minutes. All three candidates beat the v1 baseline of 0.759, and candidate_1 scored best at 0.822, with slightly fewer tokens and lower latency too. Follow along with the screenshots on this page while yours finishes.
 
+    > [!Note] Your results will differ. A different candidate may win, or none may beat the baseline. If none does, keeping v1 is the right decision, and the rest of the lab still works.
+
 1. [] On the best candidate, select **View changes**. The one-line v1 instructions became a detailed set of rules, for example to only make claims the product files support.
 
     ![The changes for candidate_1, comparing the short baseline prompt with the much longer candidate prompt](screenshots/06-better-02-view-changes.png)

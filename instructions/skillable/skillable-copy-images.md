@@ -711,6 +711,10 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
 
     <!-- IMAGE: 05-work-02-optimizer-baseline.png | The optimizer run with the baseline scored at 0.759, candidate 1 generating, and candidates 2 and 3 queued -->
 
+    > [!Note] If your run has already finished, that's fine. We look at the results on page 6.2. For now, use the screenshot above to see how a run progresses: baseline first, then each candidate in turn.
+
+    > [!Knowledge] Every run is different. Your scores won't match ours, a different candidate may win, and it's possible none beats the baseline. The process is still valid: we measure, compare, and only promote what the evidence supports.
+
 > [!Knowledge] Our agent works, but "works" isn't the same as "reliable". From here on we stop judging answers one at a time and start measuring them all.
 
 > [+Hint] OPTIONAL - Ask Copilot: is the optimizer done?
@@ -794,6 +798,8 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
     > [+Hint] Still running? Read our test run
     >
     > Ours took about 10 minutes. All three candidates beat the v1 baseline of 0.759, and candidate_1 scored best at 0.822, with slightly fewer tokens and lower latency too. Follow along with the screenshots on this page while yours finishes.
+
+    > [!Note] Your results will differ. A different candidate may win, or none may beat the baseline. If none does, keeping v1 is the right decision, and the rest of the lab still works.
 
 1. [] On the best candidate, select **View changes**. The one-line v1 instructions became a detailed set of rules, for example to only make claims the product files support.
 
