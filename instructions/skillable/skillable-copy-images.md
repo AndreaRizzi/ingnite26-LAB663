@@ -620,6 +620,12 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
 
     <!-- IMAGE: 04-concepts-03-router-hard.png | Both recommending the Alpine Explorer, with gpt-5.4 taking 4 seconds and about 4,600 tokens and the router's model under a second and about 660 -->
 
+1. [] Now compare cost in dollars. In the left menu, select **Models**, then **mr-default**. Open the **Monitor** tab and scroll down to **Estimated cost: model router vs. single-model baselines**. Use **Baseline models** to pick which models to compare against.
+
+    <!-- IMAGE: 04-concepts-03-router-cost.png | Estimated cost chart with the model router far cheaper than single-model baselines such as gpt-5.5 and claude-opus-4-6 -->
+
+    > [!Knowledge] This chart prices the same traffic in **dollars**, not tokens. A router can sometimes use more tokens and still cost less, because it sends much of the work to cheaper models, so its average cost per token is lower. Our test traffic was tiny, so every bar shows under one cent, but the bar heights show the gap.
+
 > [!Note] Routers pick per request, so yours may choose a different model. In our test, the default router sent both questions to the small model and still got both right.
 
 > [+Hint] OPTIONAL - Ask Copilot: how does a router choose?
@@ -645,7 +651,7 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
 
     <!-- IMAGE: 04-concepts-04-cost-vs-quality.png | mr-cost answering with DeepSeek-V4.1-Flash in 0.3 seconds and mr-quality with gpt-5.4 in 3.1 seconds, both recommending the Alpine Explorer -->
 
-> [!Knowledge] In our test, cost mode picked a small model and quality mode picked gpt-5.4, and both got it right. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.1.
+> [!Knowledge] In our test, cost mode picked **DeepSeek-V4.1-Flash**, a small, fast, and cheap model, and quality mode picked **gpt-5.4**, a frontier model. Both gave the same recommendation. With gpt-5.4, we paid more and waited longer for frontier quality this question didn't need. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.1.
 
 > [+Hint] OPTIONAL - Ask Copilot: cost or quality mode?
 >
