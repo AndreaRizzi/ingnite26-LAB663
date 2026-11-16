@@ -1,11 +1,16 @@
-@lab.Title
-
 <!--
-  LAB663 Skillable instructions. GENERATED, do not edit by hand.
+  LAB663 Skillable instructions (full text, image placeholders). GENERATED - do not edit by hand.
   Regenerate with: bash instructions/skillable/scripts/generate-skillable-copy.sh
-  Mode: full. Images: comment. Source: instructions/skillable/NN-stage-NN.md
-  Paste everything in this file into the Skillable lab profile (Edit Instructions).
+
+  Paste this file into Edit Instructions, then upload each named screenshot to the profile
+  and insert it where its IMAGE comment is.
+
+  Source pages: nitya/ignite26-LAB663 instructions/skillable/NN-stage-NN.md
+  Published to: nitya/skillable-labs (branch ignite26-lab663, folder ignite26-lab663/v1)
+  To target a different location: PUBLISH_REPO=<owner/name> PUBLISH_BRANCH=<branch> PUBLISH_PATH=<folder>
 -->
+
+@lab.Title
 
 # 0.1 Sign in to your lab
 

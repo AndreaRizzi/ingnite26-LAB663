@@ -159,19 +159,28 @@ After a dry run, save the capture under [screenshots/](screenshots/) with that f
 ![The model playground in compare view](screenshots/04-concepts-01-compare-setup.png)
 ```
 
-### Build the manual
+### Build and publish the manual
 
-After any page change, run:
+Skillable loads the pages live from the public repo [nitya/skillable-labs](https://github.com/nitya/skillable-labs/tree/ignite26-lab663/ignite26-lab663/v1) (branch `ignite26-lab663`, folder `ignite26-lab663/v1`). After any page or screenshot change:
 
-```bash
-bash instructions/skillable/scripts/generate-skillable-copy.sh
-```
+1. Clone the public repo next to this one and check out its `ignite26-lab663` branch.
+1. Run the generator with `PUBLISH_DIR` pointing at the published folder:
 
-It writes two files, both starting with `@lab.Title` and joined by `===` page breaks:
+    ```bash
+    PUBLISH_DIR=../skillable-labs/ignite26-lab663/v1 bash instructions/skillable/scripts/generate-skillable-copy.sh
+    ```
 
-| File | Images | Use it |
-|:-----|:-------|:-------|
-| [skillable-copy-images.md](skillable-copy-images.md) | Each image becomes `<!-- IMAGE: file \| alt -->` | **Now.** Paste into **Edit Instructions**, then upload each named screenshot to the profile and insert it where its comment is |
-| [skillable-copy.md](skillable-copy.md) | Raw GitHub URLs on `main` | **After the repo is public.** Paste as is, or run with `MODE=include` to pull each page live from GitHub |
+1. Commit and push the public repo.
+1. If the page list changed, paste [skillable-include.md](skillable-include.md) into the lab profile (**Edit Instructions**) again. Otherwise Skillable picks up the new content on its own.
+
+The generator writes three files here, all starting with `@lab.Title` and joined by `===` page breaks:
+
+| File | Contents | Use it |
+|:-----|:---------|:-------|
+| [skillable-include.md](skillable-include.md) | One `[!include]` per page, pulled live from the public repo | **The normal way.** Paste once into **Edit Instructions** |
+| [skillable-copy.md](skillable-copy.md) | Every page's full text, images from the public repo | Paste as a static snapshot instead of includes |
+| [skillable-copy-images.md](skillable-copy-images.md) | Every page's full text, each image as `<!-- IMAGE: file \| alt -->` | When images must be uploaded to the profile by hand |
+
+With `PUBLISH_DIR` set, it also writes the published folder: each page with its image links rewritten to raw URLs (relative links don't load inside a Skillable include), the `screenshots/` folder, and `skillable-include.md`. To publish somewhere else, set `PUBLISH_REPO`, `PUBLISH_BRANCH` and `PUBLISH_PATH`.
 
 Once screenshots are uploaded to the Skillable profile, add each one to the `SKILLABLE_MEDIA` table in the [generator](scripts/generate-skillable-copy.sh). Both files then use the uploaded `!IMAGE[...]` path automatically, so you don't have to re-insert them after every regeneration.

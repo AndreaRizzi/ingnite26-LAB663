@@ -1,11 +1,15 @@
-@lab.Title
-
 <!--
-  LAB663 Skillable instructions. GENERATED, do not edit by hand.
+  LAB663 Skillable instructions (full text). GENERATED - do not edit by hand.
   Regenerate with: bash instructions/skillable/scripts/generate-skillable-copy.sh
-  Mode: full. Images: github. Source: instructions/skillable/NN-stage-NN.md
-  Paste everything in this file into the Skillable lab profile (Edit Instructions).
+
+  Paste this file into Edit Instructions. Images load from the public repo.
+
+  Source pages: nitya/ignite26-LAB663 instructions/skillable/NN-stage-NN.md
+  Published to: nitya/skillable-labs (branch ignite26-lab663, folder ignite26-lab663/v1)
+  To target a different location: PUBLISH_REPO=<owner/name> PUBLISH_BRANCH=<branch> PUBLISH_PATH=<folder>
 -->
+
+@lab.Title
 
 # 0.1 Sign in to your lab
 
@@ -15,7 +19,7 @@
 
 1. [] Check that you see the **Instructions** and **Resources** tabs on the right, and the virtual machine's sign-in screen on the left. The blue bar at the bottom right shows the time left in the lab.
 
-    ![Lab interface with the Instructions and Resources tabs and the VM sign-in screen](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-lab-tabs.png)
+    ![Lab interface with the Instructions and Resources tabs and the VM sign-in screen](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-lab-tabs.png)
 
 1. [] Click in the password field on the virtual machine, then click the password below to type it in.
 
@@ -23,7 +27,7 @@
 
 1. [] Check that the desktop appears, then tick the boxes for the steps you've done. Ticking boxes tracks our progress.
 
-    ![The VM desktop after sign-in, with the first two steps checked off in the instructions](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-desktop.png)
+    ![The VM desktop after sign-in, with the first two steps checked off in the instructions](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-desktop.png)
 
 ## Sign in to GitHub
 
@@ -31,7 +35,7 @@
 
     +++https://github.com/enterprises/skillable-events/sso+++
 
-    ![The Single sign-on to Skillable Events page with the Continue button](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-sso-continue.png)
+    ![The Single sign-on to Skillable Events page with the Continue button](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-sso-continue.png)
 
 1. [] At the Microsoft sign-in, use these lab credentials, **not** your own account.
 
@@ -40,11 +44,11 @@
     | Username | +++@lab.CloudPortalCredential(User1).Username+++ |
     | TAP | +++@lab.CloudPortalCredential(User1).AccessToken+++ |
 
-    ![The Microsoft Sign in page asking for an email](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-microsoft-signin.png)
+    ![The Microsoft Sign in page asking for an email](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-microsoft-signin.png)
 
 1. [] Check that you see the **Skillable Events** enterprise page. Leave this tab open.
 
-    ![The Skillable Events GitHub Enterprise overview page after sign-in](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-github-signed-in.png)
+    ![The Skillable Events GitHub Enterprise overview page after sign-in](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-github-signed-in.png)
 
 > [+Hint] I see an error instead
 >
@@ -56,13 +60,13 @@
 
     +++https://ai.azure.com+++
 
-    ![The Microsoft Foundry home page with the Sign in button, and tab groups in Edge](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-foundry-signin.png)
+    ![The Microsoft Foundry home page with the Sign in button, and tab groups in Edge](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-foundry-signin.png)
 
     > [!Hint] Edge may already have tab groups such as **GitHub Login**, **Foundry Portal**, and **Azure Portal**. Use them to keep your tabs tidy.
 
 1. [] Check that **All resources** lists one project, **trailmate**. Leave this tab open.
 
-    ![The Foundry portal All resources list showing the trailmate project](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-foundry-trailmate.png)
+    ![The Foundry portal All resources list showing the trailmate project](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-foundry-trailmate.png)
 
 ## Sign in to the Azure portal
 
@@ -70,11 +74,11 @@
 
     +++https://portal.azure.com+++
 
-    ![The Azure portal home page after automatic sign-in](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-azure-home.png)
+    ![The Azure portal home page after automatic sign-in](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-azure-home.png)
 
 1. [] Select **Resource groups** and check that **LAB663** is the only one listed. Leave this tab open.
 
-    ![Resource groups in the Azure portal listing LAB663](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/00-start-01-azure-resource-groups.png)
+    ![Resource groups in the Azure portal listing LAB663](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/00-start-01-azure-resource-groups.png)
 
 ---
 
@@ -126,11 +130,11 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] Open **LAB663-deployment-output.txt**, the deployment summary. Check that it says **Result: SUCCEEDED**.
 
-    ![The deployment summary showing Result: SUCCEEDED and the Foundry project details](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-01-status-file.png)
+    ![The deployment summary showing Result: SUCCEEDED and the Foundry project details](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-01-status-file.png)
 
 1. [] Open the **lab663-deploy-...** file, the run log. Find the line **Populated .env with the deployment settings**.
 
-    ![The run log with the Populated .env line highlighted](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-01-run-log.png)
+    ![The run log with the Populated .env line highlighted](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-01-run-log.png)
 
 > [+Hint] It says RUNNING or FAILED
 >
@@ -140,7 +144,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] Open **Visual Studio Code** from the desktop and check that the Explorer shows the **LAB663** folder. If a pop-up offers to install the **Dev Containers** extension, close it. If asked whether you trust the authors, select **Yes**.
 
-    ![VS Code open on the LAB663 folder, with the Dev Containers pop-up at the bottom right](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-01-vscode-open.png)
+    ![VS Code open on the LAB663 folder, with the Dev Containers pop-up at the bottom right](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-01-vscode-open.png)
 
 1. [] Open a terminal with **Terminal > New Terminal**, or press **Ctrl+Shift+backtick**. If you don't see the **Terminal** menu, it's under **...** in the menu bar.
 
@@ -150,16 +154,16 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
     ++az login --tenant @lab.CloudSubscription.TenantId --use-device-code++
 
-    ![The terminal showing the device login link and code](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-01-az-login-code.png)
+    ![The terminal showing the device login link and code](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-01-az-login-code.png)
 
 1. [] Copy the code, then open the link in Edge and paste it. Pick the lab account you used on page 0.1.
 1. [] When asked to approve the sign-in, select **Approve**. Then close the browser tab and return to VS Code.
 
-    ![The Approve sign-in on another device page, with the Approve button](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-01-az-login-approve.png)
+    ![The Approve sign-in on another device page, with the Approve button](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-01-az-login-approve.png)
 
 1. [] In the terminal, type **1**, or press **Enter**, to keep the default subscription marked with **\***.
 
-    ![The terminal listing the lab subscription, marked as the default](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-01-az-login.png)
+    ![The terminal listing the lab subscription, marked as the default](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-01-az-login.png)
 
 ---
 
@@ -175,7 +179,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] In VS Code, click the blue **Sign in** button in the top bar, then select **Continue with GitHub**.
 
-    ![The Sign in to use GitHub Copilot dialog with Continue with GitHub](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-02-continue-with-github.png)
+    ![The Sign in to use GitHub Copilot dialog with Continue with GitHub](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-02-continue-with-github.png)
 
 1. [] In the browser, select **Continue**, then authorize **Visual Studio Code**.
 1. [] When the browser offers to open VS Code, select **Open**, or just switch back to VS Code.
@@ -190,13 +194,13 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 1. [] In the chat box, switch the model to **Claude Opus 5.5**.
 1. [] Switch **Default permissions** to **Allow all**, so Copilot doesn't stop to ask before each tool call. Select **Enable** when asked to confirm.
 
-    ![The permissions menu with Allow all selected](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-02-allow-all.png)
+    ![The permissions menu with Allow all selected](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-02-allow-all.png)
 
 ## Connect Copilot to Foundry
 
 1. [] Above Copilot's reply, click **Completed 2 steps** to expand it, then click **Start it now?** next to **Foundry MCP**.
 
-    ![The expanded steps with the Start it now link for the Foundry MCP server](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-02-start-foundry-mcp.png)
+    ![The expanded steps with the Start it now link for the Foundry MCP server](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-02-start-foundry-mcp.png)
 
 1. [] Select **Allow**, then **Work or school account**.
 1. [] Sign in with the lab credentials. Select **Yes** to stay signed in, and wait until the device is confirmed.
@@ -214,7 +218,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] Check that the reply lists the **trailmate** agent.
 
-    ![Copilot Chat listing the trailmate agent in the Foundry project](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-02-copilot-agents.png)
+    ![Copilot Chat listing the trailmate agent in the Foundry project](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-02-copilot-agents.png)
 
 > [+Hint] Copilot shows an error
 >
@@ -234,12 +238,12 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 1. [] Expand **Outline** at the bottom of the Explorer. It lists the notebook's numbered sections, so we can jump between them.
 1. [] Click **Select Kernel** at the top right, then **Python Environments**, and pick **.venv (3.13.14)**. We do this for every notebook we open.
 
-    ![The notebook open with the kernel picker showing .venv (3.13.14) and the Outline listing sections 1.1 to 1.10](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-03-select-kernel.png)
+    ![The notebook open with the kernel picker showing .venv (3.13.14) and the Outline listing sections 1.1 to 1.10](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-03-select-kernel.png)
 
 1. [] Click **Run All** at the top of the notebook.
 1. [] In the Outline, click **1.10 So, is my camp ready?** and wait there until it prints **Overall: PASS. Our camp is ready.** This takes a minute or two.
 
-    ![Section 1.10 showing 27 of 27 checks passed and Overall: PASS](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/01-setup-03-scorecard.png)
+    ![Section 1.10 showing 27 of 27 checks passed and Overall: PASS](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/01-setup-03-scorecard.png)
 
 > [!Knowledge] The "Error we expected" line in section 1.11 is there on purpose. It shows what a failure looks like.
 
@@ -265,7 +269,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] In Edge, switch to the **Foundry portal** tab. In the left menu, select **Agents**. You see one agent, **trailmate**.
 
-    ![The Agents list in the Foundry portal showing the trailmate agent at version 1](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-01-agents-list.png)
+    ![The Agents list in the Foundry portal showing the trailmate agent at version 1](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-01-agents-list.png)
 
 1. [] Select **trailmate** to open its playground, then look at the left side:
     - **Version 1** is selected. That's the agent version deployed in Foundry, which we call **v0**, the baseline for our climb.
@@ -275,11 +279,11 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] To make room for the chat, collapse the left menu with the button at its bottom left, highlighted in red.
 
-    ![The trailmate playground with Version 1 selected, the model, the one-line instructions, the file search tool, and the collapse-menu button highlighted](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-01-version-1.png)
+    ![The trailmate playground with Version 1 selected, the model, the one-line instructions, the file search tool, and the collapse-menu button highlighted](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-01-version-1.png)
 
 1. [] Open **Metrics** at the top right of the chat and turn on the evaluators you want. The playground now scores every answer for us.
 
-    ![The Metrics menu with evaluators such as Intent resolution, Coherence, and Relevance](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-01-metrics.png)
+    ![The Metrics menu with evaluators such as Intent resolution, Coherence, and Relevance](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-01-metrics.png)
 
 > [+Hint] Ask Copilot: what is this agent?
 >
@@ -303,14 +307,14 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] Look under the answer. The numbered **citations** show the manual files it used, so the answer is grounded in our data. The row below shows the model, time, tokens, tools used, and evaluation scores.
 
-    ![TrailMate's answer about the tents, with citations to product files and a row showing time, tokens, AI Quality, and Safety](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-02-tent-answer.png)
+    ![TrailMate's answer about the tents, with citations to product files and a row showing time, tokens, AI Quality, and Safety](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-02-tent-answer.png)
 
 1. [] Click a citation to read the manual passage behind it, then close it.
 1. [] Now ask something a gear-support agent shouldn't answer.
 
     ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
 
-    ![TrailMate v0 answering the hot chocolate request with a full recipe](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-02-off-topic.png)
+    ![TrailMate v0 answering the hot chocolate request with a full recipe](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-02-off-topic.png)
 
 1. [] Scroll to the end of the answer. It even adds a safety tip, citing the manual's warning to keep the bag away from open flames. Grounded, but it still answered a question that isn't TrailMate's job.
 
@@ -318,15 +322,15 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 1. [] Hover over **AI Quality** in the row under the answer. Every built-in evaluator passed the recipe.
 
-    ![The hover card for AI Quality showing Coherence, Fluency, Relevance, and Task adherence all Pass](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-02-quick-scores.png)
+    ![The hover card for AI Quality showing Coherence, Fluency, Relevance, and Task adherence all Pass](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-02-quick-scores.png)
 
 1. [] Select **AI Quality** to open the details. On the left, see each step with its time and tokens. On the right, read why each evaluator passed it.
 
-    ![The details for the hot chocolate answer, with the file_search and message steps and evaluator reasons](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-02-evaluations.png)
+    ![The details for the hot chocolate answer, with the file_search and message steps and evaluator reasons](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-02-evaluations.png)
 
 1. [] Close the details. Select **Traces**, then **User view**. Open the **Span tree** with its toggle on the left, then select **Play** at the bottom. It replays what the user saw next to the calls the agent made.
 
-    ![The trace user view with the span tree, the agent response, and the replay bar](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/02-meet-02-trace.png)
+    ![The trace user view with the span tree, the agent response, and the replay bar](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-02-trace.png)
 
 > [!Knowledge] A **trace** is the step-by-step record of one answer. Its **tokens** tell us what the answer cost, and its **duration** how long it took. The built-in evaluators judge general quality, so a well-written recipe passes. They don't know TrailMate's job. In stage 6 we build our own rubric that does.
 
@@ -402,21 +406,21 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 1. [] In the **Outline**, click **4.8 What does Foundry think is wrong?**, then click the first code cell below that heading.
 1. [] Hover over that cell and click the **Execute Above Cells** icon in its toolbar. This runs sections 4.1 to 4.7 in order and stops before 4.8.
 
-    ![The first section 4.8 code cell with the Execute Above Cells icon highlighted in its toolbar](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-01-execute-above.png)
+    ![The first section 4.8 code cell with the Execute Above Cells icon highlighted in its toolbar](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-01-execute-above.png)
 
 1. [] Use the Outline to follow along. The first cell prints **Connected. 12 practice questions ready.**, and section **4.4** prints **Saved. TrailMate v1 is Foundry version 2**.
 
     > [!Note] This is the moment **trailmate** moves to agent **Version 2** in Foundry. From here on, the portal opens trailmate at Version 2, our climb version **v1**. Version 1, our baseline **v0**, is still there in the **Version** menu.
 
-    ![The first cell printing Connected. 12 practice questions ready.](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-01-connected.png)
+    ![The first cell printing Connected. 12 practice questions ready.](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-01-connected.png)
 
 1. [] Wait for section **4.7** to count down. It pauses one minute so the traces can arrive. The whole run takes a couple of minutes.
 
-    ![Section 4.7 counting down Waiting for traces](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-01-waiting.png)
+    ![Section 4.7 counting down Waiting for traces](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-01-waiting.png)
 
 1. [] While it waits, switch to the Foundry portal. Expand the left menu with its toggle at the bottom left, then select **Traces**. The 12 practice conversations appear one by one, each with its duration and tokens.
 
-    ![The Foundry Traces list filling with trailmate traces, with duration and tokens](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-01-portal-traces.png)
+    ![The Foundry Traces list filling with trailmate traces, with duration and tokens](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-01-portal-traces.png)
 
 > [+Hint] Ask Copilot: what just ran?
 >
@@ -447,7 +451,7 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 
 1. [] Run the cell and confirm it prints the three gaps.
 
-    ![The section 4.9 cell with our three gaps and its output listing them](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-02-gaps-saved.png)
+    ![The section 4.9 cell with our three gaps and its output listing them](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-02-gaps-saved.png)
 
 > [!Knowledge] These are risks we expect, written ahead of time so the optimizer can start early. On page 5.3 we'll check them against what Foundry actually finds.
 
@@ -461,19 +465,19 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] Select the **.venv (3.13.14)** kernel, the same way as on page 1.3.
 1. [] Run the first code cell. It prints **v0 = Foundry version 1   v1 = Foundry version 2**, linking our climb versions to the agent versions.
 
-    ![The first notebook 05 cell printing v0 = Foundry version 1 and v1 = Foundry version 2](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-02-versions.png)
+    ![The first notebook 05 cell printing v0 = Foundry version 1 and v1 = Foundry version 2](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-02-versions.png)
 1. [] Jump to section **5.2** and run its code cell. It drafts a rubric from our traces and gap list, printing **Rubric generation: queued** every 15 seconds. Wait for **Rubric created**, which takes about two minutes.
 
-    ![Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-02-rubric-created.png)
+    ![Section 5.2 printing queued progress lines, then Rubric created: trailmate-rubric version 1](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-02-rubric-created.png)
 1. [] Jump to section **5.4** and run its two code cells. Confirm you see **Datasets** and **Evaluation ready**.
 1. [] Jump to section **5.6** and run the estimate cell. It shows how many agent, evaluation, and optimization calls the job may make, and a cost range. In our test run, the typical estimate was about 62 agent calls and about $1.46, within a range of about $0.97 to $4.88. Yours may differ.
 1. [] Run the next code cell to start the job. When it prints **Optimization job:** and status lines, **leave it running**.
 
-    ![Section 5.6 printing the optimization job ID and an in_progress status line](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-02-optimizer-running.png)
+    ![Section 5.6 printing the optimization job ID and an in_progress status line](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-02-optimizer-running.png)
 
 1. [] In the Foundry portal, open **trailmate** and select the **Optimize** tab. Our run is listed **In progress**, with **Version 2**, our v1, as its baseline.
 
-    ![The trailmate Optimize tab with one run in progress and Version 2 as its baseline](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/03-kickoff-02-optimize-tab.png)
+    ![The trailmate Optimize tab with one run in progress and Version 2 as its baseline](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-02-optimize-tab.png)
 
 > [+Hint] Rubric generation fails or finds no traces
 >
@@ -498,11 +502,11 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] In the Foundry portal, open **Agents** and select **trailmate**. It now uses **Version 2**, the v1 we created on page 3.1, marked **Active** in the **Version** menu. If the page was already open, it may still show Version 1 until you pick Version 2. Select the **Insights** tab.
 1. [] Select **Run now** to scan the agent's recent traces for problems with failures, performance, cost, and quality.
 
-    ![The trailmate Insights tab with no insights yet and the Run now button](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-01-start-insights.png)
+    ![The trailmate Insights tab with no insights yet and the Run now button](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-01-start-insights.png)
 
 1. [] Check that it shows **Run in progress** and **Finding insights...**. It typically takes 2 to 5 minutes, so move on. We don't need to wait.
 
-    ![The Insights tab showing Run in progress and Finding insights, collecting and analyzing traces](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-01-insights-running.png)
+    ![The Insights tab showing Run in progress and Finding insights, collecting and analyzing traces](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-01-insights-running.png)
 
 > [+Hint] Ask Copilot: what are insights?
 >
@@ -524,7 +528,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] Open **Compare models** at the top right and select **gpt-5.4-mini**. The two models now sit side by side, and a message goes to both.
 
-    ![The Compare models menu listing deployments, including gpt-5.4-mini and the four mr- routers](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-02-compare-setup.png)
+    ![The Compare models menu listing deployments, including gpt-5.4-mini and the four mr- routers](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-02-compare-setup.png)
 
 1. [] Send this easy question.
 
@@ -532,7 +536,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] Compare the row under each answer. Both are right in about a second, but look at the token counts.
 
-    ![Both models answering 1.5 lbs, with gpt-5.4 using about 4,300 tokens and gpt-5.4-mini about 60](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-02-easy-answers.png)
+    ![Both models answering 1.5 lbs, with gpt-5.4 using about 4,300 tokens and gpt-5.4-mini about 60](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-02-easy-answers.png)
 
 1. [] Send this harder question, with a trap: one TrailMaster X4 can't sleep six.
 
@@ -540,7 +544,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] Scroll to the end of both answers and compare the recommendation, the time, and the tokens.
 
-    ![Both models recommending the Alpine Explorer, with gpt-5.4 taking 4 seconds and about 4,600 tokens and gpt-5.4-mini 1 second and about 440](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-02-compare-answers.png)
+    ![Both models recommending the Alpine Explorer, with gpt-5.4 taking 4 seconds and about 4,600 tokens and gpt-5.4-mini 1 second and about 440](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-02-compare-answers.png)
 
 > [!Knowledge] In our test, both models picked the Alpine Explorer, but the small one was faster and used a fraction of the tokens. The real question isn't "which model is best?" but "which questions need the big one?"
 
@@ -567,13 +571,13 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] Look at the row under the router's answer. It names the model the router chose, here **DeepSeek-V4.1-Flash**, a small, fast model.
 
-    ![gpt-5.4 and mr-default both answering 1.5 lbs, with the router's answer from DeepSeek-V4.1-Flash using 61 tokens](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-03-router-easy.png)
+    ![gpt-5.4 and mr-default both answering 1.5 lbs, with the router's answer from DeepSeek-V4.1-Flash using 61 tokens](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-03-router-easy.png)
 
 1. [] Send the harder tent question and compare the two answers, times, and tokens.
 
     ++TrailMaster X4 Tent: 4-person, 12 lbs, $250, rainfly rated 2000mm. Alpine Explorer Tent: 8-person, 17 lbs, $350, rainfly rated 3000mm. A family of six is camping in heavy rain, wants the lightest setup possible, and has a tight budget. Weigh the trade-offs and recommend one.++
 
-    ![Both recommending the Alpine Explorer, with gpt-5.4 taking 4 seconds and about 4,600 tokens and the router's model under a second and about 660](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-03-router-hard.png)
+    ![Both recommending the Alpine Explorer, with gpt-5.4 taking 4 seconds and about 4,600 tokens and the router's model under a second and about 660](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-03-router-hard.png)
 
 > [!Note] Routers pick per request, so yours may choose a different model. In our test, the default router sent both questions to the small model and still got both right.
 
@@ -598,7 +602,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] Scroll to the end of both answers. Note which model each router picked, and check that both recommend the Alpine Explorer.
 
-    ![mr-cost answering with DeepSeek-V4.1-Flash in 0.3 seconds and mr-quality with gpt-5.4 in 3.1 seconds, both recommending the Alpine Explorer](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/04-concepts-04-cost-vs-quality.png)
+    ![mr-cost answering with DeepSeek-V4.1-Flash in 0.3 seconds and mr-quality with gpt-5.4 in 3.1 seconds, both recommending the Alpine Explorer](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-04-cost-vs-quality.png)
 
 > [!Knowledge] In our test, cost mode picked a small model and quality mode picked gpt-5.4, and both got it right. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.1.
 
@@ -619,7 +623,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 1. [] In the Foundry portal, open **Agents** and select **trailmate**.
 1. [] Open the **Version** menu at the top. You now see agent **Version 2**, our climb version **v1** from page 3.1, next to **Version 1**, our baseline **v0**.
 
-    ![The trailmate Version menu listing Version 2, marked Active, above Version 1](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/05-work-01-version-menu.png)
+    ![The trailmate Version menu listing Version 2, marked Active, above Version 1](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-01-version-menu.png)
 
 1. [] In the same menu, select **Compare versions** and pick **Version 1** and **Version 2**.
 
@@ -649,15 +653,15 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] On the trailmate agent page, open the **Monitor** tab. **Operational metrics** show the total token usage, our cost dial, across every run.
 
-    ![The Monitor overview with total token usage and panels for evaluations and scheduled runs](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/05-work-02-monitor-overview.png)
+    ![The Monitor overview with total token usage and panels for evaluations and scheduled runs](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-02-monitor-overview.png)
 
 1. [] Scroll to the charts. **Agent runs** counts every conversation, including our practice questions and the optimizer's test runs. **Gen AI errors** shows any failed calls. Select **View agent traces** to jump to the traces behind a point.
 
-    ![The Agent runs chart rising to over 100 runs and the Gen AI errors chart with a handful of errors](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/05-work-02-monitor.png)
+    ![The Agent runs chart rising to over 100 runs and the Gen AI errors chart with a handful of errors](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-02-monitor.png)
 
 1. [] Check on the optimizer. Select the **Optimize** tab and open our run. It first scores the baseline, our v1, then generates and scores candidates one at a time.
 
-    ![The optimizer run with the baseline scored at 0.759, candidate 1 generating, and candidates 2 and 3 queued](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/05-work-02-optimizer-baseline.png)
+    ![The optimizer run with the baseline scored at 0.759, candidate 1 generating, and candidates 2 and 3 queued](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-02-optimizer-baseline.png)
 
 > [!Knowledge] Our agent works, but "works" isn't the same as "reliable". From here on we stop judging answers one at a time and start measuring them all.
 
@@ -677,12 +681,12 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] On the **trailmate** agent, open the **Insights** tab. The run we started on page 4.1 lists its findings, each with a category, a severity, and the agent version it was found in.
 
-    ![The Insights tab listing five findings in the Hallucinations and Cost and tokens categories, with the first one open](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/05-work-03-insights-list.png)
+    ![The Insights tab listing five findings in the Hallucinations and Cost and tokens categories, with the first one open](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-03-insights-list.png)
 
 1. [] Select a **Hallucinations** finding and read its description. It explains the pattern and links to the traces that show it.
 1. [] Select the finding about the **recipe request** and scroll down. Under **Highlighted traces** is the hot chocolate conversation, and under **Proposed fix** is a suggested change to the instructions.
 
-    ![The recipe finding with its highlighted trace and a proposed fix that edits the agent instructions](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/05-work-03-proposed-fix.png)
+    ![The recipe finding with its highlighted trace and a proposed fix that edits the agent instructions](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/05-work-03-proposed-fix.png)
 
 1. [] Compare the findings with our three gaps: overclaiming, making things up, and out of lane. Which did Foundry confirm? What did it see differently?
 
@@ -714,11 +718,11 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] In the Foundry portal, open **Evaluations**, then the **Evaluator catalog** tab. **Our TrailMate rubric** is listed as a custom rubric, next to Microsoft's built-in evaluators.
 
-    ![The Evaluator catalog listing Our TrailMate rubric as a custom rubric above the built-in evaluators](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-01-evaluator-catalog.png)
+    ![The Evaluator catalog listing Our TrailMate rubric as a custom rubric above the built-in evaluators](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-01-evaluator-catalog.png)
 
 1. [] Select **Our TrailMate rubric** and scroll to **Dimensions**. Each one is a weighted check the judge scores from 1 to 5.
 
-    ![The rubric's seven weighted dimensions, from source_grounded_answer to general_quality](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-01-rubric-dimensions.png)
+    ![The rubric's seven weighted dimensions, from source_grounded_answer to general_quality](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-01-rubric-dimensions.png)
 
 1. [] Match the dimensions to what we've seen:
     - **source_grounded_answer** and **missing_or_conflicting_evidence_handling** cover the hallucination insights and our "making things up" gap.
@@ -745,7 +749,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] In the Foundry portal, open **trailmate**, select the **Optimize** tab, and open our run. When it finishes, the **Candidate results** show each candidate's score next to the v1 baseline, with its average tokens and latency.
 
-    ![Final optimizer results: baseline 0.759, candidate_1 0.822 marked Best, candidate_2 0.802, and candidate_3 0.76](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-candidates.png)
+    ![Final optimizer results: baseline 0.759, candidate_1 0.822 marked Best, candidate_2 0.802, and candidate_3 0.76](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-02-candidates.png)
 
     > [+Hint] Still running? Read our test run
     >
@@ -753,11 +757,11 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 1. [] On the best candidate, select **View changes**. The one-line v1 instructions became a detailed set of rules, for example to only make claims the product files support.
 
-    ![The changes for candidate_1, comparing the short baseline prompt with the much longer candidate prompt](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-view-changes.png)
+    ![The changes for candidate_1, comparing the short baseline prompt with the much longer candidate prompt](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-02-view-changes.png)
 
 1. [] Scroll up to **Run overview** and select **View details** next to **Total tokens**. It shows what the run itself cost, by phase.
 
-    ![Token usage for the run: about 1.9 million tokens and an estimated $5.37, mostly from running the agent and scoring responses](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-02-token-usage.png)
+    ![Token usage for the run: about 1.9 million tokens and an estimated $5.37, mostly from running the agent and scoring responses](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-02-token-usage.png)
 
     > [!Note] Our run used about 1.9 million tokens, an estimated $5.37. That's above the $4.88 ceiling the notebook estimated on page 3.2. Optimizing costs real money, so we check the measured cost, not just the estimate.
 
@@ -795,17 +799,17 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
     >
     > Promotion turns the candidate into a new **trailmate** agent version and makes it active. In our test, the candidate became **Version 3**, our climb version **v2**, and the portal confirmed it. The notebook promotes the same way, but only after the checks pass.
     >
-    > ![The portal banner confirming candidate_1 is now Version 3, with Version 2 still available](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-03-promoted.png)
+    > ![The portal banner confirming candidate_1 is now Version 3, with Version 2 still available](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-03-promoted.png)
 
 1. [] If the candidate was promoted, open **trailmate** in the portal. The **Version** menu now shows the new version as **Active**.
 
-    ![The trailmate Version menu with Version 3 active above Versions 2 and 1](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-03-version-3.png)
+    ![The trailmate Version menu with Version 3 active above Versions 2 and 1](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-03-version-3.png)
 
 1. [] Select **Compare versions**, pick **Version 1** and the new version, and send the hot chocolate question to both.
 
     ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
 
-    ![Version 1 handing out a recipe with AI Quality 100%, and Version 3 declining and redirecting to the sleeping bag with AI Quality 50%](https://raw.githubusercontent.com/nitya/ignite26-LAB663/main/instructions/skillable/screenshots/06-better-03-compare-v0-v3.png)
+    ![Version 1 handing out a recipe with AI Quality 100%, and Version 3 declining and redirecting to the sleeping bag with AI Quality 50%](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/06-better-03-compare-v0-v3.png)
 
 1. [] Notice the scores. In our test, the built-in **AI Quality** gave the recipe 100% and the correct refusal 50%. Built-in evaluators don't know TrailMate's job. Our rubric does, and that's why we measure with it.
 
