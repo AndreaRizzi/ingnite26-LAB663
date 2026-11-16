@@ -731,6 +731,8 @@ While the optimizer works, let's look at another tool. **Insights** read our rec
 
 **What we'll do:** Read what Foundry found across TrailMate's traces, and check it against the three gaps we expected on page 3.2.
 
+> [!Note] Insights come from your own traces, so yours will differ from ours. If a finding is hard to follow, use the **OPTIONAL - Ask Copilot** prompt at the end of this page to have it explained.
+
 1. [] On the **trailmate** agent, open the **Insights** tab. The run we started on page 4.1 lists its findings, each with a category, a severity, and the agent version it was found in.
 
     <!-- IMAGE: 05-work-03-insights-list.png | The Insights tab listing five findings in the Hallucinations and Cost and tokens categories, with the first one open -->
