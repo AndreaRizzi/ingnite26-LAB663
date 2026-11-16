@@ -13,7 +13,7 @@
 
 > [!Knowledge] In our test, cost mode picked a small model and quality mode picked gpt-5.4, and both got it right. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.1.
 
-> [+Hint] Ask Copilot: cost or quality mode?
+> [+Hint] OPTIONAL - Ask Copilot: cost or quality mode?
 >
 > ++What is the difference between the cost and quality routing modes in Microsoft Foundry model router? Explain in one sentence.++
 

@@ -21,7 +21,7 @@
 
 > [!Note] Routers pick per request, so yours may choose a different model. In our test, the default router sent both questions to the small model and still got both right.
 
-> [+Hint] Ask Copilot: how does a router choose?
+> [+Hint] OPTIONAL - Ask Copilot: how does a router choose?
 >
 > ++How does Microsoft Foundry model router decide which model answers a request? Explain in two sentences.++
 

@@ -20,7 +20,7 @@
 
     <!-- TODO screenshot: 07-improve-01-board.png | The section 6.5 board with the baseline and mr-default rows -->
 
-> [+Hint] Ask Copilot: summarize the router board
+> [+Hint] OPTIONAL - Ask Copilot: summarize the router board
 >
 > ++Summarize the board in section 6.5 of labs/core/06-make-it-optimal.ipynb in three bullets: quality, cost, and errors. Don't change any files.++
 

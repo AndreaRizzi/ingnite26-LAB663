@@ -23,7 +23,7 @@
 
     ![The Foundry Traces list filling with trailmate traces, with duration and tokens](screenshots/03-kickoff-01-portal-traces.png)
 
-> [+Hint] Ask Copilot: what just ran?
+> [+Hint] OPTIONAL - Ask Copilot: what just ran?
 >
 > ++Summarize what sections 4.1 to 4.7 of labs/core/04-make-it-work.ipynb did, in three bullets. Don't change any files.++
 

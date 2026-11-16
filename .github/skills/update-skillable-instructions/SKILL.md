@@ -59,7 +59,7 @@ Rules:
 - First line after the title is always `**What we'll do:** ...`. The last line is always `> [!Note] **Success:** We just ...`. These bookends state the value of the page.
 - Keep pages small: one task, a handful of `1. []` steps, and at most one or two blocks. Don't stack alerts and notes.
 - One sentence per step, ordered where, what, why. Name notebook sections explicitly ("jump to section **4.8**"), because page numbers and notebook section numbers differ.
-- Put help in collapsible `> [+Hint]` blocks. Each page ends with one optional `> [+Hint] Ask Copilot: <label>` block whose copy-text prompt explains or summarizes that page in one to three sentences or bullets. Troubleshooting hints are separate. Prompts that touch Azure must say "Do not change anything."
+- Put help in collapsible `> [+Hint]` blocks. Each page ends with one `> [+Hint] OPTIONAL - Ask Copilot: <label>` block whose copy-text prompt explains or summarizes that page in one to three sentences or bullets. Troubleshooting hints are separate. Prompts that touch Azure must say "Do not change anything."
 - Indent blocks and comments under the step they belong to (four spaces).
 - Never give away a decision the learner must make (for example `REVIEW_APPROVED`). Never invent results, timings, links, or scores.
 

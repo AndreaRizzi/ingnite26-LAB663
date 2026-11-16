@@ -24,7 +24,7 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 1. [] Text shown ++like this++ is **copy text**: click it to copy, then paste it yourself.
 1. [] Each step has a checkbox. Checking the last box on a page checks the ones above it.
 
-> [!Hint] **Stuck? Ask Copilot first.** Most pages end with an optional **Ask Copilot** hint: a prompt to paste into Copilot Chat that explains or summarizes what just happened, so we can skip reading long notebook output. We set up Copilot Chat in the next stage, on page 1.2.
+> [!Hint] **Stuck? Ask Copilot first.** Most pages end with an **OPTIONAL - Ask Copilot** hint: a prompt to paste into Copilot Chat that explains or summarizes what just happened, so we can skip reading long notebook output. Skip these if you're short on time. We set up Copilot Chat in the next stage, on page 1.2.
 
 ---
 

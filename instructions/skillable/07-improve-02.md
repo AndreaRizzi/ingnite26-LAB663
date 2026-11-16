@@ -9,7 +9,7 @@
 
 > [!Knowledge] Invalid coverage, a category that got worse, an unknown cost, or a pending review all mean we keep the baseline. That's a legitimate result, not a failed lab.
 
-> [+Hint] Ask Copilot: explain the router decision
+> [+Hint] OPTIONAL - Ask Copilot: explain the router decision
 >
 > ++Explain the router decision in section 6.7 of labs/core/06-make-it-optimal.ipynb in two sentences. Don't change any files.++
 

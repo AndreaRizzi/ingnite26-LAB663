@@ -112,7 +112,7 @@ Building the first agent is easy. Keeping it reliable and cost-effective takes c
 1. [] Text shown ++like this++ is **copy text**: click it to copy, then paste it yourself.
 1. [] Each step has a checkbox. Checking the last box on a page checks the ones above it.
 
-> [!Hint] **Stuck? Ask Copilot first.** Most pages end with an optional **Ask Copilot** hint: a prompt to paste into Copilot Chat that explains or summarizes what just happened, so we can skip reading long notebook output. We set up Copilot Chat in the next stage, on page 1.2.
+> [!Hint] **Stuck? Ask Copilot first.** Most pages end with an **OPTIONAL - Ask Copilot** hint: a prompt to paste into Copilot Chat that explains or summarizes what just happened, so we can skip reading long notebook output. Skip these if you're short on time. We set up Copilot Chat in the next stage, on page 1.2.
 
 ---
 
@@ -253,7 +253,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 >
 > ++In notebook 01, this check failed with the message below. What does it mean, and what should I try? Don't change any files.++
 
-> [+Hint] Ask Copilot: what did we check?
+> [+Hint] OPTIONAL - Ask Copilot: what did we check?
 >
 > ++Summarize what labs/core/01-setup-and-validate.ipynb checked, in three bullets. Don't change any files.++
 
@@ -286,7 +286,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
     ![The Metrics menu with evaluators such as Intent resolution, Coherence, and Relevance](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-01-metrics.png)
 
-> [+Hint] Ask Copilot: what is this agent?
+> [+Hint] OPTIONAL - Ask Copilot: what is this agent?
 >
 > ++What is a prompt agent in Microsoft Foundry, and what does its file search tool do? Answer in two sentences.++
 
@@ -302,6 +302,8 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 ## Ask two questions
 
+> [!Note] Agents are non-deterministic, so your answers, times, and scores may differ from the screenshots on these pages.
+
 1. [] In **Message the agent**, ask a question about the manuals.
 
     ++Which tent sleeps 8 people, the TrailMaster X4 or the Alpine Explorer?++
@@ -311,7 +313,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
     ![TrailMate's answer about the tents, with citations to product files and a row showing time, tokens, AI Quality, and Safety](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/02-meet-02-tent-answer.png)
 
 1. [] Click a citation to read the manual passage behind it, then close it.
-1. [] Now ask something a gear-support agent shouldn't answer.
+1. [] Start a new chat with the **+** icon at the top right of the chat, so the next question doesn't carry over the first one. Then ask something a gear-support agent shouldn't answer.
 
     ++Give me a recipe for hot chocolate I can drink while wrapped in my CozyNights Sleeping Bag.++
 
@@ -335,7 +337,7 @@ The desktop has two text files: one starting with **LAB663** and one with **lab6
 
 > [!Knowledge] A **trace** is the step-by-step record of one answer. Its **tokens** tell us what the answer cost, and its **duration** how long it took. The built-in evaluators judge general quality, so a well-written recipe passes. They don't know TrailMate's job. In stage 6 we build our own rubric that does.
 
-> [+Hint] Ask Copilot: what are traces?
+> [+Hint] OPTIONAL - Ask Copilot: what are traces?
 >
 > ++What are agent traces in Microsoft Foundry? Explain in one sentence.++
 
@@ -388,7 +390,7 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 
 1. [] Next, on pages 3.1 and 3.2, we create v1 and start the optimizer. Then, while it works, we explore the concepts behind the climb in the portal, and come back to its results on page 6.2.
 
-> [+Hint] Ask Copilot: what is the agent optimizer?
+> [+Hint] OPTIONAL - Ask Copilot: what is the agent optimizer?
 >
 > ++What does the Microsoft Foundry agent optimizer do? Explain in one sentence.++
 
@@ -423,7 +425,7 @@ Continuous improvement means we keep measuring and keep changing one thing at a 
 
     ![The Foundry Traces list filling with trailmate traces, with duration and tokens](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/03-kickoff-01-portal-traces.png)
 
-> [+Hint] Ask Copilot: what just ran?
+> [+Hint] OPTIONAL - Ask Copilot: what just ran?
 >
 > ++Summarize what sections 4.1 to 4.7 of labs/core/04-make-it-work.ipynb did, in three bullets. Don't change any files.++
 
@@ -484,7 +486,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 >
 > The traces may still be arriving. Wait one minute, then run the section 5.2 cell again. Don't rerun section 4.5.
 
-> [+Hint] Ask Copilot: what is a rubric?
+> [+Hint] OPTIONAL - Ask Copilot: what is a rubric?
 >
 > ++What is a rubric evaluator in Microsoft Foundry, and how does the agent optimizer use it? Explain in two sentences.++
 
@@ -509,7 +511,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     ![The Insights tab showing Run in progress and Finding insights, collecting and analyzing traces](https://raw.githubusercontent.com/nitya/skillable-labs/refs/heads/ignite26-lab663/ignite26-lab663/v1/screenshots/04-concepts-01-insights-running.png)
 
-> [+Hint] Ask Copilot: what are insights?
+> [+Hint] OPTIONAL - Ask Copilot: what are insights?
 >
 > ++What do agent insights in Microsoft Foundry do? Explain in one sentence.++
 
@@ -549,7 +551,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] In our test, both models picked the Alpine Explorer, but the small one was faster and used a fraction of the tokens. The real question isn't "which model is best?" but "which questions need the big one?"
 
-> [+Hint] Ask Copilot: big or small model?
+> [+Hint] OPTIONAL - Ask Copilot: big or small model?
 >
 > ++When should I pick gpt-5.4-mini over gpt-5.4? Answer in two sentences.++
 
@@ -582,7 +584,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Note] Routers pick per request, so yours may choose a different model. In our test, the default router sent both questions to the small model and still got both right.
 
-> [+Hint] Ask Copilot: how does a router choose?
+> [+Hint] OPTIONAL - Ask Copilot: how does a router choose?
 >
 > ++How does Microsoft Foundry model router decide which model answers a request? Explain in two sentences.++
 
@@ -607,7 +609,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] In our test, cost mode picked a small model and quality mode picked gpt-5.4, and both got it right. The routing mode is a dial between cost and quality. A cheaper pick only wins if the answer stays right across many questions, and that's what we measure on page 7.1.
 
-> [+Hint] Ask Copilot: cost or quality mode?
+> [+Hint] OPTIONAL - Ask Copilot: cost or quality mode?
 >
 > ++What is the difference between the cost and quality routing modes in Microsoft Foundry model router? Explain in one sentence.++
 
@@ -638,7 +640,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] Later, the Agents list also shows **trailmate-optimizer-candidate** and **trailmate-mr-default-candidate**. They're test copies. Only a promotion changes **trailmate** itself.
 
-> [+Hint] Ask Copilot: what did v1 change?
+> [+Hint] OPTIONAL - Ask Copilot: what did v1 change?
 >
 > ++Compare src/agent/instructions-v0.md with src/agent/instructions-v1.md. In three bullets, what changed and why might it help?++
 
@@ -666,7 +668,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] Our agent works, but "works" isn't the same as "reliable". From here on we stop judging answers one at a time and start measuring them all.
 
-> [+Hint] Ask Copilot: is the optimizer done?
+> [+Hint] OPTIONAL - Ask Copilot: is the optimizer done?
 >
 > ++/microsoft-foundry What is the status of my latest agent optimization job for trailmate? Answer in one sentence. Do not change anything.++
 
@@ -697,7 +699,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 >
 > The screenshots on this page come from a completed run in our test. Read them now, and check yours again on page 6.1.
 
-> [+Hint] Ask Copilot: which finding first?
+> [+Hint] OPTIONAL - Ask Copilot: which finding first?
 >
 > ++/microsoft-foundry Summarize the latest insights for my trailmate agent in three bullets. Which should we fix first? Do not change anything.++
 
@@ -734,7 +736,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     <!-- TODO screenshot: 06-better-01-scoreboard.png | The v0 and v1 scoreboard and the per-category table -->
 
-> [+Hint] Ask Copilot: summarize the scores
+> [+Hint] OPTIONAL - Ask Copilot: summarize the scores
 >
 > ++In three bullets, summarize what the rubric in section 5.3 of labs/core/05-make-it-better.ipynb checks and how v0 and v1 scored in section 5.5. Don't change any files.++
 
@@ -775,7 +777,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] A timid agent never invents anything, but it's also useless. Guard cases are questions the manuals *do* answer, so a candidate that just refuses fails them.
 
-> [+Hint] Ask Copilot: what did the optimizer change?
+> [+Hint] OPTIONAL - Ask Copilot: what did the optimizer change?
 >
 > ++Summarize what the winning candidate changed in section 5.7 of labs/core/05-make-it-better.ipynb, in three bullets. Don't change any files.++
 
@@ -816,7 +818,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] The gain on trained questions is the gain the optimizer wanted. The gain on unseen questions is the gain we can trust. If the candidate doesn't pass, keeping v1 as our v2 checkpoint is a correct result, and the comparison steps above don't apply.
 
-> [+Hint] Ask Copilot: explain the decision
+> [+Hint] OPTIONAL - Ask Copilot: explain the decision
 >
 > ++Explain the decision printed in section 5.12 of labs/core/05-make-it-better.ipynb in two sentences: was the candidate promoted, and why? Don't change any files.++
 
@@ -848,7 +850,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
     <!-- TODO screenshot: 07-improve-01-board.png | The section 6.5 board with the baseline and mr-default rows -->
 
-> [+Hint] Ask Copilot: summarize the router board
+> [+Hint] OPTIONAL - Ask Copilot: summarize the router board
 >
 > ++Summarize the board in section 6.5 of labs/core/06-make-it-optimal.ipynb in three bullets: quality, cost, and errors. Don't change any files.++
 
@@ -869,7 +871,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] Invalid coverage, a category that got worse, an unknown cost, or a pending review all mean we keep the baseline. That's a legitimate result, not a failed lab.
 
-> [+Hint] Ask Copilot: explain the router decision
+> [+Hint] OPTIONAL - Ask Copilot: explain the router decision
 >
 > ++Explain the router decision in section 6.7 of labs/core/06-make-it-optimal.ipynb in two sentences. Don't change any files.++
 
@@ -896,7 +898,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] We went from plan to prototype to production, then kept improving: one lever at a time, measured with a frozen ruler, with an explicit decision at every step. Keeping a version is often the right call.
 
-> [+Hint] Ask Copilot: summarize the climb
+> [+Hint] OPTIONAL - Ask Copilot: summarize the climb
 >
 > ++Summarize the whole climb shown in the heatmap in section 6.9 of labs/core/06-make-it-optimal.ipynb, in three bullets. Don't change any files.++
 
@@ -917,7 +919,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Knowledge] Multi-modal is about what comes in, like a photo. Multi-model is about who handles which step. Our hand-built rules work, but someone has to write and maintain them. Model router makes that choice for us, per request.
 
-> [+Hint] Ask Copilot: multi-model or multi-modal?
+> [+Hint] OPTIONAL - Ask Copilot: multi-model or multi-modal?
 >
 > ++What's the difference between multi-model and multi-modal AI? Explain in one sentence.++
 
@@ -937,7 +939,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 
 > [!Note] Every More notebook comes pre-run, so reading one needs no setup and costs nothing. The image models aren't in this lab environment, so run them live later with your own subscription.
 
-> [+Hint] Ask Copilot: what are MAI models?
+> [+Hint] OPTIONAL - Ask Copilot: what are MAI models?
 >
 > ++Summarize labs/more/README.md in three bullets.++
 

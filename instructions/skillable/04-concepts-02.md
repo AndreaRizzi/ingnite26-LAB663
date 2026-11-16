@@ -28,7 +28,7 @@
 
 > [!Knowledge] In our test, both models picked the Alpine Explorer, but the small one was faster and used a fraction of the tokens. The real question isn't "which model is best?" but "which questions need the big one?"
 
-> [+Hint] Ask Copilot: big or small model?
+> [+Hint] OPTIONAL - Ask Copilot: big or small model?
 >
 > ++When should I pick gpt-5.4-mini over gpt-5.4? Answer in two sentences.++
 

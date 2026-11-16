@@ -29,7 +29,7 @@
 
 > [!Knowledge] The gain on trained questions is the gain the optimizer wanted. The gain on unseen questions is the gain we can trust. If the candidate doesn't pass, keeping v1 as our v2 checkpoint is a correct result, and the comparison steps above don't apply.
 
-> [+Hint] Ask Copilot: explain the decision
+> [+Hint] OPTIONAL - Ask Copilot: explain the decision
 >
 > ++Explain the decision printed in section 5.12 of labs/core/05-make-it-better.ipynb in two sentences: was the candidate promoted, and why? Don't change any files.++
 

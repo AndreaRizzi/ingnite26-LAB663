@@ -29,7 +29,7 @@
 
 > [!Knowledge] A timid agent never invents anything, but it's also useless. Guard cases are questions the manuals *do* answer, so a candidate that just refuses fails them.
 
-> [+Hint] Ask Copilot: what did the optimizer change?
+> [+Hint] OPTIONAL - Ask Copilot: what did the optimizer change?
 >
 > ++Summarize what the winning candidate changed in section 5.7 of labs/core/05-make-it-better.ipynb, in three bullets. Don't change any files.++
 

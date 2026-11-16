@@ -13,7 +13,7 @@
 
     ![The Insights tab showing Run in progress and Finding insights, collecting and analyzing traces](screenshots/04-concepts-01-insights-running.png)
 
-> [+Hint] Ask Copilot: what are insights?
+> [+Hint] OPTIONAL - Ask Copilot: what are insights?
 >
 > ++What do agent insights in Microsoft Foundry do? Explain in one sentence.++
 

@@ -49,7 +49,7 @@ Notebook 04 was **Make it work**: we got v1 running and leaving traces. Notebook
 >
 > The traces may still be arriving. Wait one minute, then run the section 5.2 cell again. Don't rerun section 4.5.
 
-> [+Hint] Ask Copilot: what is a rubric?
+> [+Hint] OPTIONAL - Ask Copilot: what is a rubric?
 >
 > ++What is a rubric evaluator in Microsoft Foundry, and how does the agent optimizer use it? Explain in two sentences.++
 

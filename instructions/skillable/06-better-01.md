@@ -25,7 +25,7 @@
 
     <!-- TODO screenshot: 06-better-01-scoreboard.png | The v0 and v1 scoreboard and the per-category table -->
 
-> [+Hint] Ask Copilot: summarize the scores
+> [+Hint] OPTIONAL - Ask Copilot: summarize the scores
 >
 > ++In three bullets, summarize what the rubric in section 5.3 of labs/core/05-make-it-better.ipynb checks and how v0 and v1 scored in section 5.5. Don't change any files.++
 
