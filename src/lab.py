@@ -14,6 +14,8 @@ import re
 import shutil
 import subprocess
 from collections import Counter
+from contextlib import contextmanager
+from threading import Event, Thread
 from datetime import datetime, timezone
 from importlib.metadata import version
 from pathlib import Path
@@ -144,6 +146,52 @@ def start_eval_run(openai_client, eval_id, dataset_id, agent_name, agent_version
             "target": {"type": "azure_ai_agent", "name": agent_name, "version": str(agent_version)},
         },
     )
+
+
+@contextmanager
+def show_progress(label: str):
+    """Keep a notebook heartbeat visible while a blocking call runs.
+
+    This shows local elapsed time, not service progress or an estimated finish.
+    Existing status messages remain visible below it. Outside a notebook we
+    keep the normal printed status messages instead of emitting display updates.
+    """
+    try:
+        from IPython import get_ipython
+        from IPython.display import display
+        notebook = getattr(get_ipython(), "kernel", None) is not None
+    except ImportError:
+        notebook = False
+    if not notebook:
+        print(f"{label}: waiting...", flush=True)
+        yield
+        return
+
+    started = time.monotonic()
+    stopped = Event()
+    handle = display(f"{label}: waiting. (0s elapsed)", display_id=True)
+
+    def heartbeat():
+        tick = 0
+        while not stopped.wait(1):
+            tick += 1
+            dots = "." * (tick % 3 + 1)
+            elapsed = int(time.monotonic() - started)
+            handle.update(f"{label}: waiting{dots} ({elapsed}s elapsed)")
+
+    worker = Thread(target=heartbeat, daemon=True)
+    worker.start()
+    outcome = "Finished"
+    try:
+        yield
+    except BaseException:
+        outcome = "Stopped waiting; see the output below"
+        raise
+    finally:
+        stopped.set()
+        worker.join()
+        elapsed = int(time.monotonic() - started)
+        handle.update(f"{label}: {outcome} ({elapsed}s elapsed)")
 
 
 def wait_for_runs(openai_client, eval_id, runs, poll_seconds: int = 15, timeout_seconds: int = 1200):
